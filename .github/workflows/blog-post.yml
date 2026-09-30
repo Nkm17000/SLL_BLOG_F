@@ -2,10 +2,6 @@ name: Smart Learning Lab - Dynamic Technical Blog
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - master
   schedule:
     # Six runs every day at 00:00, 04:00, 08:00, 12:00, 16:00 and 20:00 UTC.
     # This is 05:30, 09:30, 13:30, 17:30, 21:30 and 01:30 IST respectively.

@@ -1,0 +1,79 @@
+{
+  "version": 1,
+  "templates": [
+    {
+      "id": 1,
+      "html": "templates/01_asymmetric_magazine.html",
+      "hero_image": "assets/images/template-01-hero.png"
+    },
+    {
+      "id": 2,
+      "html": "templates/02_zigzag_story.html",
+      "hero_image": "assets/images/template-02-hero.png"
+    },
+    {
+      "id": 3,
+      "html": "templates/03_vertical_timeline.html",
+      "hero_image": "assets/images/template-03-hero.png"
+    },
+    {
+      "id": 4,
+      "html": "templates/04_bento_grid.html",
+      "hero_image": "assets/images/template-04-hero.png"
+    },
+    {
+      "id": 5,
+      "html": "templates/05_pill_cards.html",
+      "hero_image": "assets/images/template-05-hero.png"
+    },
+    {
+      "id": 6,
+      "html": "templates/06_newspaper_columns.html",
+      "hero_image": "assets/images/template-06-hero.png"
+    },
+    {
+      "id": 7,
+      "html": "templates/07_color_band.html",
+      "hero_image": "assets/images/template-07-hero.png"
+    },
+    {
+      "id": 8,
+      "html": "templates/08_circle_focus.html",
+      "hero_image": "assets/images/template-08-hero.png"
+    },
+    {
+      "id": 9,
+      "html": "templates/09_diagonal_blocks.html",
+      "hero_image": "assets/images/template-09-hero.png"
+    },
+    {
+      "id": 10,
+      "html": "templates/10_premium_minimal.html",
+      "hero_image": "assets/images/template-10-hero.png"
+    }
+  ],
+  "themes": [
+    {
+      "id": 1,
+      "name": "Sky Breeze"
+    },
+    {
+      "id": 2,
+      "name": "Mint Fresh"
+    },
+    {
+      "id": 3,
+      "name": "Peach Glow"
+    },
+    {
+      "id": 4,
+      "name": "Lavender Pop"
+    },
+    {
+      "id": 5,
+      "name": "Sunny Lemon"
+    }
+  ],
+  "combination_count": 50,
+  "image_resolution": "1600x2000 output; hero source is high-resolution PNG"
+}

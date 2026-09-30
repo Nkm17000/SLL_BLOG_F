@@ -94,7 +94,7 @@ class FacebookService:
 
         url = f"https://graph.facebook.com/{Config.FACEBOOK_GRAPH_API_VERSION}/{Config.FACEBOOK_PAGE_ID}/photos"
         with image.open("rb") as handle:
-            files = {"source": (image.name, handle, "image/png")}
+            files = {"source": (image.name, handle, "image/jpeg")}
             data = {
                 "published": "true",
                 "caption": caption or "",

@@ -1,7 +1,8 @@
+# Five intentionally LIGHT themes. No dark/midnight theme is allowed.
 THEMES = [
-    {"id": 1, "name": "Ocean Tech", "bg": "#E0F2FE", "ink": "#0B1220", "accent": "#2563EB", "card": "#FFFFFF"},
-    {"id": 2, "name": "Midnight AI", "bg": "#111827", "ink": "#F9FAFB", "accent": "#8B5CF6", "card": "#1F2937"},
-    {"id": 3, "name": "Sunrise Energy", "bg": "#FFF7ED", "ink": "#431407", "accent": "#EA580C", "card": "#FFFFFF"},
-    {"id": 4, "name": "Emerald Fresh", "bg": "#ECFDF5", "ink": "#052E16", "accent": "#059669", "card": "#FFFFFF"},
-    {"id": 5, "name": "Violet Creative", "bg": "#F5F3FF", "ink": "#2E1065", "accent": "#7C3AED", "card": "#FFFFFF"},
+    {"id": 1, "name": "Sky Breeze", "bg": "#F4FAFF", "ink": "#132238", "accent": "#2F80ED", "card": "#FFFFFF", "soft": "#EAF4FF"},
+    {"id": 2, "name": "Mint Fresh", "bg": "#F2FBF7", "ink": "#15352A", "accent": "#18A874", "card": "#FFFFFF", "soft": "#E2F7EE"},
+    {"id": 3, "name": "Peach Glow", "bg": "#FFF8F3", "ink": "#3D241A", "accent": "#F07C32", "card": "#FFFFFF", "soft": "#FFEBDD"},
+    {"id": 4, "name": "Lavender Pop", "bg": "#F8F6FF", "ink": "#292345", "accent": "#7956E8", "card": "#FFFFFF", "soft": "#EEE9FF"},
+    {"id": 5, "name": "Sunny Lemon", "bg": "#FFFDF3", "ink": "#352F13", "accent": "#D99A13", "card": "#FFFFFF", "soft": "#FFF5C7"},
 ]

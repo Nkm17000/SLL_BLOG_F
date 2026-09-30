@@ -1,8 +1,35 @@
 {
   "version": 6,
   "topic_cycle": 0,
-  "topic_used": [],
+  "topic_used": [
+    "ai-fraud-detection"
+  ],
   "template_cycle": 0,
-  "template_used": [],
-  "history": []
+  "template_used": [
+    3
+  ],
+  "history": [
+    {
+      "topic_id": "ai-fraud-detection",
+      "topic": "How AI Detects Financial Fraud",
+      "category": "AI in Finance",
+      "status": "generated",
+      "timestamp_utc": "2026-09-30T18:16:54.065953+00:00",
+      "topic_cycle": 0,
+      "template_id": 3,
+      "template_name": "vertical_timeline",
+      "image": "output/20260930T181634Z_ai-fraud-detection_t03.png"
+    },
+    {
+      "topic_id": "ai-fraud-detection",
+      "topic": "How AI Detects Financial Fraud",
+      "category": "AI in Finance",
+      "status": "published",
+      "timestamp_utc": "2026-09-30T18:16:58.419585+00:00",
+      "template_id": 3,
+      "template_name": "vertical_timeline",
+      "image": "output/20260930T181634Z_ai-fraud-detection_t03.png",
+      "facebook_post_id": "1317018278163213_122121826059419769"
+    }
+  ]
 }

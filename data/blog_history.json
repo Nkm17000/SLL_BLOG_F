@@ -1,8 +1,39 @@
 {
   "version": 5,
   "topic_cycle": 0,
-  "topic_used": [],
+  "topic_used": [
+    "ai-smart-home"
+  ],
   "combo_cycle": 0,
-  "combo_used": [],
-  "history": []
+  "combo_used": [
+    "9-5"
+  ],
+  "history": [
+    {
+      "topic_id": "ai-smart-home",
+      "topic": "How AI Makes Your Smart Home Smarter",
+      "category": "Artificial Intelligence",
+      "status": "generated",
+      "timestamp_utc": "2026-09-30T18:09:26.592545+00:00",
+      "topic_cycle": 0,
+      "template_id": 9,
+      "template_name": "diagonal_blocks",
+      "theme_id": 5,
+      "theme_name": "Sunny Lemon",
+      "combination": "9-5",
+      "image": "output/20260930T180916Z_ai-smart-home_t09_th5.png"
+    },
+    {
+      "topic_id": "ai-smart-home",
+      "topic": "How AI Makes Your Smart Home Smarter",
+      "category": "Artificial Intelligence",
+      "status": "published",
+      "timestamp_utc": "2026-09-30T18:09:30.586266+00:00",
+      "template_id": 9,
+      "theme_id": 5,
+      "combination": "9-5",
+      "image": "output/20260930T180916Z_ai-smart-home_t09_th5.png",
+      "facebook_post_id": "1317018278163213_122121824781419769"
+    }
+  ]
 }

@@ -1,8 +1,35 @@
 {
-  "version": 7,
+  "version": 6,
   "topic_cycle": 0,
-  "topic_used": [],
+  "topic_used": [
+    "ai-healthcare-assistant"
+  ],
   "template_cycle": 0,
-  "template_used": [],
-  "history": []
+  "template_used": [
+    1
+  ],
+  "history": [
+    {
+      "topic_id": "ai-healthcare-assistant",
+      "topic": "How AI Is Used in Healthcare",
+      "category": "Artificial Intelligence",
+      "status": "generated",
+      "timestamp_utc": "2026-09-30T18:26:58.422920+00:00",
+      "topic_cycle": 0,
+      "template_id": 1,
+      "template_name": "asymmetric_magazine",
+      "image": "output/20260930T182632Z_ai-healthcare-assistant_t01.png"
+    },
+    {
+      "topic_id": "ai-healthcare-assistant",
+      "topic": "How AI Is Used in Healthcare",
+      "category": "Artificial Intelligence",
+      "status": "published",
+      "timestamp_utc": "2026-09-30T18:27:02.843330+00:00",
+      "template_id": 1,
+      "template_name": "asymmetric_magazine",
+      "image": "output/20260930T182632Z_ai-healthcare-assistant_t01.png",
+      "facebook_post_id": "1317018278163213_122121827697419769"
+    }
+  ]
 }

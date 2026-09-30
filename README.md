@@ -1,121 +1,233 @@
-# Smart Learning Lab — Static UX Technical Blog Publisher
+# Smart Learning Lab — Technical Blog Publisher (Final)
 
-This version removes Groq completely.
+This version is designed for automated technical-blog image creation and Facebook Page publishing.
 
-## What it does
+## What was fixed
 
-- Uses `data/static_blogs.json` as the content source.
-- No AI text-generation API is required.
-- Uses 5 supplied Smart Learning Lab UX systems.
-- UX selection is deterministic:
-
-`UX 1 → UX 2 → UX 3 → UX 4 → UX 5 → UX 1 → ...`
-
-- Every generated image gets a unique generation number.
-- If you run it 10 times in one day, the UX sequence is:
-
-`1, 2, 3, 4, 5, 1, 2, 3, 4, 5`
-
-- The next run continues from the saved state, even after GitHub Actions restarts.
-- Static blog content is selected cyclically from `data/static_blogs.json`.
-- The supplied UX sub-images are stored under `assets/ux_designs/` and used as artwork references/decorations.
-- Output is a 1080×1350 JPEG suitable for Facebook/Instagram-style blog graphics.
-
-## Project structure
+### 1. Detailed live GitHub Actions logs
+Every workflow step now prints clear progress messages:
 
 ```text
-app/
-  blog_generator.py
-  config.py
-  facebook_service.py
-  image_generator.py
-  run_agent.py
-  state.py
-
-data/
-  static_blogs.json
-  topics.json
-  blog_history.json
-
-assets/
-  fonts/
-  ux_designs/
-    clean_modern_green/
-    dark_ai_futuristic/
-    warm_friendly_orange/
-    nature_fresh_green/
-    purple_creative_ai/
-
-output/
+WORKFLOW STARTED
+Checkout
+Python setup
+Dependency installation
+Facebook secret validation
+Project validation
+Static JSON validation
+Rotation state
+Image generation
+Facebook preflight
+Facebook image upload
+Generated files
+Artifact upload
+State commit
+WORKFLOW FINISHED
 ```
 
-## Run locally
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-cp .env.example .env
-python -m app.run_agent --dry-run
-```
-
-The first run uses UX 1, the second UX 2, and so on.
-
-To test a particular static content item:
-
-```bash
-python -m app.run_agent --topic-index 3 --dry-run
-```
-
-The UX sequence is still controlled by `data/blog_history.json`.
-
-## Facebook publishing
-
-Set:
+The Python application also writes a timestamped log file to:
 
 ```text
-FACEBOOK_PAGE_ID=
-FACEBOOK_PAGE_TOKEN=
-FACEBOOK_GRAPH_API_VERSION=v23.0
+output/logs/run_YYYYMMDDTHHMMSSZ.log
 ```
 
-Then remove `--dry-run`.
+The workflow uploads these logs as a GitHub Actions artifact even when a later step fails.
 
-## GitHub Actions
+Artifact name:
 
-The workflow supports:
+```text
+smart-learning-lab-debug-<run-number>
+```
 
-- `push` to `main` for an immediate test run
-- Manual `workflow_dispatch`
-- 10 scheduled executions per day
-- Schedule timezone: `Asia/Kolkata`
-- Scheduled times: 06:30, 08:30, 10:30, 12:30, 14:30, 16:30, 18:30, 20:30, 22:30 and 00:30 IST
-- Persistent UX rotation through `data/blog_history.json`
-- GitHub Actions artifact containing the generated output
+### 2. Blog image redesigned around the supplied Smart Learning Lab UX
 
-Required GitHub repository secrets:
+The renderer no longer produces a page made only from empty text boxes.
+
+It now uses the supplied artwork for:
+
+- Hero student + laptop image
+- AI robot
+- Target / productivity illustration
+- AI chip
+- AI devices
+- Beginner project checklist
+- Implementation checklist
+- Real-world student illustration
+- Calendar / notification illustration
+- Try Today rocket
+- Footer benefit icons
+
+The layout follows the supplied UX direction:
+
+- Branded hero
+- Large title
+- Highlighted title line
+- Hero illustration
+- Intro callout
+- 8 numbered content cards
+- One illustration per card
+- Try This Today section
+- CTA button
+- Footer benefit row
+
+Output:
+
+```text
+1080 × 1350 JPEG
+```
+
+### 3. Font problem fixed
+
+The old version used a Devanagari-only font for English text. That caused the square-box characters visible in the generated image.
+
+The new renderer uses:
+
+- DejaVu Sans for Latin/English text
+- Noto Sans Devanagari for Devanagari text
+- Automatic mixed-text handling
+
+So English text renders normally and Hindi/Devanagari can also be rendered.
+
+### 4. Facebook preflight
+
+Before uploading the image, the application verifies the configured Page ID and token against the Graph API.
+
+The log reports:
+
+```text
+Facebook preflight: validating Page access...
+Facebook Page access OK. Page ID=... Name=...
+Facebook preflight passed. Starting image upload...
+```
+
+If Facebook rejects the request, the HTTP status, error code, error type and error message are logged without printing the access token.
+
+### 5. Automatic UX rotation
+
+The sequence remains:
+
+```text
+Run 1  → UX 1
+Run 2  → UX 2
+Run 3  → UX 3
+Run 4  → UX 4
+Run 5  → UX 5
+Run 6  → UX 1
+...
+```
+
+The state is stored in:
+
+```text
+data/blog_history.json
+```
+
+### 6. 10 scheduled runs per day
+
+The workflow uses Asia/Kolkata timezone and runs at:
+
+```text
+06:30 IST
+08:30 IST
+10:30 IST
+12:30 IST
+14:30 IST
+16:30 IST
+18:30 IST
+20:30 IST
+22:30 IST
+00:30 IST
+```
+
+### 7. Push trigger for immediate testing
+
+The workflow also runs when code is pushed to `main`.
+
+This means after uploading the project you do not have to wait for the next scheduled execution to test it.
+
+## Required GitHub Secrets
+
+Repository → Settings → Secrets and variables → Actions:
 
 ```text
 FACEBOOK_PAGE_ID
 FACEBOOK_PAGE_TOKEN
 ```
 
-Do not add a Groq secret. This project does not use Groq.
+The workflow never prints the actual token.
 
-## Important rotation behavior
+## Manual test
 
-The UX index is reserved before image generation and stored immediately. Therefore a generated image always consumes the next UX slot.
-
-Example:
+Go to:
 
 ```text
-Generation 1  -> UX 1
-Generation 2  -> UX 2
-Generation 3  -> UX 3
-Generation 4  -> UX 4
-Generation 5  -> UX 5
-Generation 6  -> UX 1
-...
+GitHub → Actions → Smart Learning Lab - Technical Blog Publisher → Run workflow
 ```
 
-If a Facebook upload fails after image generation, the next run still moves forward. This prevents the same UX from being repeatedly selected after a failed publication.
+Leave the topic index blank for normal rotation.
+
+## Where to diagnose a failure
+
+Open:
+
+```text
+GitHub → Actions → workflow run → Generate + Publish Technical Blog
+```
+
+The failed step will show its detailed log.
+
+Also download:
+
+```text
+smart-learning-lab-debug-<run-number>
+```
+
+This contains generated images, JSON metadata and the application log.
+
+## Local dry run
+
+No Facebook credentials are required for a dry run:
+
+```bash
+python -m app.run_agent --dry-run
+```
+
+## Local production run
+
+Set:
+
+```text
+FACEBOOK_PAGE_ID=...
+FACEBOOK_PAGE_TOKEN=...
+FACEBOOK_GRAPH_API_VERSION=v23.0
+```
+
+Then:
+
+```bash
+python -m app.run_agent
+```
+
+## Testing
+
+The project includes a smoke test for:
+
+- Static blog JSON
+- All 5 UX renderers
+- 1080×1350 output dimensions
+- JPEG/RGB output
+- Facebook response handling
+
+Run:
+
+```bash
+python -m unittest discover -s tests -p "test_*.py"
+```
+
+## No Groq
+
+This project does not use Groq or any AI text-generation API. Blog content comes from:
+
+```text
+data/static_blogs.json
+```

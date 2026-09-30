@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv(override=True)
 
+
 class Config:
     FACEBOOK_PAGE_ID = os.getenv("FACEBOOK_PAGE_ID")
     FACEBOOK_PAGE_TOKEN = os.getenv("FACEBOOK_PAGE_TOKEN")

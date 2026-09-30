@@ -9,64 +9,76 @@ from PIL import Image, ImageDraw, ImageFont
 ROOT = Path(__file__).resolve().parent.parent
 FONT_DIR = ROOT / "assets" / "fonts"
 
-
-# 20 complete visual themes. Each topic gets one randomly selected theme.
 THEMES = [
-    {"id": "ocean", "page": (246, 250, 255), "header": (18, 62, 125), "header2": (35, 116, 210), "text": (28, 42, 61), "muted": (92, 108, 130), "accent": (38, 111, 214), "cards": [(226, 240, 255), (235, 248, 255), (228, 246, 239)], "try": (255, 239, 169), "try_text": (104, 70, 0)},
-    {"id": "sunrise", "page": (255, 250, 245), "header": (150, 64, 35), "header2": (232, 118, 55), "text": (61, 40, 34), "muted": (126, 101, 89), "accent": (224, 101, 42), "cards": [(255, 235, 216), (255, 243, 224), (248, 231, 239)], "try": (255, 225, 157), "try_text": (111, 69, 0)},
-    {"id": "mint", "page": (246, 252, 249), "header": (20, 94, 79), "header2": (39, 151, 124), "text": (29, 55, 49), "muted": (86, 112, 105), "accent": (25, 139, 111), "cards": [(224, 247, 239), (232, 250, 244), (239, 245, 220)], "try": (250, 235, 168), "try_text": (79, 70, 0)},
-    {"id": "lavender", "page": (250, 248, 255), "header": (73, 54, 126), "header2": (122, 91, 194), "text": (47, 39, 67), "muted": (105, 96, 124), "accent": (113, 83, 189), "cards": [(239, 232, 255), (245, 238, 255), (230, 242, 255)], "try": (255, 232, 173), "try_text": (94, 67, 0)},
-    {"id": "coral", "page": (255, 248, 248), "header": (135, 48, 67), "header2": (219, 83, 99), "text": (62, 39, 45), "muted": (125, 91, 99), "accent": (210, 75, 93), "cards": [(255, 226, 231), (255, 239, 224), (237, 235, 255)], "try": (255, 232, 164), "try_text": (96, 63, 0)},
-    {"id": "sky", "page": (244, 251, 255), "header": (23, 88, 142), "header2": (45, 162, 211), "text": (28, 50, 65), "muted": (87, 113, 130), "accent": (35, 145, 205), "cards": [(221, 242, 255), (230, 249, 250), (239, 238, 255)], "try": (255, 235, 168), "try_text": (91, 68, 0)},
-    {"id": "forest", "page": (247, 251, 247), "header": (34, 91, 58), "header2": (77, 151, 86), "text": (34, 54, 40), "muted": (90, 112, 94), "accent": (58, 137, 72), "cards": [(224, 243, 226), (235, 248, 229), (244, 239, 211)], "try": (255, 235, 166), "try_text": (82, 65, 0)},
-    {"id": "indigo", "page": (247, 248, 255), "header": (44, 48, 111), "header2": (83, 91, 190), "text": (36, 39, 69), "muted": (93, 98, 130), "accent": (75, 83, 181), "cards": [(229, 232, 255), (236, 244, 255), (237, 251, 245)], "try": (255, 236, 168), "try_text": (89, 67, 0)},
-    {"id": "teal", "page": (245, 252, 252), "header": (17, 92, 95), "header2": (27, 156, 155), "text": (29, 57, 58), "muted": (86, 113, 113), "accent": (24, 145, 145), "cards": [(222, 246, 245), (232, 250, 242), (239, 240, 255)], "try": (255, 236, 167), "try_text": (82, 67, 0)},
-    {"id": "royal", "page": (249, 249, 255), "header": (43, 36, 106), "header2": (89, 72, 190), "text": (42, 38, 67), "muted": (100, 95, 126), "accent": (85, 69, 184), "cards": [(235, 230, 255), (228, 243, 255), (240, 247, 229)], "try": (255, 235, 166), "try_text": (88, 67, 0)},
-    {"id": "peach", "page": (255, 250, 247), "header": (125, 65, 45), "header2": (220, 126, 84), "text": (62, 45, 39), "muted": (126, 101, 91), "accent": (209, 112, 73), "cards": [(255, 232, 218), (255, 241, 227), (239, 235, 255)], "try": (255, 230, 163), "try_text": (99, 64, 0)},
-    {"id": "aqua", "page": (244, 252, 255), "header": (17, 83, 113), "header2": (20, 166, 184), "text": (27, 52, 64), "muted": (83, 111, 125), "accent": (21, 151, 172), "cards": [(220, 245, 253), (228, 249, 244), (237, 236, 255)], "try": (255, 236, 165), "try_text": (82, 65, 0)},
-    {"id": "plum", "page": (253, 248, 253), "header": (103, 44, 101), "header2": (177, 77, 157), "text": (59, 38, 58), "muted": (119, 90, 117), "accent": (169, 69, 150), "cards": [(249, 226, 245), (235, 232, 255), (229, 247, 242)], "try": (255, 235, 167), "try_text": (91, 64, 0)},
-    {"id": "lime", "page": (250, 253, 244), "header": (71, 105, 25), "header2": (137, 173, 45), "text": (50, 61, 31), "muted": (101, 113, 80), "accent": (119, 157, 34), "cards": [(236, 248, 211), (228, 244, 235), (239, 235, 255)], "try": (255, 233, 163), "try_text": (87, 67, 0)},
-    {"id": "midnight", "page": (245, 247, 252), "header": (27, 38, 69), "header2": (61, 89, 159), "text": (30, 39, 57), "muted": (91, 101, 121), "accent": (59, 88, 165), "cards": [(225, 234, 255), (232, 246, 241), (245, 234, 251)], "try": (255, 235, 165), "try_text": (84, 65, 0)},
-    {"id": "rose", "page": (255, 249, 252), "header": (133, 46, 81), "header2": (210, 86, 126), "text": (63, 39, 49), "muted": (126, 91, 104), "accent": (201, 75, 117), "cards": [(255, 225, 237), (255, 240, 225), (232, 239, 255)], "try": (255, 231, 164), "try_text": (93, 63, 0)},
-    {"id": "cobalt", "page": (246, 249, 255), "header": (20, 67, 139), "header2": (43, 119, 221), "text": (27, 44, 65), "muted": (88, 107, 131), "accent": (37, 105, 208), "cards": [(224, 237, 255), (234, 247, 255), (236, 247, 231)], "try": (255, 237, 167), "try_text": (87, 67, 0)},
-    {"id": "emerald", "page": (246, 253, 250), "header": (13, 91, 66), "header2": (34, 158, 112), "text": (27, 56, 47), "muted": (83, 112, 100), "accent": (27, 144, 100), "cards": [(220, 247, 236), (231, 248, 255), (244, 238, 214)], "try": (255, 235, 166), "try_text": (78, 66, 0)},
-    {"id": "berry", "page": (251, 248, 255), "header": (91, 41, 119), "header2": (154, 78, 194), "text": (50, 38, 61), "muted": (104, 91, 116), "accent": (146, 70, 187), "cards": [(242, 226, 255), (228, 240, 255), (232, 248, 239)], "try": (255, 234, 166), "try_text": (87, 64, 0)},
+    {"id":"ocean","page":"#F4F8FC","hero1":"#123A8F","hero2":"#1976D2","primary":"#173B8F","accent":"#1769E0","cards":["#FFE8EF","#E5F3FF","#FFF3D6","#E8E5FF"],"try":"#FFF1A8","try_text":"#7A4B00"},
+    {"id":"mint","page":"#F3FAF7","hero1":"#087F5B","hero2":"#20A77A","primary":"#086B50","accent":"#099268","cards":["#E2F7EE","#E0F7FA","#F0F9E8","#E8F5E9"],"try":"#FFF4B8","try_text":"#5C4700"},
+    {"id":"lavender","page":"#F8F6FC","hero1":"#4C1D95","hero2":"#7C3AED","primary":"#4C1D95","accent":"#7C3AED","cards":["#F3E8FF","#EDE9FE","#E0E7FF","#FAE8FF"],"try":"#FEF3C7","try_text":"#6B4B00"},
+    {"id":"sunrise","page":"#FFF9F2","hero1":"#C2410C","hero2":"#F97316","primary":"#9A3412","accent":"#EA580C","cards":["#FFEDD5","#FEF3C7","#FCE7F3","#FFEDD5"],"try":"#FEF08A","try_text":"#704600"},
+    {"id":"sky","page":"#F2F9FF","hero1":"#075985","hero2":"#0284C7","primary":"#075985","accent":"#0284C7","cards":["#E0F2FE","#DBEAFE","#E0F7FA","#ECFEFF"],"try":"#FEF3C7","try_text":"#6B4B00"},
+    {"id":"coral","page":"#FFF7F5","hero1":"#9F1239","hero2":"#E11D48","primary":"#9F1239","accent":"#E11D48","cards":["#FFE4E6","#FCE7F3","#FFE4E6","#FFF1F2"],"try":"#FEF3C7","try_text":"#6B4B00"},
+    {"id":"forest","page":"#F4F9F4","hero1":"#14532D","hero2":"#16A34A","primary":"#166534","accent":"#16A34A","cards":["#DCFCE7","#ECFCCB","#D1FAE5","#E0F2F1"],"try":"#FEF3C7","try_text":"#5C4700"},
+    {"id":"indigo","page":"#F5F6FC","hero1":"#1E1B4B","hero2":"#4338CA","primary":"#312E81","accent":"#4F46E5","cards":["#E0E7FF","#EEF2FF","#EDE9FE","#DBEAFE"],"try":"#FEF08A","try_text":"#5C4700"},
+    {"id":"teal","page":"#F2FAFA","hero1":"#134E4A","hero2":"#0D9488","primary":"#115E59","accent":"#0F766E","cards":["#CCFBF1","#CFFAFE","#E0F2FE","#D1FAE5"],"try":"#FEF3C7","try_text":"#5C4700"},
+    {"id":"berry","page":"#FCF6FA","hero1":"#701A75","hero2":"#C026D3","primary":"#86198F","accent":"#A21CAF","cards":["#FAE8FF","#FCE7F3","#F5D0FE","#FDF2F8"],"try":"#FEF3C7","try_text":"#6B4B00"},
+    {"id":"emerald","page":"#F3FAF7","hero1":"#064E3B","hero2":"#059669","primary":"#065F46","accent":"#059669","cards":["#D1FAE5","#DCFCE7","#CCFBF1","#ECFDF5"],"try":"#FEF3C7","try_text":"#5C4700"},
+    {"id":"aqua","page":"#F2FAFC","hero1":"#155E75","hero2":"#06B6D4","primary":"#155E75","accent":"#0891B2","cards":["#CFFAFE","#E0F2FE","#CCFBF1","#ECFEFF"],"try":"#FEF3C7","try_text":"#5C4700"},
+    {"id":"rose","page":"#FFF7F9","hero1":"#881337","hero2":"#E11D48","primary":"#9F1239","accent":"#E11D48","cards":["#FFE4E6","#FCE7F3","#FFF1F2","#FDF2F8"],"try":"#FEF3C7","try_text":"#6B4B00"},
+    {"id":"cobalt","page":"#F4F7FC","hero1":"#172554","hero2":"#2563EB","primary":"#1E3A8A","accent":"#2563EB","cards":["#DBEAFE","#E0F2FE","#E0E7FF","#EFF6FF"],"try":"#FEF08A","try_text":"#5C4700"},
+    {"id":"lime","page":"#F7FAF2","hero1":"#365314","hero2":"#65A30D","primary":"#3F6212","accent":"#65A30D","cards":["#ECFCCB","#DCFCE7","#F0FDF4","#FEF9C3"],"try":"#FEF08A","try_text":"#5C4700"},
+    {"id":"plum","page":"#FAF7FC","hero1":"#581C87","hero2":"#9333EA","primary":"#6B21A8","accent":"#9333EA","cards":["#F3E8FF","#FAE8FF","#EDE9FE","#F5F3FF"],"try":"#FEF3C7","try_text":"#5C4700"},
+    {"id":"midnight","page":"#F4F7FB","hero1":"#0F172A","hero2":"#334155","primary":"#0F172A","accent":"#2563EB","cards":["#E2E8F0","#DBEAFE","#E0F2FE","#EDE9FE"],"try":"#FEF08A","try_text":"#5C4700"},
+    {"id":"tropical","page":"#F4FBFA","hero1":"#115E59","hero2":"#0EA5A4","primary":"#115E59","accent":"#0D9488","cards":["#CCFBF1","#DCFCE7","#CFFAFE","#ECFCCB"],"try":"#FEF3C7","try_text":"#5C4700"},
+    {"id":"peach","page":"#FFF8F4","hero1":"#9A3412","hero2":"#FB923C","primary":"#9A3412","accent":"#EA580C","cards":["#FFEDD5","#FFE4E6","#FEF3C7","#FFEDD5"],"try":"#FEF08A","try_text":"#704600"},
+    {"id":"royal","page":"#F7F5FC","hero1":"#312E81","hero2":"#6366F1","primary":"#3730A3","accent":"#4F46E5","cards":["#EDE9FE","#E0E7FF","#F3E8FF","#EEF2FF"],"try":"#FEF08A","try_text":"#5C4700"},
 ]
+
+
+def rgb(hex_color: str):
+    h = hex_color.lstrip("#")
+    return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
 
 
 class BlogImage:
     WIDTH = 1080
     HEIGHT = 1350
-    MARGIN = 64
+    MARGIN = 42
 
     @classmethod
-    def font(cls, size, bold=False, hindi=False):
-        if hindi:
-            p = FONT_DIR / ("NotoSansDevanagari-CondensedBold.ttf" if bold else "NotoSansDevanagari-Regular.ttf")
-        else:
-            p = Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf")
-        return ImageFont.truetype(str(p), size)
+    def font(cls, size, bold=False):
+        path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
+        return ImageFont.truetype(path, size)
 
     @staticmethod
-    def clean(s):
-        return re.sub(r"[\U00010000-\U0010ffff]", "", str(s or "")).strip()
+    def clean(value):
+        return re.sub(r"[\U00010000-\U0010ffff]", "", str(value or "")).strip()
 
     @classmethod
-    def wrap(cls, draw, text, font, max_width):
-        text = cls.clean(text)
-        words = text.split()
-        lines, cur = [], ""
-        for word in words:
-            test = word if not cur else cur + " " + word
-            if draw.textbbox((0, 0), test, font=font)[2] <= max_width:
-                cur = test
+    def wrap(cls, draw, text, font, width):
+        words = cls.clean(text).split()
+        if not words:
+            return [""]
+        lines, current = [], words[0]
+        for word in words[1:]:
+            candidate = current + " " + word
+            if draw.textbbox((0, 0), candidate, font=font)[2] <= width:
+                current = candidate
             else:
-                if cur:
-                    lines.append(cur)
-                cur = word
-        if cur:
-            lines.append(cur)
-        return lines or [""]
+                lines.append(current)
+                current = word
+        lines.append(current)
+        return lines
+
+    @classmethod
+    def fit_lines(cls, draw, text, font, width, max_lines):
+        lines = cls.wrap(draw, text, font, width)
+        if len(lines) <= max_lines:
+            return lines
+        lines = lines[:max_lines]
+        last = lines[-1]
+        while last and draw.textbbox((0, 0), last + "…", font=font)[2] > width:
+            last = last.rsplit(" ", 1)[0] if " " in last else last[:-1]
+        lines[-1] = (last or "…") + "…"
+        return lines
 
     @classmethod
     def choose_theme(cls, previous_theme_id=None):
@@ -76,73 +88,107 @@ class BlogImage:
     @classmethod
     def render(cls, blog, path, theme=None, previous_theme_id=None):
         theme = theme or cls.choose_theme(previous_theme_id)
-        img = Image.new("RGB", (cls.WIDTH, cls.HEIGHT), theme["page"])
+        theme = {**theme, "text": theme.get("text", "#172554"), "muted": theme.get("muted", "#64748B")}
+        img = Image.new("RGB", (cls.WIDTH, cls.HEIGHT), rgb(theme["page"]))
         d = ImageDraw.Draw(img)
 
-        d.rectangle((0, 0, cls.WIDTH, 205), fill=theme["header"])
-        brand = cls.font(27, True)
-        d.text((cls.MARGIN, 28), "SMART LEARNING LAB", font=brand, fill="white")
-        d.text((cls.MARGIN, 72), "LEARN • PRACTICE • GROW", font=cls.font(21), fill=(225, 238, 255))
+        # Header / brand
+        d.rounded_rectangle((0, 0, cls.WIDTH, 196), radius=0, fill=rgb(theme["hero1"]))
+        brand = cls.font(25, True)
+        d.text((cls.MARGIN, 22), "SMART LEARNING LAB", font=brand, fill="white")
+        d.text((cls.MARGIN, 58), "LEARN • PRACTICE • GROW", font=cls.font(17), fill=(225, 238, 255))
 
-        title_font = cls.font(48, True)
-        y = 112
-        for line in cls.wrap(d, blog["title"], title_font, cls.WIDTH - 2 * cls.MARGIN):
+        # Hero title. Reserve enough room and clip to 2 lines.
+        title_font = cls.font(43, True)
+        title_lines = cls.fit_lines(d, blog["title"], title_font, cls.WIDTH - 2 * cls.MARGIN, 2)
+        y = 94
+        for line in title_lines:
             d.text((cls.MARGIN, y), line, font=title_font, fill="white")
-            y += 56
+            y += 48
 
-        y = 230
-        hook_font = cls.font(27)
-        for line in cls.wrap(d, blog["hook"], hook_font, cls.WIDTH - 2 * cls.MARGIN):
-            d.text((cls.MARGIN, y), line, font=hook_font, fill=theme["text"])
-            y += 38
-        y += 18
+        subtitle_font = cls.font(18)
+        subtitle_lines = cls.fit_lines(d, blog["subtitle"], subtitle_font, cls.WIDTH - 2 * cls.MARGIN, 1)
+        d.text((cls.MARGIN, 166), subtitle_lines[0], font=subtitle_font, fill="white")
 
-        section_font = cls.font(28, True)
-        body_font = cls.font(21)
-        bullet_font = cls.font(20)
-        card_gap = 16
+        # Intro
+        intro_font = cls.font(18)
+        intro_lines = cls.fit_lines(d, blog.get("intro", ""), intro_font, cls.WIDTH - 2 * cls.MARGIN - 20, 3)
+        y = 218
+        for line in intro_lines:
+            d.text((cls.MARGIN + 8, y), line, font=intro_font, fill=rgb(theme["text"]))
+            y += 25
 
-        for i, sec in enumerate(blog["sections"]):
-            bullets = sec.get("bullets", [])
-            body_lines = cls.wrap(d, sec["body"], body_font, cls.WIDTH - 2 * cls.MARGIN - 44)
-            bullet_lines = []
-            for b in bullets:
-                bullet_lines.extend(["• " + line for line in cls.wrap(d, b, bullet_font, cls.WIDTH - 2 * cls.MARGIN - 70)])
-            h = 28 + len(cls.wrap(d, sec["heading"], section_font, cls.WIDTH - 2 * cls.MARGIN - 44)) * 34
-            h += len(body_lines) * 29 + len(bullet_lines) * 27 + 25
-            h = max(h, 125)
-            if y + h > cls.HEIGHT - 190:
-                break
-            color = theme["cards"][i % len(theme["cards"])]
-            d.rounded_rectangle((cls.MARGIN, y, cls.WIDTH - cls.MARGIN, y + h), radius=20, fill=color)
-            d.ellipse((cls.MARGIN + 18, y + 18, cls.MARGIN + 58, y + 58), fill=theme["accent"])
-            d.text((cls.MARGIN + 29, y + 22), str(i + 1), font=cls.font(20, True), fill="white")
-            ty = y + 15
-            for line in cls.wrap(d, sec["heading"], section_font, cls.WIDTH - 2 * cls.MARGIN - 80):
-                d.text((cls.MARGIN + 72, ty), line, font=section_font, fill=theme["header"])
-                ty += 34
-            ty += 5
+        # Fixed two-column card grid matching the reference design.
+        grid_top = 300
+        card_w = (cls.WIDTH - 2 * cls.MARGIN - 20) // 2
+        card_h = 195
+        col_gap = 20
+        row_gap = 16
+        body_font = cls.font(14)
+        bullet_font = cls.font(13)
+        heading_font = cls.font(20, True)
+
+        for i, section in enumerate(blog.get("sections", [])[:8]):
+            row = i // 2
+            col = i % 2
+            x = cls.MARGIN + col * (card_w + col_gap)
+            top = grid_top + row * (card_h + row_gap)
+            bottom = top + card_h
+            fill = rgb(theme["cards"][i % len(theme["cards"])])
+            d.rounded_rectangle((x, top, x + card_w, bottom), radius=20, fill=fill)
+
+            # Number circle
+            d.ellipse((x + 16, top + 17, x + 52, top + 53), fill=rgb(theme["accent"]))
+            num_font = cls.font(16, True)
+            num = str(section.get("number", i + 1))
+            bbox = d.textbbox((0, 0), num, font=num_font)
+            d.text((x + 34 - (bbox[2]-bbox[0])/2, top + 22), num, font=num_font, fill="white")
+
+            # Heading
+            heading_x = x + 62
+            heading_lines = cls.fit_lines(d, section.get("title", ""), heading_font, card_w - 78, 2)
+            hy = top + 14
+            for line in heading_lines:
+                d.text((heading_x, hy), line, font=heading_font, fill=rgb(theme["primary"]))
+                hy += 24
+
+            # Body
+            body_lines = cls.fit_lines(d, section.get("text", ""), body_font, card_w - 32, 3)
+            ty = top + 63 if len(heading_lines) == 1 else top + 84
             for line in body_lines:
-                d.text((cls.MARGIN + 22, ty), line, font=body_font, fill=theme["text"])
-                ty += 29
-            for line in bullet_lines:
-                d.text((cls.MARGIN + 26, ty), line, font=bullet_font, fill=theme["text"])
-                ty += 27
-            y += h + card_gap
+                d.text((x + 16, ty), line, font=body_font, fill=rgb(theme["text"]))
+                ty += 20
 
-        box_top = min(y + 8, cls.HEIGHT - 175)
-        d.rounded_rectangle((cls.MARGIN, box_top, cls.WIDTH - cls.MARGIN, cls.HEIGHT - 72), radius=20, fill=theme["try"])
-        d.text((cls.MARGIN + 22, box_top + 16), "TRY THIS TODAY", font=cls.font(27, True), fill=theme["try_text"])
-        lines = cls.wrap(d, blog["try_today"], body_font, cls.WIDTH - 2 * cls.MARGIN - 44)
-        ty = box_top + 55
-        for line in lines[:3]:
-            d.text((cls.MARGIN + 22, ty), line, font=body_font, fill=theme["try_text"])
-            ty += 29
+            # Three bullets, compact.
+            for point in section.get("points", [])[:3]:
+                lines = cls.fit_lines(d, "• " + point, bullet_font, card_w - 34, 2)
+                for line in lines[:2]:
+                    if ty > bottom - 18:
+                        break
+                    d.text((x + 17, ty), line, font=bullet_font, fill=rgb(theme["text"]))
+                    ty += 17
 
+        # Try-this box
+        try_top = 1142
+        try_bottom = 1272
+        d.rounded_rectangle((cls.MARGIN, try_top, cls.WIDTH - cls.MARGIN, try_bottom), radius=20, fill=rgb(theme["try"]))
+        try_heading = cls.font(22, True)
+        d.text((cls.MARGIN + 20, try_top + 15), "TRY THIS TODAY", font=try_heading, fill=rgb(theme["try_text"]))
+        try_font = cls.font(15)
+        try_lines = cls.fit_lines(d, blog.get("try_today", ""), try_font, cls.WIDTH - 2 * cls.MARGIN - 40, 3)
+        ty = try_top + 50
+        for line in try_lines:
+            d.text((cls.MARGIN + 20, ty), line, font=try_font, fill=rgb(theme["try_text"]))
+            ty += 21
+
+        # Footer
         footer = "By Nitin Mittal Innovation"
-        fb = cls.font(19, True)
-        tw = d.textbbox((0, 0), footer, font=fb)[2]
-        d.text(((cls.WIDTH - tw) / 2, cls.HEIGHT - 48), footer, font=fb, fill=theme["muted"])
+        footer_font = cls.font(16, True)
+        bbox = d.textbbox((0, 0), footer, font=footer_font)
+        tw = bbox[2] - bbox[0]
+        d.text(((cls.WIDTH - tw) / 2, 1298), footer, font=footer_font, fill=rgb(theme["muted"]))
 
-        img.save(path, format="JPEG", quality=92, optimize=True)
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        img.save(path, format="JPEG", quality=94, optimize=True)
         return theme

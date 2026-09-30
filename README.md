@@ -1,36 +1,28 @@
 # Smart Learning Lab — Technical Blog Facebook Publisher
 
-This project automatically creates a beginner-friendly technical blog image with Groq and publishes it to a Facebook Page.
+A blog-only Facebook Page publisher. It uses Groq to create a compact beginner-friendly technical blog, selects one of 20 visual themes, renders a 1080×1350 social-media image, and publishes it to a Facebook Page.
 
-## Automatic behavior
+## Automatic GitHub workflow
 
-A push to `main` starts the GitHub Actions workflow. The workflow:
+A push to `main` starts `.github/workflows/blog-post.yml` and publishes the next unfinished topic.
 
-1. Finds the first topic in `data/topics.json` that is not marked `completed`.
-2. Uses Groq `openai/gpt-oss-120b` to generate the blog in structured JSON.
-3. Randomly selects one of 20 visual themes. The selected theme is different from the previous completed theme when possible.
-4. Creates one 1080x1350 JPEG.
-5. Publishes the image and caption to the Facebook Page.
-6. Only after Facebook succeeds, records the topic as `completed` and saves the selected `theme_id`.
-7. Commits the history and generated blog JSON back to `main`.
+The workflow also supports **Run workflow** from GitHub Actions with an optional topic ID.
 
-The bot's own commit changes only `data/blog_history.json` and `output/**`, which are excluded from the `push` trigger. This prevents an infinite workflow/posting loop.
-
-Groq documents `openai/gpt-oss-120b` as supporting JSON Schema / Structured Outputs. urlGroq GPT-OSS 120B documentationhttps://console.groq.com/docs/model/openai/gpt-oss-120b
+The bot commits only `data/blog_history.json` and generated `output/*.json`. Those paths are ignored by the push trigger so the history commit cannot start another publication.
 
 ## Required GitHub Secrets
 
-Repository → Settings → Secrets and variables → Actions → New repository secret:
+Add these under **Settings → Secrets and variables → Actions**:
 
 - `GROQ_API_KEY`
 - `FACEBOOK_PAGE_ID`
 - `FACEBOOK_PAGE_TOKEN`
 
-Never put real tokens into the repository.
+Never commit a real API key or token.
 
-## Topics
+## Topics and history
 
-Edit `data/topics.json` to add or change topics. The project includes 10 starter topics across:
+`data/topics.json` contains 10 starter topics covering:
 
 - AI for Everyone
 - AI for Students
@@ -43,35 +35,26 @@ Edit `data/topics.json` to add or change topics. The project includes 10 starter
 - Cybersecurity
 - Learning with AI
 
-## History
+`data/blog_history.json` records the topic, status, timestamp, selected theme, generated title, image path, and Facebook post ID after a successful post.
 
-`data/blog_history.json` records every attempt, including:
+## Visual design
 
-- topic ID
-- topic title
-- category
-- status
-- timestamp
-- theme ID
-- Facebook post ID after success
-- generated image path
-- generated title
+The renderer is intentionally fixed to **1080×1350** and uses the requested reference style:
 
-A topic is considered completed only after the Facebook API request succeeds.
+- Smart Learning Lab header
+- Strong colored hero section
+- Short introduction
+- Exactly 8 numbered cards in a 2-column grid
+- Four rows of pastel cards
+- `TRY THIS TODAY` box
+- Footer branding
+- 20 complete visual themes
 
-## 20 visual themes
+A new theme is selected randomly for every topic and the immediately previous completed theme is avoided when possible.
 
-`app/image_generator.py` contains 20 complete palettes. Each generated topic receives a random theme, while avoiding the immediately previous completed theme when possible.
+The renderer uses Pillow rather than Playwright, so GitHub Actions does not need Chrome or Linux browser libraries.
 
-## Manual run
-
-GitHub Actions → Smart Learning Lab - Technical Blog Publisher → Run workflow.
-
-Leave `topic_id` blank to publish the next pending topic, or enter a specific ID such as:
-
-`ai-study-assistant`
-
-## Local test
+## Local dry run
 
 ```bash
 python -m venv .venv
@@ -81,6 +64,14 @@ cp .env.example .env
 python -m app.run_agent --dry-run
 ```
 
+## Manual topic
+
+```bash
+python -m app.run_agent --topic ai-study-assistant --dry-run
+```
+
+Remove `--dry-run` to publish.
+
 ## Important
 
-The project intentionally contains no quiz/question-bank or Instagram publishing logic.
+This project intentionally contains no quiz generation, quiz banks, or Instagram publishing logic.

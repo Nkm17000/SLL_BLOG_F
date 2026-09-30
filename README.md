@@ -85,10 +85,20 @@ Then remove `--dry-run`.
 
 The workflow supports:
 
+- `push` to `main` for an immediate test run
 - Manual `workflow_dispatch`
-- Automatic scheduled runs
-- 10 scheduled executions per 24-hour UTC cycle
+- 10 scheduled executions per day
+- Schedule timezone: `Asia/Kolkata`
+- Scheduled times: 06:30, 08:30, 10:30, 12:30, 14:30, 16:30, 18:30, 20:30, 22:30 and 00:30 IST
 - Persistent UX rotation through `data/blog_history.json`
+- GitHub Actions artifact containing the generated output
+
+Required GitHub repository secrets:
+
+```text
+FACEBOOK_PAGE_ID
+FACEBOOK_PAGE_TOKEN
+```
 
 Do not add a Groq secret. This project does not use Groq.
 

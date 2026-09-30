@@ -22,7 +22,8 @@ def main():
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
 
-    Config.validate()
+    if not args.dry_run:
+        Config.validate()
     OUT.mkdir(exist_ok=True)
 
     load_static_blogs()

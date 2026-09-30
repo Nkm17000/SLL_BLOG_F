@@ -51,15 +51,13 @@ The existing workflow is retained:
 - Theme selection is hero-aware: each template has a curated compatible palette list.
 - The project can use any unused compatible theme and reset the theme cycle after all themes are used.
 - Template design remains independent from the theme.
-- Titles use a WordArt-inspired gradient, strong weight, shadow and template-specific accent treatment.
+- Titles use clean, readable typography with a standard font treatment.
 - Output supports both 12:10 orientations:
   - horizontal: 1200 × 1000
   - vertical: 1000 × 1200
 - One topic still produces one image per workflow run.
 
 
-## Audio / music
-PNG/JPG images cannot contain audio. To satisfy the music requirement, the workflow now creates an MP4 from the generated blog image plus a different, original low-volume ambient technical track for each predefined theme. `POST_MODE=video` publishes the MP4; `POST_MODE=image` keeps the original image-only behavior. The music is generated locally in the repository, so there is no dependency on third-party copyrighted music or Facebook's in-app music library.
 
 ## 2,000 topics
 `data/blogs.json` contains Set 1 + Set 2 (2,000 topics). The smoke test expects 2,000 topics.

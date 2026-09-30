@@ -109,21 +109,3 @@ class FacebookService:
         post_id = payload.get("post_id") or payload.get("id")
         logger.info("Facebook image published successfully. Post ID: %s", post_id)
         return payload
-    @classmethod
-    def post_video(cls, video_path, caption):
-        video = Path(video_path)
-        if not video.exists():
-            raise FileNotFoundError(f"Video does not exist: {video}")
-        url=f"https://graph.facebook.com/{Config.FACEBOOK_GRAPH_API_VERSION}/{Config.FACEBOOK_PAGE_ID}/videos"
-        logger.info("Preparing Facebook video upload: %s", video)
-        with video.open("rb") as handle:
-            files={"source":(video.name,handle,"video/mp4")}
-            data={"description":caption or "","published":"true","access_token":Config.FACEBOOK_PAGE_TOKEN}
-            response=cls._request("POST",url,files=files,data=data)
-        payload=cls._safe_json(response)
-        if not response.ok:
-            raise RuntimeError(f"Facebook video upload failed: HTTP {response.status_code}: {payload}")
-        post_id=payload.get("post_id") or payload.get("id")
-        logger.info("Facebook video published successfully. Post ID: %s",post_id)
-        return payload
-

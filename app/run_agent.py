@@ -13,7 +13,6 @@ from app.html_renderer import render
 from app.logger import logger
 from app.state import load_history, save_history, record
 from app.theme_engine import choose_theme
-from app.media_builder import make_video
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "output"
@@ -65,11 +64,9 @@ def main():
 
     stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     image = OUT / f"{stamp}_{blog['id']}_t{template_id:02d}.png"
-    video = OUT / f"{stamp}_{blog['id']}_t{template_id:02d}_theme_{theme.id}.mp4"
 
     try:
         render(blog, template_id, image, theme_id=theme.id, orientation=Config.ORIENTATION)
-        make_video(image, video, theme_id=list(__import__("app.theme_engine",fromlist=["THEMES"]).THEMES).index(theme)+1)
 
         # Rotation is committed only after rendering succeeds.
         state.setdefault("topic_used", []).append(blog["id"])
@@ -82,7 +79,6 @@ def main():
             template_name=template_name,
             theme_id=theme.id,
             image=str(image.relative_to(ROOT)),
-            video=str(video.relative_to(ROOT)),
         )
 
         result = {
@@ -91,13 +87,12 @@ def main():
             "template_id": template_id,
             "theme": theme.id,
             "image": str(image.relative_to(ROOT)),
-            "video": str(video.relative_to(ROOT)),
             "status": "generated",
         }
 
         if not args.dry_run:
             caption = f"{blog['title']}\n\n{blog['description']}\n\n#SmartLearningLab #AI #Technology #TechBlog"
-            fb = FacebookService.post_video(str(video), caption) if Config.POST_MODE == "video" else FacebookService.post_image(str(image), caption)
+            fb = FacebookService.post_image(str(image), caption)
             post_id = fb.get("post_id") or fb.get("id")
             record(
                 state, blog, "published",
@@ -105,7 +100,6 @@ def main():
                 template_name=template_name,
                 theme_id=theme.id,
                 image=str(image.relative_to(ROOT)),
-                video=str(video.relative_to(ROOT)),
                 facebook_post_id=post_id,
             )
             result.update(status="published", facebook_post_id=post_id)

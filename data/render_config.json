@@ -1,0 +1,17 @@
+{
+  "output_ratio": "12:10",
+  "orientations": {
+    "horizontal": {
+      "width": 1200,
+      "height": 1000
+    },
+    "vertical": {
+      "width": 1000,
+      "height": 1200
+    }
+  },
+  "default_orientation": "horizontal",
+  "theme_count": 12,
+  "template_count": 10,
+  "topic_count": 2000
+}

@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "sets": [
+    {
+      "id": "set-1",
+      "file": "smart_learning_lab_1000_technical_topics.json",
+      "topics": 1000
+    },
+    {
+      "id": "set-2",
+      "file": "smart_learning_lab_1000_technical_topics_set2.json",
+      "topics": 1000
+    }
+  ],
+  "merged_topics": 2000,
+  "selection_rule": "All 2000 topics are available to the normal topic-history rotation."
+}

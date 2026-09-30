@@ -42,3 +42,17 @@ The existing workflow is retained:
 - manual workflow dispatch
 - six scheduled runs per day
 - persistent topic/template history
+
+
+## v12:10 update
+
+- Set 1 + Set 2 are merged: 2,000 topics in `data/blogs.json`.
+- The theme engine now has 12 predefined light themes.
+- Theme selection is hero-aware: each template has a curated compatible palette list.
+- The project can use any unused compatible theme and reset the theme cycle after all themes are used.
+- Template design remains independent from the theme.
+- Titles use a WordArt-inspired gradient, strong weight, shadow and template-specific accent treatment.
+- Output supports both 12:10 orientations:
+  - horizontal: 1200 × 1000
+  - vertical: 1000 × 1200
+- One topic still produces one image per workflow run.

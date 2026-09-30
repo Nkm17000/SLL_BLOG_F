@@ -1,8 +1,4 @@
 {
-<<<<<<< HEAD
-  "version": 3,
-  "history": []
-=======
   "version": 2,
   "history": [
     {
@@ -17,5 +13,4 @@
       "title": "How AI Can Make Your Daily Life Easier"
     }
   ]
->>>>>>> 4db032ed6346ace88298af40169caea0115fc3a7
 }

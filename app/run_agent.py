@@ -129,4 +129,12 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        logger.exception("BLOG RUN INTERRUPTED")
+        raise
+    except Exception as exc:
+        logger.exception("BLOG RUN FAILED - UNHANDLED EXCEPTION: %s", exc)
+        logger.error("See output/logs for the complete run log.")
+        raise

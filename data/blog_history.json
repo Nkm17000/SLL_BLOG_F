@@ -1,52 +1,5 @@
 {
   "version": 4,
-  "next_generation": 2,
-  "history": [
-    {
-      "generation": 0,
-      "ux_index": 0,
-      "topic_id": "ai-daily-life",
-      "topic": "How AI Makes Everyday Tasks Easier",
-      "category": "AI for Everyone",
-      "status": "generated",
-      "timestamp_utc": "2026-09-30T13:51:17.054928+00:00",
-      "image": "output/00001_ai-daily-life_ux1.jpg",
-      "title": "How AI Makes Everyday Tasks Easier"
-    },
-    {
-      "generation": 0,
-      "ux_index": 0,
-      "topic_id": "ai-daily-life",
-      "topic": "How AI Makes Everyday Tasks Easier",
-      "category": "AI for Everyone",
-      "status": "completed",
-      "timestamp_utc": "2026-09-30T13:51:21.979363+00:00",
-      "post_id": "1317018278163213_122121771591419769",
-      "image": "output/00001_ai-daily-life_ux1.jpg",
-      "title": "How AI Makes Everyday Tasks Easier"
-    },
-    {
-      "generation": 1,
-      "ux_index": 1,
-      "topic_id": "ai-study-assistant",
-      "topic": "How to Build Your First AI Study Assistant",
-      "category": "AI for Students",
-      "status": "generated",
-      "timestamp_utc": "2026-09-30T13:56:41.418266+00:00",
-      "image": "output/00002_ai-study-assistant_ux2.jpg",
-      "title": "How to Build Your First AI Study Assistant"
-    },
-    {
-      "generation": 1,
-      "ux_index": 1,
-      "topic_id": "ai-study-assistant",
-      "topic": "How to Build Your First AI Study Assistant",
-      "category": "AI for Students",
-      "status": "completed",
-      "timestamp_utc": "2026-09-30T13:56:47.276218+00:00",
-      "post_id": "1317018278163213_122121772233419769",
-      "image": "output/00002_ai-study-assistant_ux2.jpg",
-      "title": "How to Build Your First AI Study Assistant"
-    }
-  ]
+  "next_generation": 0,
+  "history": []
 }

@@ -1,15 +1,20 @@
 name: Smart Learning Lab - Technical Blog Publisher
 
 on:
+  # Publish the next pending blog whenever code/content is pushed to main.
+  # The bot's own history/output commit is excluded below so it cannot trigger itself again.
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - "data/blog_history.json"
+      - "output/**"
   workflow_dispatch:
     inputs:
       topic_id:
-        description: "Optional topic ID. Leave blank to publish the next pending topic."
+        description: "Optional topic ID. Leave blank for the next pending topic."
         required: false
         type: string
-  schedule:
-    # 20:30 IST = 15:00 UTC
-    - cron: "0 15 * * *"
 
 permissions:
   contents: write
@@ -21,6 +26,7 @@ concurrency:
 jobs:
   publish-blog:
     runs-on: ubuntu-latest
+
     env:
       GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
       GROQ_MODEL: openai/gpt-oss-120b
@@ -30,12 +36,12 @@ jobs:
       PYTHONUNBUFFERED: "1"
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 1
+          fetch-depth: 0
 
-      - name: Setup Python
+      - name: Setup Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -46,18 +52,22 @@ jobs:
         run: python -m pip install -q -r requirements.txt
 
       - name: Validate secrets
+        shell: bash
         run: |
-          test -n "$GROQ_API_KEY" || { echo "Missing GROQ_API_KEY"; exit 1; }
-          test -n "$FACEBOOK_PAGE_ID" || { echo "Missing FACEBOOK_PAGE_ID"; exit 1; }
-          test -n "$FACEBOOK_PAGE_TOKEN" || { echo "Missing FACEBOOK_PAGE_TOKEN"; exit 1; }
+          set -euo pipefail
+          test -n "$GROQ_API_KEY" || { echo "ERROR: Missing GROQ_API_KEY repository secret"; exit 1; }
+          test -n "$FACEBOOK_PAGE_ID" || { echo "ERROR: Missing FACEBOOK_PAGE_ID repository secret"; exit 1; }
+          test -n "$FACEBOOK_PAGE_TOKEN" || { echo "ERROR: Missing FACEBOOK_PAGE_TOKEN repository secret"; exit 1; }
 
-      - name: Validate project
+      - name: Validate Python project
         run: python -m compileall -q app
 
-      - name: Generate and publish blog
+      - name: Generate and publish next blog
         env:
-          TOPIC_ID: ${{ inputs.topic_id }}
+          TOPIC_ID: ${{ github.event.inputs.topic_id || '' }}
+        shell: bash
         run: |
+          set -euo pipefail
           if [ -n "$TOPIC_ID" ]; then
             python -m app.run_agent --topic "$TOPIC_ID"
           else
@@ -65,13 +75,18 @@ jobs:
           fi
 
       - name: Commit history and generated blog JSON
+        shell: bash
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
           git add data/blog_history.json output/*.json
+
           if git diff --cached --quiet; then
-            echo "No state changes."
-          else
-            git commit -m "Publish technical blog and update history"
-            git push origin HEAD:main
+            echo "No state changes to commit."
+            exit 0
           fi
+
+          git commit -m "Publish technical blog and update history [skip ci]"
+          git push origin HEAD:main

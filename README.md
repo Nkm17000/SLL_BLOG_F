@@ -1,116 +1,86 @@
 # Smart Learning Lab — Technical Blog Facebook Publisher
 
-This project is a blog-only replacement for the previous quiz agent.
+This project automatically creates a beginner-friendly technical blog image with Groq and publishes it to a Facebook Page.
 
-## What it does
+## Automatic behavior
 
-1. Reads the next pending topic from `data/topics.json`.
-2. Uses Groq `openai/gpt-oss-120b` to create a beginner-friendly technical blog.
-3. Creates one 1080x1350 social-media image using Pillow.
-4. Publishes that image + caption to the configured Facebook Page.
-5. Only after a successful Facebook response, records the topic as `completed`.
-6. GitHub Actions commits `data/blog_history.json` so the next run continues from the next topic.
+A push to `main` starts the GitHub Actions workflow. The workflow:
 
-Groq's current documentation lists `openai/gpt-oss-120b` and supports structured JSON output, which this project uses for predictable blog generation.
+1. Finds the first topic in `data/topics.json` that is not marked `completed`.
+2. Uses Groq `openai/gpt-oss-120b` to generate the blog in structured JSON.
+3. Randomly selects one of 20 visual themes. The selected theme is different from the previous completed theme when possible.
+4. Creates one 1080x1350 JPEG.
+5. Publishes the image and caption to the Facebook Page.
+6. Only after Facebook succeeds, records the topic as `completed` and saves the selected `theme_id`.
+7. Commits the history and generated blog JSON back to `main`.
 
-## Topics
+The bot's own commit changes only `data/blog_history.json` and `output/**`, which are excluded from the `push` trigger. This prevents an infinite workflow/posting loop.
 
-The initial 10 topics cover:
-- AI for everyone
-- AI for students
-- AI for professionals
-- Technology
-- AI prompts
-- Python
-- AI and resumes
-- AI research
-- Cybersecurity basics
-- Learning with AI
+Groq documents `openai/gpt-oss-120b` as supporting JSON Schema / Structured Outputs. urlGroq GPT-OSS 120B documentationhttps://console.groq.com/docs/model/openai/gpt-oss-120b
 
-Edit `data/topics.json` to add more topics.
+## Required GitHub Secrets
 
-## GitHub Secrets
-
-Add these repository secrets:
+Repository → Settings → Secrets and variables → Actions → New repository secret:
 
 - `GROQ_API_KEY`
 - `FACEBOOK_PAGE_ID`
 - `FACEBOOK_PAGE_TOKEN`
 
-Do NOT put the actual Groq or Facebook tokens in the repository.
+Never put real tokens into the repository.
 
-## Facebook permissions
+## Topics
 
-The Page access token must have the permissions required by your Meta app/Page setup to publish Page content. If Meta rejects the request, the workflow will stop and the topic will remain uncompleted.
+Edit `data/topics.json` to add or change topics. The project includes 10 starter topics across:
 
-## Manual run
-
-GitHub Actions → Smart Learning Lab - Technical Blog Publisher → Run workflow.
-
-Leave `topic_id` blank to publish the next pending topic.
-
-Or choose a specific ID such as:
-
-`ai-study-assistant`
-
-## Local run
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-
-cp .env.example .env
-# fill in GROQ_API_KEY, FACEBOOK_PAGE_ID and FACEBOOK_PAGE_TOKEN
-
-python -m app.run_agent
-```
-
-Generate without posting:
-
-```bash
-python -m app.run_agent --dry-run
-```
-
-Publish a specific topic:
-
-```bash
-python -m app.run_agent --topic ai-study-assistant
-```
+- AI for Everyone
+- AI for Students
+- AI for Professionals
+- Technology
+- AI prompts
+- Python
+- AI and resumes
+- AI research
+- Cybersecurity
+- Learning with AI
 
 ## History
 
-`data/blog_history.json` records:
+`data/blog_history.json` records every attempt, including:
+
 - topic ID
 - topic title
 - category
 - status
 - timestamp
-- Facebook post ID when available
+- theme ID
+- Facebook post ID after success
 - generated image path
 - generated title
 
-A topic is marked `completed` only after the Facebook API call succeeds.
+A topic is considered completed only after the Facebook API request succeeds.
 
-## Output
+## 20 visual themes
 
-Each run creates:
+`app/image_generator.py` contains 20 complete palettes. Each generated topic receives a random theme, while avoiding the immediately previous completed theme when possible.
 
-`output/<topic-id>.jpg`
+## Manual run
 
-and:
+GitHub Actions → Smart Learning Lab - Technical Blog Publisher → Run workflow.
 
-`output/<topic-id>.json`
+Leave `topic_id` blank to publish the next pending topic, or enter a specific ID such as:
 
-The image is 1080x1350, designed for social media.
+`ai-study-assistant`
 
-## Important design choice
+## Local test
 
-The project does NOT include:
-- quiz/question-bank logic
-- Instagram publishing
-- old quiz images
-- quiz scheduling
-- quiz-specific state
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env
+python -m app.run_agent --dry-run
+```
 
-It is intentionally a separate technical-blog publisher.
+## Important
+
+The project intentionally contains no quiz/question-bank or Instagram publishing logic.

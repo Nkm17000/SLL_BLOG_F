@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+<defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#111827"/><stop offset="1" stop-color="#0b1020"/></linearGradient></defs>
+<rect width="1600" height="1000" fill="url(#g)"/>
+<circle cx="1280" cy="180" r="240" fill="#EA580C" opacity=".16"/>
+<circle cx="220" cy="820" r="300" fill="#EA580C" opacity=".10"/>
+<g fill="none" stroke="#EA580C" stroke-width="12" opacity=".75"><path d="M230 220h1140M230 350h520M900 350h470M230 480h520M900 480h470M230 610h1140M230 740h520M900 740h470"/></g>
+<rect x="90" y="100" width="1420" height="800" rx="55" fill="none" stroke="#ffffff" opacity=".12"/>
+<text x="120" y="720" fill="white" font-family="Arial" font-size="74" font-weight="700">SMART AI • 06</text>
+<text x="125" y="795" fill="#EA580C" font-family="Arial" font-size="34">Technical editorial AI illustration</text>
+</svg>

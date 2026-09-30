@@ -1,75 +1,49 @@
 from __future__ import annotations
-
-import tempfile
-import unittest
+import json, tempfile, unittest
 from pathlib import Path
-from unittest.mock import Mock, patch
+from app.blog_generator import load_blogs
+from app.state import load_history
+from app.run_agent import COMBOS, choose_combo, choose_topic
+from app.theme_engine import THEMES
 
-from app.blog_generator import load_static_blogs
-from app.design_registry import DESIGNS
-from app.facebook_service import FacebookService
-from app.image_generator import BlogImage
-
-ROOT = Path(__file__).resolve().parents[1]
-
+ROOT=Path(__file__).resolve().parents[1]
 
 class ProjectSmokeTests(unittest.TestCase):
-    def test_exactly_20_topics_have_required_content(self):
-        blogs = load_static_blogs()
-        self.assertEqual(len(blogs), 20)
+    def test_json_has_ten_blogs_and_five_points_each(self):
+        blogs=load_blogs()
+        self.assertEqual(len(blogs),10)
         for blog in blogs:
-            self.assertTrue(blog["id"])
-            self.assertTrue(blog["title"])
-            self.assertGreaterEqual(len(blog.get("sections", [])), 8)
-            self.assertTrue(blog.get("try_today"))
+            self.assertEqual(len(blog["points"]),5)
 
-    def test_exactly_15_designs_are_registered(self):
-        self.assertEqual(len(DESIGNS), 15)
-        self.assertEqual(len({d["id"] for d in DESIGNS}), 15)
-        self.assertEqual(sum(d["type"] == "legacy" for d in DESIGNS), 5)
-        self.assertEqual(sum(d["type"] == "static" for d in DESIGNS), 10)
+    def test_there_are_50_unique_combinations(self):
+        self.assertEqual(len(COMBOS),50)
+        self.assertEqual(len(set(COMBOS)),50)
+        self.assertEqual(len(THEMES),5)
 
-    def test_all_15_designs_render(self):
-        blogs = load_static_blogs()
-        with tempfile.TemporaryDirectory() as tmp:
-            for design_index in range(15):
-                out = Path(tmp) / f"design{design_index + 1}.jpg"
-                BlogImage.render(blogs[design_index % len(blogs)], out, ux_index=design_index)
-                self.assertTrue(out.exists())
-                from PIL import Image
-                with Image.open(out) as image:
-                    self.assertEqual(image.mode, "RGB")
-                    if design_index < 5:
-                        self.assertEqual(image.size, (1080, 1350))
-                    else:
-                        self.assertEqual(image.size, (1080, 1800))
+    def test_topic_rotation_avoids_used_topics_until_cycle_end(self):
+        blogs=load_blogs(); state={"topic_cycle":0,"topic_used":[]}
+        picked=[]
+        for _ in range(len(blogs)):
+            b=choose_topic(blogs,state); picked.append(b["id"]); state["topic_used"].append(b["id"])
+        self.assertEqual(len(set(picked)),10)
+        self.assertEqual(state["topic_cycle"],0)
+        b=choose_topic(blogs,state)
+        self.assertEqual(state["topic_cycle"],1)
+        self.assertIn(b["id"],{x["id"] for x in blogs})
 
-    def test_twenty_generation_sequence_uses_designs_1_to_15_then_1_to_5(self):
-        expected = list(range(15)) + list(range(5))
-        actual = [i % len(DESIGNS) for i in range(20)]
-        self.assertEqual(actual, expected)
+    def test_combination_rotation_avoids_repeats_until_all_50(self):
+        state={"combo_cycle":0,"combo_used":[]}
+        picked=[]
+        for _ in range(50):
+            _,_,combo=choose_combo(state); picked.append(combo); state["combo_used"].append(combo)
+        self.assertEqual(len(set(picked)),50)
+        self.assertEqual(state["combo_cycle"],0)
+        choose_combo(state)
+        self.assertEqual(state["combo_cycle"],1)
 
-    def test_hindi_mixed_text_does_not_crash(self):
-        blogs = load_static_blogs()
-        blog = dict(blogs[0])
-        blog["title"] = "AI से पढ़ाई आसान कैसे बनाएं"
-        blog["subtitle"] = "Learn AI in a simple Hindi + English format."
-        blog["intro"] = "यह एक छोटा technical guide है. Start small and improve."
-        with tempfile.TemporaryDirectory() as tmp:
-            out = Path(tmp) / "hindi.jpg"
-            BlogImage.render(blog, out, ux_index=0)
-            self.assertTrue(out.exists())
+    def test_history_file_is_valid(self):
+        data=load_history()
+        self.assertEqual(data["version"],5)
+        self.assertIsInstance(data["history"],list)
 
-    @patch("app.facebook_service.requests.request")
-    def test_facebook_success_response_is_parsed(self, request):
-        response = Mock()
-        response.ok = True
-        response.status_code = 200
-        response.json.return_value = {"id": "123_456"}
-        request.return_value = response
-        FacebookService._request("GET", "https://example.invalid/test")
-        request.assert_called_once()
-
-
-if __name__ == "__main__":
-    unittest.main()
+if __name__=="__main__": unittest.main()

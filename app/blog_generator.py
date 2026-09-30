@@ -1,22 +1,19 @@
 from __future__ import annotations
-
 import json
 from pathlib import Path
-
 ROOT = Path(__file__).resolve().parent.parent
-TOPICS = ROOT / "data" / "topics.json"
-STATIC_BLOGS = ROOT / "data" / "static_blogs.json"
+BLOGS = ROOT / "data" / "blogs.json"
 
-
-def load_static_blogs() -> list[dict]:
-    path = TOPICS if TOPICS.exists() else STATIC_BLOGS
-    data = json.loads(path.read_text(encoding="utf-8"))
-    blogs = data.get("topics") or data.get("blogs") or []
-    if not blogs:
-        raise ValueError(f"{path} contains no topics")
+def load_blogs() -> list[dict]:
+    data = json.loads(BLOGS.read_text(encoding="utf-8"))
+    if data.get("version") != 1 or not isinstance(data.get("blogs"), list) or not data["blogs"]:
+        raise ValueError("data/blogs.json must contain version=1 and a non-empty blogs array")
+    blogs = data["blogs"]
+    for i, blog in enumerate(blogs):
+        for key in ("id", "category", "title", "description", "points"):
+            if not blog.get(key): raise ValueError(f"Blog {i} missing {key}")
+        if len(blog["points"]) != 5: raise ValueError(f"Blog {blog['id']} must contain exactly 5 points")
+        for j, point in enumerate(blog["points"]):
+            if not point.get("title") or not point.get("description") or len(point.get("items", [])) < 2:
+                raise ValueError(f"Blog {blog['id']} point {j+1} is invalid")
     return blogs
-
-
-def get_blog(index: int) -> dict:
-    blogs = load_static_blogs()
-    return blogs[index % len(blogs)]

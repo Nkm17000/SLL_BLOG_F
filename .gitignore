@@ -5,3 +5,4 @@ __pycache__/
 output/*.jpg
 output/*.json
 output/logs/*.log
+output/*.png

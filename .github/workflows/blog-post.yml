@@ -1,9 +1,11 @@
-name: Smart Learning Lab - Technical Blog Publisher
+name: Smart Learning Lab - Dynamic Technical Blog
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
+  schedule:
+    # Six runs every day at 00:00, 04:00, 08:00, 12:00, 16:00 and 20:00 UTC.
+    # This is 05:30, 09:30, 13:30, 17:30, 21:30 and 01:30 IST respectively.
+    - cron: "0 0,4,8,12,16,20 * * *"
 
 permissions:
   contents: write
@@ -14,207 +16,76 @@ concurrency:
 
 env:
   PYTHONUNBUFFERED: "1"
-  PYTHONIOENCODING: "utf-8"
+  PYTHONIOENCODING: utf-8
   PIP_DISABLE_PIP_VERSION_CHECK: "1"
-  FACEBOOK_GRAPH_API_VERSION: "v23.0"
+  FACEBOOK_GRAPH_API_VERSION: v23.0
 
 jobs:
-  publish-blog:
-    name: Generate 20 Images + Publish
+  publish:
+    name: Generate 1 blog image and publish
     runs-on: ubuntu-latest
-    timeout-minutes: 45
-
+    timeout-minutes: 20
     env:
       FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
       FACEBOOK_PAGE_TOKEN: ${{ secrets.FACEBOOK_PAGE_TOKEN }}
 
     steps:
-      - name: 01 - START - Print runner diagnostics
-        run: |
-          set -euxo pipefail
-          echo "============================================================"
-          echo "SMART LEARNING LAB - 20 IMAGE WORKFLOW STARTED"
-          echo "Run number : $GITHUB_RUN_NUMBER"
-          echo "Run ID     : $GITHUB_RUN_ID"
-          echo "Event      : $GITHUB_EVENT_NAME"
-          echo "Ref        : $GITHUB_REF"
-          echo "SHA        : $GITHUB_SHA"
-          echo "UTC        : $(date -u)"
-          echo "IST        : $(TZ=Asia/Kolkata date)"
-          echo "============================================================"
-
-      - name: 02 - Checkout repository
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: 03 - Setup Python 3.12
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
           cache: pip
           cache-dependency-path: requirements.txt
 
-      - name: 04 - Install dependencies
+      - name: Install dependencies
         run: |
-          set -euxo pipefail
-          mkdir -p output/logs output/diagnostics
-          exec > >(tee -a output/logs/04_install.log) 2>&1
-          python --version
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
-          python -m pip list
 
-      - name: 05 - Validate Facebook secrets
-        run: |
-          set -euxo pipefail
-          exec > >(tee -a output/logs/05_secrets.log) 2>&1
-          test -n "${FACEBOOK_PAGE_ID:-}" || { echo "FACEBOOK_PAGE_ID is missing"; exit 1; }
-          test -n "${FACEBOOK_PAGE_TOKEN:-}" || { echo "FACEBOOK_PAGE_TOKEN is missing"; exit 1; }
-          echo "Facebook secrets are configured."
+      - name: Install Chromium for HTML rendering
+        run: python -m playwright install --with-deps chromium
 
-      - name: 06 - Validate project
+      - name: Validate JSON and project
         run: |
-          set -euxo pipefail
-          exec > >(tee -a output/logs/06_project_validation.log) 2>&1
-          test -f data/topics.json
-          test -f data/static_blogs.json
-          test -f data/designs.json
-          test -f app/run_agent.py
-          test -f app/image_generator.py
-          test -f app/static_template_renderer.py
-          test -f app/design_registry.py
-          test -d assets/source/smart_learning_lab_section_assets
-          test -d assets/static_templates
           python -m compileall -q app
-
-      - name: 07 - Run smoke tests
-        run: |
-          set -euxo pipefail
-          exec > >(tee -a output/logs/07_tests.log) 2>&1
           python -m unittest discover -s tests -v
-
-      - name: 08 - Validate 20 topics and 15 designs
-        run: |
-          set -euxo pipefail
-          exec > >(tee -a output/logs/08_content_validation.log) 2>&1
           python - <<'PY'
           import json
           from pathlib import Path
-
-          topics = json.loads(Path("data/topics.json").read_text(encoding="utf-8"))["topics"]
-          designs = json.loads(Path("data/designs.json").read_text(encoding="utf-8"))["designs"]
-          print(f"Topic count: {len(topics)}")
-          print(f"Design count: {len(designs)}")
-          if len(topics) != 20:
-              raise SystemExit("Expected exactly 20 topics")
-          if len(designs) != 15:
-              raise SystemExit("Expected exactly 15 designs")
-          for i, topic in enumerate(topics, 1):
-              if not topic.get("title") or len(topic.get("sections", [])) < 8:
-                  raise SystemExit(f"Invalid topic {i}: {topic.get('id')}")
-          print("CONTENT VALIDATION SUCCESS")
+          p=Path('data/blogs.json')
+          data=json.loads(p.read_text(encoding='utf-8'))
+          blogs=data.get('blogs', [])
+          assert len(blogs) > 0, 'No blogs found'
+          for b in blogs:
+              assert len(b.get('points', [])) == 5, f"{b.get('id')} must have exactly 5 points"
+          print(f'Validated {len(blogs)} blog topics')
           PY
 
-      - name: 09 - Show rotation state
-        run: |
-          set -euxo pipefail
-          exec > >(tee -a output/logs/09_rotation.log) 2>&1
-          cat data/blog_history.json
+      - name: Generate and publish exactly one blog
+        run: python -u -m app.run_agent
 
-      - name: 10 - Generate all 20 images + Facebook publish
-        id: publisher
-        continue-on-error: true
-        run: |
-          set -uo pipefail
-          mkdir -p output/logs output/diagnostics
-          LOG_FILE="output/logs/10_publisher.log"
-          exec > >(tee -a "$LOG_FILE") 2>&1
-          echo "============================================================"
-          echo "PUBLISHER STARTED - 20 IMAGES"
-          echo "============================================================"
-          set -x
-          python -u -m app.run_agent --count 20
-          STATUS=$?
-          set +x
-          echo "$STATUS" > output/diagnostics/publisher_exit_code.txt
-          exit "$STATUS"
-
-      - name: 11 - ALWAYS print generated files and logs
+      - name: Commit rotation and history
         if: always()
         run: |
-          set +e
-          echo "============================================================"
-          echo "POST-RUN DIAGNOSTICS"
-          echo "Job status: ${{ job.status }}"
-          echo "Publisher outcome: ${{ steps.publisher.outcome }}"
-          echo "============================================================"
-          mkdir -p output/logs output/diagnostics
-          echo "--- OUTPUT FILES ---"
-          find output -maxdepth 3 -type f -printf '%p | %s bytes\n' | sort || true
-          echo "--- ALL LOG FILES ---"
-          for file in output/logs/*.log; do
-            [ -f "$file" ] || continue
-            echo "================ $file ================"
-            cat "$file" || true
-          done
-          echo "--- ROTATION STATE ---"
-          cat data/blog_history.json || true
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/blog_history.json
+          git diff --cached --quiet || git commit -m "chore: update blog rotation history [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin "${GITHUB_REF_NAME}"
 
-      - name: 12 - ALWAYS upload debug artifacts
+      - name: Upload generated image and summary
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smart-learning-lab-20-image-run-${{ github.run_number }}
+          name: smart-learning-lab-blog-${{ github.run_number }}
           path: |
-            output/**
+            output/latest_summary.json
+            output/*.png
             data/blog_history.json
           if-no-files-found: warn
-          retention-days: 7
-          compression-level: 6
-
-      - name: 13 - Write GitHub Step Summary
-        if: always()
-        run: |
-          {
-            echo "# Smart Learning Lab - Run $GITHUB_RUN_NUMBER"
-            echo
-            echo "- **Job status:** ${{ job.status }}"
-            echo "- **Publisher outcome:** ${{ steps.publisher.outcome }}"
-            echo "- **Event:** $GITHUB_EVENT_NAME"
-            echo "- **Commit:** $GITHUB_SHA"
-            echo "- **Designs:** 15"
-            echo "- **Topics:** 20"
-            echo "- **Images requested:** 20"
-            echo
-            echo "## Design sequence"
-            echo "1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15 → 1 → 2 → 3 → 4 → 5"
-            echo
-            echo "## Generated files"
-            find output -maxdepth 3 -type f -printf '%p (%s bytes)\n' 2>/dev/null | sort || true
-          } >> "$GITHUB_STEP_SUMMARY"
-
-      - name: 14 - Fail workflow if publisher failed
-        if: always()
-        run: |
-          if [ "${{ steps.publisher.outcome }}" != "success" ]; then
-            echo "Publisher failed. Check step 10 and download the run artifact."
-            exit 1
-          fi
-          echo "Publisher succeeded."
-
-      - name: 15 - Commit rotation state
-        if: success()
-        run: |
-          set -euxo pipefail
-          exec > >(tee -a output/logs/15_git_commit.log) 2>&1
-          git config user.name "smart-learning-lab-bot"
-          git config user.email "smart-learning-lab-bot@users.noreply.github.com"
-          git add data/blog_history.json
-          if git diff --cached --quiet; then
-            echo "No rotation state changes to commit."
-            exit 0
-          fi
-          git commit -m "Update technical blog rotation state [skip ci]"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
-          echo "GIT PUSH SUCCESS"

@@ -1,78 +1,92 @@
-# Smart Learning Lab — 20 Technical Blog Images / 15 UX Designs
+# Smart Learning Lab — Dynamic Technical Blog Publisher
 
-This project keeps the existing 5 programmatic UX designs and adds the 10 supplied full-page UX images as static templates.
+This project accepts **only one input content file**: `data/blogs.json`.
+The supplied 10-topic JSON is included as the test dataset.
 
-## What happens on every push
+## Generation rules
 
-A push to `main` runs the GitHub Actions workflow once. There is **no cron schedule** and no manual dispatch requirement.
+### 1. Random template + random theme
+There are:
+- 10 templates
+- 5 themes per template
+- **50 unique template/theme combinations**
 
-The workflow generates **20 images in one run**:
+Every run selects a random unused combination. A combination is not selected again until all 50 combinations have been used.
 
-- Topics: 20
-- Designs: 15
-- Images per run: 20
-- Facebook publishing: preserved from the existing project
+After all 50 are used, the combination cycle resets and random selection starts again from all 50 combinations.
 
-### Design rotation
+### 2. Topic history
+Each run generates exactly **one blog topic**.
+The topic is selected randomly from topics not yet generated in the current topic cycle.
 
-The design registry is in `data/designs.json` and is the single source of truth.
+After every topic has been generated once, the topic cycle resets and the next cycle starts from all topics again.
 
-For 20 generated images the exact sequence is:
+The complete historical record is retained in `data/blog_history.json`.
 
-`1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14 → 15 → 1 → 2 → 3 → 4 → 5`
+### 3. One image per topic per workflow run
+A workflow run generates exactly one HTML-based image and publishes that one image to Facebook.
+There is no 5-image batch anymore.
 
-So all 15 designs are used before any design repeats.
+### 4. Scheduled runs
+GitHub Actions runs six times per day:
 
-The next push continues from the saved position in `data/blog_history.json`.
+```text
+00:00 UTC
+04:00 UTC
+08:00 UTC
+12:00 UTC
+16:00 UTC
+20:00 UTC
+```
 
-## The 15 designs
+These correspond to 05:30, 09:30, 13:30, 17:30, 21:30 and 01:30 IST.
 
-### Existing designs — unchanged renderer
+### 5. Manual push
+`workflow_dispatch` uses exactly the same code path as the scheduled workflow.
+There is no separate manual selection algorithm.
 
-1. Clean Modern Green — 1080 × 1350
-2. Dark AI Futuristic — 1080 × 1350
-3. Warm Friendly Orange — 1080 × 1350
-4. Nature Fresh Green — 1080 × 1350
-5. Purple Creative AI — 1080 × 1350
+## Input JSON
 
-### New static UX designs
+Put your blog data in:
 
-6. AI Everyday Tasks
-7. AI Language Learning
-8. AI Study Skills
-9. AI Content Creation
-10. AI Creative Art
-11. AI Life Organization
-12. AI Career
-13. AI Science Learning
-14. AI Math Problem Solving
-15. AI Healthy Living
+```text
+data/blogs.json
+```
 
-The 10 supplied UX images are stored under `assets/static_templates/`. Their original artwork, branding, illustrations, numbered cards and footer are used as the static visual base. The renderer overlays only the dynamic topic copy from JSON.
+Each blog must contain:
+- `id`
+- `category`
+- `title`
+- `description`
+- exactly 5 `points`
+- each point has `title`, `description` and at least 2 `items`
 
-The static templates preserve their full 3:5 artwork and are rendered at 1080 × 1800 so the supplied design is not cropped.
+No template, theme, HTML, CSS or image fields are required in the JSON.
 
-## Topic source
+## Rendering
 
-`data/topics.json` contains exactly 20 technical topics. Every topic contains:
+The selected HTML template is filled with the JSON content and rendered with Playwright/Chromium at 800x1000 CSS pixels with a 2x device scale factor, producing a 1600x2000 PNG.
 
-- title
-- category
-- description/subtitle
-- intro
-- 8 sections
-- section title, explanation and bullet points
-- Try This Today text
-- Facebook caption
+The matching template hero SVG is embedded directly into the HTML, so no external image URL is needed.
 
-`data/static_blogs.json` is kept as a compatibility copy for the existing project structure.
+## Facebook secrets
 
-## Local generation
+Configure these GitHub repository secrets:
 
-Generate all 20 images without Facebook:
+```text
+FACEBOOK_PAGE_ID
+FACEBOOK_PAGE_TOKEN
+```
+
+The Graph API version defaults to `v23.0`.
+
+## Local testing
+
+Install dependencies:
 
 ```bash
-python -m app.run_agent --count 20 --dry-run
+pip install -r requirements.txt
+python -m playwright install chromium
 ```
 
 Run tests:
@@ -81,23 +95,10 @@ Run tests:
 python -m unittest discover -s tests -v
 ```
 
-## GitHub secrets
+Generate one local image without Facebook:
 
-Keep the existing repository secrets:
-
-```text
-FACEBOOK_PAGE_ID
-FACEBOOK_PAGE_TOKEN
+```bash
+python -m app.run_agent --dry-run
 ```
 
-The workflow validates Facebook access once, then processes all 20 items independently. If one item fails, the remaining items continue and the workflow reports the batch failure at the end.
-
-## Important rotation behavior
-
-The generation number is persisted in `data/blog_history.json`. The design index is calculated from:
-
-```text
-generation % 15
-```
-
-Therefore the first 20 items in a fresh repository use designs 1–15 and then 1–5. Future pushes continue from the saved generation rather than starting over.
+The dry run still advances the local rotation/history because it represents a real generation test. Reset `data/blog_history.json` if you want to start the test cycle from zero.

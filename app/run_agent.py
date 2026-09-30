@@ -12,6 +12,8 @@ from app.facebook_service import FacebookService
 from app.html_renderer import render
 from app.logger import logger
 from app.state import load_history, save_history, record
+from app.theme_engine import choose_theme
+from app.media_builder import make_video
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "output"
@@ -58,42 +60,52 @@ def main():
     blog = choose_topic(blogs, state)
     template_id = choose_template(state)
     template_name = TEMPLATE_NAMES[template_id - 1]
-    logger.info("Selected topic=%s | template=%s", blog["id"], template_name)
+    theme = choose_theme(state, template_id)
+    logger.info("Selected topic=%s | template=%s | theme=%s", blog["id"], template_name, theme.id)
 
     stamp = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     image = OUT / f"{stamp}_{blog['id']}_t{template_id:02d}.png"
+    video = OUT / f"{stamp}_{blog['id']}_t{template_id:02d}_theme_{theme.id}.mp4"
 
     try:
-        render(blog, template_id, image)
+        render(blog, template_id, image, theme_id=theme.id, orientation=Config.ORIENTATION)
+        make_video(image, video, theme_id=list(__import__("app.theme_engine",fromlist=["THEMES"]).THEMES).index(theme)+1)
 
         # Rotation is committed only after rendering succeeds.
         state.setdefault("topic_used", []).append(blog["id"])
         state.setdefault("template_used", []).append(template_id)
+        state.setdefault("theme_used", []).append(theme.id)
         record(
             state, blog, "generated",
             topic_cycle=state["topic_cycle"],
             template_id=template_id,
             template_name=template_name,
+            theme_id=theme.id,
             image=str(image.relative_to(ROOT)),
+            video=str(video.relative_to(ROOT)),
         )
 
         result = {
             "topic": blog["title"],
             "template": template_name,
             "template_id": template_id,
+            "theme": theme.id,
             "image": str(image.relative_to(ROOT)),
+            "video": str(video.relative_to(ROOT)),
             "status": "generated",
         }
 
         if not args.dry_run:
             caption = f"{blog['title']}\n\n{blog['description']}\n\n#SmartLearningLab #AI #Technology #TechBlog"
-            fb = FacebookService.post_image(str(image), caption)
+            fb = FacebookService.post_video(str(video), caption) if Config.POST_MODE == "video" else FacebookService.post_image(str(image), caption)
             post_id = fb.get("post_id") or fb.get("id")
             record(
                 state, blog, "published",
                 template_id=template_id,
                 template_name=template_name,
+                theme_id=theme.id,
                 image=str(image.relative_to(ROOT)),
+                video=str(video.relative_to(ROOT)),
                 facebook_post_id=post_id,
             )
             result.update(status="published", facebook_post_id=post_id)
@@ -104,6 +116,8 @@ def main():
             "result": result,
             "topic_cycle": state["topic_cycle"],
             "template_cycle": state["template_cycle"],
+            "theme_cycle": state.get("theme_cycle",0),
+            "themes_used_in_cycle": len(state.get("theme_used",[])),
             "topics_used_in_cycle": len(state["topic_used"]),
             "templates_used_in_cycle": len(state["template_used"]),
             "history_records": len(state["history"]),

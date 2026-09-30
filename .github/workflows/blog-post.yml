@@ -31,7 +31,7 @@ env:
 
 jobs:
   publish:
-    name: Generate 1 blog image and publish
+    name: Generate 1 blog media post (image + low-volume music) and publish
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -56,6 +56,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
+      - name: Install FFmpeg for music video creation
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
       - name: Install Chromium for HTML rendering
         run: python -m playwright install --with-deps chromium
 
@@ -69,7 +72,7 @@ jobs:
           p=Path('data/blogs.json')
           data=json.loads(p.read_text(encoding='utf-8'))
           blogs=data.get('blogs', [])
-          assert len(blogs) > 0, 'No blogs found'
+          assert len(blogs) == 2000, f'Expected 2000 blog topics, found {len(blogs)}'
           for b in blogs:
               assert len(b.get('points', [])) == 5, f"{b.get('id')} must have exactly 5 points"
           print(f'Validated {len(blogs)} blog topics')
@@ -124,5 +127,6 @@ jobs:
           path: |
             output/latest_summary.json
             output/*.png
+            output/*.mp4
             data/blog_history.json
           if-no-files-found: warn

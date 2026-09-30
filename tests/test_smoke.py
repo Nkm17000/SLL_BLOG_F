@@ -3,13 +3,15 @@ import unittest
 from pathlib import Path
 from app.run_agent import choose_template, choose_topic
 from app.html_renderer import build_html
+from app.theme_engine import THEMES, choose_theme
+from app.media_builder import music_for_theme
 
 ROOT = Path(__file__).resolve().parents[1]
 
 class ProjectSmokeTests(unittest.TestCase):
-    def test_json_has_ten_blogs_and_five_points_each(self):
+    def test_json_has_2000_blogs_and_five_points_each(self):
         data=json.loads((ROOT/"data/blogs.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(data["blogs"]),10)
+        self.assertEqual(len(data["blogs"]),2000)
         for blog in data["blogs"]:
             self.assertEqual(len(blog["points"]),5)
             for point in blog["points"]:
@@ -20,6 +22,8 @@ class ProjectSmokeTests(unittest.TestCase):
         self.assertIn("topic_cycle",data)
         self.assertIn("template_cycle",data)
         self.assertIn("template_used",data)
+        self.assertIn("theme_cycle",data)
+        self.assertIn("theme_used",data)
         self.assertNotIn("combo_used",data)
 
     def test_template_rotation_avoids_repeats_until_all_ten(self):
@@ -55,6 +59,22 @@ class ProjectSmokeTests(unittest.TestCase):
         self.assertNotIn("{{title}}",html)
         self.assertNotIn("{{points[0].title}}",html)
         self.assertIn(blog["title"],html)
+
+    def test_all_themes_have_distinct_music(self):
+        self.assertGreaterEqual(len(THEMES), 10)
+        paths=[music_for_theme(i+1) for i in range(len(THEMES))]
+        for p in paths:
+            self.assertTrue(p.exists(), p)
+            self.assertGreater(p.stat().st_size, 10000)
+
+    def test_theme_rotation_has_no_repeat_before_cycle_end(self):
+        state={"theme_used":[]}
+        used=set()
+        for _ in range(len(THEMES)):
+            t=choose_theme(state,1)
+            self.assertNotIn(t.id,used)
+            used.add(t.id); state["theme_used"].append(t.id)
+        self.assertEqual(len(used),len(THEMES))
 
 if __name__=="__main__":
     unittest.main()

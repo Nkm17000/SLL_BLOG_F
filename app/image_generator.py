@@ -1,41 +1,56 @@
 from __future__ import annotations
 
-import random
 import re
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 ROOT = Path(__file__).resolve().parent.parent
-FONT_DIR = ROOT / "assets" / "fonts"
+UX_ROOT = ROOT / "assets" / "ux_designs"
 
-THEMES = [
-    {"id":"ocean","page":"#F4F8FC","hero1":"#123A8F","hero2":"#1976D2","primary":"#173B8F","accent":"#1769E0","cards":["#FFE8EF","#E5F3FF","#FFF3D6","#E8E5FF"],"try":"#FFF1A8","try_text":"#7A4B00"},
-    {"id":"mint","page":"#F3FAF7","hero1":"#087F5B","hero2":"#20A77A","primary":"#086B50","accent":"#099268","cards":["#E2F7EE","#E0F7FA","#F0F9E8","#E8F5E9"],"try":"#FFF4B8","try_text":"#5C4700"},
-    {"id":"lavender","page":"#F8F6FC","hero1":"#4C1D95","hero2":"#7C3AED","primary":"#4C1D95","accent":"#7C3AED","cards":["#F3E8FF","#EDE9FE","#E0E7FF","#FAE8FF"],"try":"#FEF3C7","try_text":"#6B4B00"},
-    {"id":"sunrise","page":"#FFF9F2","hero1":"#C2410C","hero2":"#F97316","primary":"#9A3412","accent":"#EA580C","cards":["#FFEDD5","#FEF3C7","#FCE7F3","#FFEDD5"],"try":"#FEF08A","try_text":"#704600"},
-    {"id":"sky","page":"#F2F9FF","hero1":"#075985","hero2":"#0284C7","primary":"#075985","accent":"#0284C7","cards":["#E0F2FE","#DBEAFE","#E0F7FA","#ECFEFF"],"try":"#FEF3C7","try_text":"#6B4B00"},
-    {"id":"coral","page":"#FFF7F5","hero1":"#9F1239","hero2":"#E11D48","primary":"#9F1239","accent":"#E11D48","cards":["#FFE4E6","#FCE7F3","#FFE4E6","#FFF1F2"],"try":"#FEF3C7","try_text":"#6B4B00"},
-    {"id":"forest","page":"#F4F9F4","hero1":"#14532D","hero2":"#16A34A","primary":"#166534","accent":"#16A34A","cards":["#DCFCE7","#ECFCCB","#D1FAE5","#E0F2F1"],"try":"#FEF3C7","try_text":"#5C4700"},
-    {"id":"indigo","page":"#F5F6FC","hero1":"#1E1B4B","hero2":"#4338CA","primary":"#312E81","accent":"#4F46E5","cards":["#E0E7FF","#EEF2FF","#EDE9FE","#DBEAFE"],"try":"#FEF08A","try_text":"#5C4700"},
-    {"id":"teal","page":"#F2FAFA","hero1":"#134E4A","hero2":"#0D9488","primary":"#115E59","accent":"#0F766E","cards":["#CCFBF1","#CFFAFE","#E0F2FE","#D1FAE5"],"try":"#FEF3C7","try_text":"#5C4700"},
-    {"id":"berry","page":"#FCF6FA","hero1":"#701A75","hero2":"#C026D3","primary":"#86198F","accent":"#A21CAF","cards":["#FAE8FF","#FCE7F3","#F5D0FE","#FDF2F8"],"try":"#FEF3C7","try_text":"#6B4B00"},
-    {"id":"emerald","page":"#F3FAF7","hero1":"#064E3B","hero2":"#059669","primary":"#065F46","accent":"#059669","cards":["#D1FAE5","#DCFCE7","#CCFBF1","#ECFDF5"],"try":"#FEF3C7","try_text":"#5C4700"},
-    {"id":"aqua","page":"#F2FAFC","hero1":"#155E75","hero2":"#06B6D4","primary":"#155E75","accent":"#0891B2","cards":["#CFFAFE","#E0F2FE","#CCFBF1","#ECFEFF"],"try":"#FEF3C7","try_text":"#5C4700"},
-    {"id":"rose","page":"#FFF7F9","hero1":"#881337","hero2":"#E11D48","primary":"#9F1239","accent":"#E11D48","cards":["#FFE4E6","#FCE7F3","#FFF1F2","#FDF2F8"],"try":"#FEF3C7","try_text":"#6B4B00"},
-    {"id":"cobalt","page":"#F4F7FC","hero1":"#172554","hero2":"#2563EB","primary":"#1E3A8A","accent":"#2563EB","cards":["#DBEAFE","#E0F2FE","#E0E7FF","#EFF6FF"],"try":"#FEF08A","try_text":"#5C4700"},
-    {"id":"lime","page":"#F7FAF2","hero1":"#365314","hero2":"#65A30D","primary":"#3F6212","accent":"#65A30D","cards":["#ECFCCB","#DCFCE7","#F0FDF4","#FEF9C3"],"try":"#FEF08A","try_text":"#5C4700"},
-    {"id":"plum","page":"#FAF7FC","hero1":"#581C87","hero2":"#9333EA","primary":"#6B21A8","accent":"#9333EA","cards":["#F3E8FF","#FAE8FF","#EDE9FE","#F5F3FF"],"try":"#FEF3C7","try_text":"#5C4700"},
-    {"id":"midnight","page":"#F4F7FB","hero1":"#0F172A","hero2":"#334155","primary":"#0F172A","accent":"#2563EB","cards":["#E2E8F0","#DBEAFE","#E0F2FE","#EDE9FE"],"try":"#FEF08A","try_text":"#5C4700"},
-    {"id":"tropical","page":"#F4FBFA","hero1":"#115E59","hero2":"#0EA5A4","primary":"#115E59","accent":"#0D9488","cards":["#CCFBF1","#DCFCE7","#CFFAFE","#ECFCCB"],"try":"#FEF3C7","try_text":"#5C4700"},
-    {"id":"peach","page":"#FFF8F4","hero1":"#9A3412","hero2":"#FB923C","primary":"#9A3412","accent":"#EA580C","cards":["#FFEDD5","#FFE4E6","#FEF3C7","#FFEDD5"],"try":"#FEF08A","try_text":"#704600"},
-    {"id":"royal","page":"#F7F5FC","hero1":"#312E81","hero2":"#6366F1","primary":"#3730A3","accent":"#4F46E5","cards":["#EDE9FE","#E0E7FF","#F3E8FF","#EEF2FF"],"try":"#FEF08A","try_text":"#5C4700"},
+# Five fixed UX systems. The generator cycles strictly 1 -> 2 -> 3 -> 4 -> 5 -> 1...
+UX_DESIGNS = [
+    {
+        "id": "clean_modern_green",
+        "page": "#F7FBF9", "hero": "#075B4E", "hero2": "#0D806C",
+        "text": "#123B35", "muted": "#61756F", "accent": "#16A579",
+        "cards": ["#DDF7EA", "#E8E5FF", "#DDF7EA", "#E7F5EF"],
+        "try": "#FFF1B8", "try_text": "#624C00", "dark": False,
+    },
+    {
+        "id": "dark_ai_futuristic",
+        "page": "#07111F", "hero": "#0B1630", "hero2": "#152E67",
+        "text": "#EAF2FF", "muted": "#A8B7D5", "accent": "#5B8CFF",
+        "cards": ["#101F3D", "#151A3B", "#102B38", "#1B2148"],
+        "try": "#273C70", "try_text": "#F7FAFF", "dark": True,
+    },
+    {
+        "id": "warm_friendly_orange",
+        "page": "#FFF9F3", "hero": "#F26A21", "hero2": "#FF9D3F",
+        "text": "#4A2A1B", "muted": "#81685A", "accent": "#EF5B2A",
+        "cards": ["#FFE7D3", "#FFE8F0", "#FFF0C9", "#EAF7F0"],
+        "try": "#FFE7A1", "try_text": "#694600", "dark": False,
+    },
+    {
+        "id": "nature_fresh_green",
+        "page": "#F4FAF3", "hero": "#1C6B3C", "hero2": "#3A9A5A",
+        "text": "#183B28", "muted": "#607663", "accent": "#21A45A",
+        "cards": ["#DFF3DD", "#EAF6D4", "#DDF4EA", "#E8F0DC"],
+        "try": "#FFF0A8", "try_text": "#5C4B00", "dark": False,
+    },
+    {
+        "id": "purple_creative_ai",
+        "page": "#FAF7FF", "hero": "#41217E", "hero2": "#7C3AED",
+        "text": "#281A4D", "muted": "#70648A", "accent": "#6D35E8",
+        "cards": ["#EEE7FF", "#F6E5FF", "#E7E7FF", "#F0E8FF"],
+        "try": "#FFE9A6", "try_text": "#604700", "dark": False,
+    },
 ]
 
 
-def rgb(hex_color: str):
-    h = hex_color.lstrip("#")
-    return tuple(int(h[i:i+2], 16) for i in (0, 2, 4))
+def rgb(value):
+    value = value.lstrip("#")
+    return tuple(int(value[i:i+2], 16) for i in (0, 2, 4))
 
 
 class BlogImage:
@@ -45,8 +60,14 @@ class BlogImage:
 
     @classmethod
     def font(cls, size, bold=False):
-        path = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"
-        return ImageFont.truetype(path, size)
+        candidates = [
+            ROOT / "assets/fonts/NotoSansDevanagari-CondensedBold.ttf" if bold else ROOT / "assets/fonts/NotoSansDevanagari-Regular.ttf",
+            Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf") if bold else Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+        ]
+        for p in candidates:
+            if p.exists():
+                return ImageFont.truetype(str(p), size)
+        return ImageFont.load_default()
 
     @staticmethod
     def clean(value):
@@ -69,7 +90,7 @@ class BlogImage:
         return lines
 
     @classmethod
-    def fit_lines(cls, draw, text, font, width, max_lines):
+    def fit(cls, draw, text, font, width, max_lines):
         lines = cls.wrap(draw, text, font, width)
         if len(lines) <= max_lines:
             return lines
@@ -81,114 +102,181 @@ class BlogImage:
         return lines
 
     @classmethod
-    def choose_theme(cls, previous_theme_id=None):
-        choices = [t for t in THEMES if t["id"] != previous_theme_id] or THEMES
-        return random.SystemRandom().choice(choices)
+    def illustration(cls, ux_index, section_name):
+        """Use the supplied UX artwork as a visual reference/illustration.
+        We crop the right side so embedded copy is mostly avoided."""
+        ux = UX_DESIGNS[ux_index]
+        folder = UX_ROOT / ux["id"]
+        path = folder / f"{section_name}.png"
+        if not path.exists():
+            return None
+        try:
+            im = Image.open(path).convert("RGBA")
+            # Most supplied section designs put the visual on the right.
+            crop = im.crop((int(im.width * 0.48), 0, im.width, im.height))
+            return crop
+        except Exception:
+            return None
 
     @classmethod
-    def render(cls, blog, path, theme=None, previous_theme_id=None):
-        theme = theme or cls.choose_theme(previous_theme_id)
-        theme = {**theme, "text": theme.get("text", "#172554"), "muted": theme.get("muted", "#64748B")}
-        img = Image.new("RGB", (cls.WIDTH, cls.HEIGHT), rgb(theme["page"]))
+    def paste_art(cls, base, art, box, dark=False):
+        if art is None:
+            return
+        x0, y0, x1, y1 = box
+        target_w, target_h = x1-x0, y1-y0
+        art = ImageOps.contain(art, (target_w, target_h))
+        # Soft rounded mask.
+        mask = Image.new("L", (art.width, art.height), 0)
+        md = ImageDraw.Draw(mask)
+        md.rounded_rectangle((0, 0, art.width-1, art.height-1), radius=min(24, art.width//8), fill=255)
+        px = x0 + (target_w-art.width)//2
+        py = y0 + (target_h-art.height)//2
+        base.paste(art, (px, py), mask)
+
+    @classmethod
+    def render(cls, blog, path, ux_index=0):
+        ux = UX_DESIGNS[ux_index % len(UX_DESIGNS)]
+        bg = rgb(ux["page"])
+        img = Image.new("RGB", (cls.WIDTH, cls.HEIGHT), bg)
         d = ImageDraw.Draw(img)
 
-        # Header / brand
-        d.rounded_rectangle((0, 0, cls.WIDTH, 196), radius=0, fill=rgb(theme["hero1"]))
-        brand = cls.font(25, True)
-        d.text((cls.MARGIN, 22), "SMART LEARNING LAB", font=brand, fill="white")
-        d.text((cls.MARGIN, 58), "LEARN • PRACTICE • GROW", font=cls.font(17), fill=(225, 238, 255))
+        white = "#FFFFFF"
+        text = rgb(ux["text"])
+        muted = rgb(ux["muted"])
+        hero_text = rgb("#FFFFFF")
 
-        # Hero title. Reserve enough room and clip to 2 lines.
-        title_font = cls.font(43, True)
-        title_lines = cls.fit_lines(d, blog["title"], title_font, cls.WIDTH - 2 * cls.MARGIN, 2)
-        y = 94
+        # Hero differs strongly by UX.
+        if ux["dark"]:
+            d.rounded_rectangle((0, 0, cls.WIDTH, 300), radius=0, fill=rgb(ux["hero"]))
+            # Futuristic bubbles.
+            for cx, cy, r in [(900, 55, 48), (970, 145, 70), (800, 85, 30), (1000, 235, 32)]:
+                d.ellipse((cx-r, cy-r, cx+r, cy+r), fill=rgb(ux["hero2"]))
+        else:
+            d.rounded_rectangle((0, 0, cls.WIDTH, 270), radius=0, fill=rgb(ux["hero"]))
+            d.rounded_rectangle((0, 0, cls.WIDTH, 300), radius=0, fill=rgb(ux["hero2"]))
+
+        # Brand
+        d.text((cls.MARGIN, 20), "SMART LEARNING LAB", font=cls.font(24, True), fill=hero_text)
+        d.text((cls.MARGIN, 52), "LEARN • PRACTICE • GROW", font=cls.font(15), fill=(225, 238, 255))
+
+        # Hero title
+        title_font = cls.font(42, True)
+        title_lines = cls.fit(d, blog["title"], title_font, 660, 2)
+        ty = 94
         for line in title_lines:
-            d.text((cls.MARGIN, y), line, font=title_font, fill="white")
-            y += 48
+            # Highlight title line in a capsule for UX 1/3/4/5.
+            if not ux["dark"] and len(title_lines) > 1 and line == title_lines[-1]:
+                bbox = d.textbbox((0, 0), line, font=title_font)
+                d.rounded_rectangle((cls.MARGIN-8, ty-3, cls.MARGIN+bbox[2]+12, ty+47), radius=16, fill=rgb(ux["accent"]))
+                d.text((cls.MARGIN, ty), line, font=title_font, fill=hero_text)
+            else:
+                d.text((cls.MARGIN, ty), line, font=title_font, fill=hero_text)
+            ty += 47
 
-        subtitle_font = cls.font(18)
-        subtitle_lines = cls.fit_lines(d, blog["subtitle"], subtitle_font, cls.WIDTH - 2 * cls.MARGIN, 1)
-        d.text((cls.MARGIN, 166), subtitle_lines[0], font=subtitle_font, fill="white")
+        subtitle = blog.get("subtitle", "")
+        sub_lines = cls.fit(d, subtitle, cls.font(17), 640, 2)
+        sy = 190
+        for line in sub_lines:
+            d.text((cls.MARGIN, sy), line, font=cls.font(17), fill=(235, 245, 255))
+            sy += 22
 
-        # Intro
-        intro_font = cls.font(18)
-        intro_lines = cls.fit_lines(d, blog.get("intro", ""), intro_font, cls.WIDTH - 2 * cls.MARGIN - 20, 3)
-        y = 218
+        # Hero artwork from supplied UX design.
+        hero_art = cls.illustration(ux_index, "01_header_hero")
+        cls.paste_art(img, hero_art, (690, 20, 1040, 275), dark=ux["dark"])
+
+        # Intro callout.
+        intro_top = 290
+        intro_h = 108
+        intro_fill = rgb("#112B4A") if ux["dark"] else rgb("#E8F3F8")
+        intro_text = white if ux["dark"] else text
+        d.rounded_rectangle((cls.MARGIN, intro_top, cls.WIDTH-cls.MARGIN, intro_top+intro_h),
+                             radius=24, fill=intro_fill)
+        d.ellipse((cls.MARGIN+18, intro_top+25, cls.MARGIN+70, intro_top+77), fill=rgb("#FFC928"))
+        d.text((cls.MARGIN+31, intro_top+31), "!", font=cls.font(26, True), fill="#FFFFFF")
+        intro_lines = cls.fit(d, blog.get("intro",""), cls.font(17), cls.WIDTH-2*cls.MARGIN-105, 3)
+        iy = intro_top+18
         for line in intro_lines:
-            d.text((cls.MARGIN + 8, y), line, font=intro_font, fill=rgb(theme["text"]))
-            y += 25
+            d.text((cls.MARGIN+88, iy), line, font=cls.font(17), fill=intro_text)
+            iy += 22
 
-        # Fixed two-column card grid matching the reference design.
-        grid_top = 300
-        card_w = (cls.WIDTH - 2 * cls.MARGIN - 20) // 2
-        card_h = 195
-        col_gap = 20
-        row_gap = 16
-        body_font = cls.font(14)
-        bullet_font = cls.font(13)
-        heading_font = cls.font(20, True)
+        # Cards: two-column, four rows, compact and readable.
+        grid_top = 415
+        card_w = (cls.WIDTH - 2*cls.MARGIN - 18)//2
+        card_h = 184
+        gap = 16
+        body = cls.font(13)
+        bullet = cls.font(12)
+        head = cls.font(19, True)
 
-        for i, section in enumerate(blog.get("sections", [])[:8]):
-            row = i // 2
-            col = i % 2
-            x = cls.MARGIN + col * (card_w + col_gap)
-            top = grid_top + row * (card_h + row_gap)
-            bottom = top + card_h
-            fill = rgb(theme["cards"][i % len(theme["cards"])])
-            d.rounded_rectangle((x, top, x + card_w, bottom), radius=20, fill=fill)
+        for i, sec in enumerate(blog["sections"][:8]):
+            row, col = divmod(i, 2)
+            x = cls.MARGIN + col*(card_w+18)
+            y = grid_top + row*(card_h+gap)
+            fill = rgb(ux["cards"][i % len(ux["cards"])])
+            if ux["dark"]:
+                # Add a subtle outline for dark UX.
+                d.rounded_rectangle((x, y, x+card_w, y+card_h), radius=20, fill=fill, outline=rgb("#304A79"), width=2)
+            else:
+                d.rounded_rectangle((x, y, x+card_w, y+card_h), radius=20, fill=fill)
 
-            # Number circle
-            d.ellipse((x + 16, top + 17, x + 52, top + 53), fill=rgb(theme["accent"]))
-            num_font = cls.font(16, True)
-            num = str(section.get("number", i + 1))
-            bbox = d.textbbox((0, 0), num, font=num_font)
-            d.text((x + 34 - (bbox[2]-bbox[0])/2, top + 22), num, font=num_font, fill="white")
+            d.ellipse((x+14,y+14,x+52,y+52), fill=rgb(ux["accent"]))
+            nfont=cls.font(15,True)
+            nb=d.textbbox((0,0),str(i+1),font=nfont)
+            d.text((x+33-(nb[2]-nb[0])/2,y+20),str(i+1),font=nfont,fill="#FFFFFF")
 
-            # Heading
-            heading_x = x + 62
-            heading_lines = cls.fit_lines(d, section.get("title", ""), heading_font, card_w - 78, 2)
-            hy = top + 14
-            for line in heading_lines:
-                d.text((heading_x, hy), line, font=heading_font, fill=rgb(theme["primary"]))
-                hy += 24
+            hlines=cls.fit(d,sec["title"],head,card_w-70,2)
+            hy=y+13
+            for line in hlines:
+                d.text((x+62,hy),line,font=head,fill=rgb(ux["text"]) if not ux["dark"] else (240,246,255))
+                hy+=22
 
-            # Body
-            body_lines = cls.fit_lines(d, section.get("text", ""), body_font, card_w - 32, 3)
-            ty = top + 63 if len(heading_lines) == 1 else top + 84
+            # Small supplied illustration on the right.
+            art_name = f"{i+3:02d}_{['what_is_ai','why_use_ai','how_ai_works','simple_tech_stack','beginner_project','implementation','real_world_example','next_level_features'][i]}.png"
+            art = cls.illustration(ux_index, art_name)
+            if art:
+                cls.paste_art(img, art, (x+card_w-125, y+62, x+card_w-12, y+155), dark=ux["dark"])
+
+            max_text_w = card_w-145 if art else card_w-30
+            body_lines=cls.fit(d,sec["text"],body,max_text_w,2)
+            by=y+62 if len(hlines)==1 else y+82
             for line in body_lines:
-                d.text((x + 16, ty), line, font=body_font, fill=rgb(theme["text"]))
-                ty += 20
+                d.text((x+15,by),line,font=body,fill=rgb(ux["text"]) if not ux["dark"] else (220,230,248))
+                by+=17
+            for point in sec["points"][:3]:
+                line=cls.fit(d,"✓ "+point,bullet,max_text_w,1)[0]
+                if by<y+card_h-12:
+                    d.text((x+15,by),line,font=bullet,fill=rgb(ux["text"]) if not ux["dark"] else (205,220,245))
+                    by+=16
 
-            # Three bullets, compact.
-            for point in section.get("points", [])[:3]:
-                lines = cls.fit_lines(d, "• " + point, bullet_font, card_w - 34, 2)
-                for line in lines[:2]:
-                    if ty > bottom - 18:
-                        break
-                    d.text((x + 17, ty), line, font=bullet_font, fill=rgb(theme["text"]))
-                    ty += 17
-
-        # Try-this box
-        try_top = 1142
-        try_bottom = 1272
-        d.rounded_rectangle((cls.MARGIN, try_top, cls.WIDTH - cls.MARGIN, try_bottom), radius=20, fill=rgb(theme["try"]))
-        try_heading = cls.font(22, True)
-        d.text((cls.MARGIN + 20, try_top + 15), "TRY THIS TODAY", font=try_heading, fill=rgb(theme["try_text"]))
-        try_font = cls.font(15)
-        try_lines = cls.fit_lines(d, blog.get("try_today", ""), try_font, cls.WIDTH - 2 * cls.MARGIN - 40, 3)
-        ty = try_top + 50
-        for line in try_lines:
-            d.text((cls.MARGIN + 20, ty), line, font=try_font, fill=rgb(theme["try_text"]))
-            ty += 21
+        # Try today
+        try_y=1165
+        d.rounded_rectangle((cls.MARGIN,try_y,cls.WIDTH-cls.MARGIN,1270),radius=22,fill=rgb(ux["try"]))
+        d.text((cls.MARGIN+20,try_y+12),"TRY THIS TODAY!",font=cls.font(22,True),fill=rgb(ux["try_text"]))
+        lines=cls.fit(d,blog["try_today"],cls.font(14),740,3)
+        yy=try_y+45
+        for line in lines:
+            d.text((cls.MARGIN+20,yy),line,font=cls.font(14),fill=rgb(ux["try_text"]))
+            yy+=18
+        # CTA
+        cta_x=840
+        d.rounded_rectangle((cta_x,try_y+28,1035,try_y+77),radius=25,fill=rgb(ux["accent"]))
+        d.text((cta_x+24,try_y+40),"Start Now →",font=cls.font(16,True),fill="#FFFFFF")
 
         # Footer
-        footer = "By Nitin Mittal Innovation"
-        footer_font = cls.font(16, True)
-        bbox = d.textbbox((0, 0), footer, font=footer_font)
-        tw = bbox[2] - bbox[0]
-        d.text(((cls.WIDTH - tw) / 2, 1298), footer, font=footer_font, fill=rgb(theme["muted"]))
+        if ux["dark"]:
+            footer_fill=rgb("#050B18")
+        else:
+            footer_fill=rgb(ux["hero"])
+        d.rectangle((0,1288,cls.WIDTH,1350),fill=footer_fill)
+        benefits=["Plan Smarter","Work Faster","Learn Better","Live Happier"]
+        bx=48
+        for b in benefits:
+            d.text((bx,1305),"●",font=cls.font(12,True),fill=rgb("#FFFFFF"))
+            d.text((bx+18,1303),b,font=cls.font(13,True),fill="#FFFFFF")
+            bx+=225
+        d.text((865,1303),"By Nitin Mittal Innovation",font=cls.font(11,True),fill="#FFFFFF")
 
-        path = Path(path)
-        path.parent.mkdir(parents=True, exist_ok=True)
-        img.save(path, format="JPEG", quality=94, optimize=True)
-        return theme
+        path=Path(path)
+        path.parent.mkdir(parents=True,exist_ok=True)
+        img.save(path,format="JPEG",quality=94,optimize=True)
+        return ux

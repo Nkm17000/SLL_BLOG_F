@@ -1,35 +1,30 @@
-name: Smart Learning Lab - Technical Blog Publisher
+name: Smart Learning Lab - Static UX Blog Publisher
 
 on:
-  # Publish the next pending blog whenever code/content is pushed to main.
-  # The bot's own history/output commit is excluded below so it cannot trigger itself again.
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - "data/blog_history.json"
-      - "output/**"
   workflow_dispatch:
     inputs:
-      topic_id:
-        description: "Optional topic ID. Leave blank for the next pending topic."
+      topic_index:
+        description: "Optional static blog index. Leave blank for automatic rotation."
         required: false
         type: string
+  # 10 runs per 24 hours, approximately every 2 hours.
+  # GitHub cron uses UTC. These correspond roughly to 00:00, 02:00, ... 18:00 IST
+  # plus the three UTC evening runs that continue the same 10-run cycle.
+  schedule:
+    - cron: "30 0,2,4,6,8,10,12 * * *"
+    - cron: "30 18,20,22 * * *"
 
 permissions:
   contents: write
 
 concurrency:
-  group: smart-learning-lab-technical-blog
+  group: smart-learning-lab-static-ux-blog
   cancel-in-progress: false
 
 jobs:
   publish-blog:
     runs-on: ubuntu-latest
-
     env:
-      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-      GROQ_MODEL: openai/gpt-oss-120b
       FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
       FACEBOOK_PAGE_TOKEN: ${{ secrets.FACEBOOK_PAGE_TOKEN }}
       FACEBOOK_GRAPH_API_VERSION: "v23.0"
@@ -55,38 +50,34 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          test -n "$GROQ_API_KEY" || { echo "ERROR: Missing GROQ_API_KEY repository secret"; exit 1; }
-          test -n "$FACEBOOK_PAGE_ID" || { echo "ERROR: Missing FACEBOOK_PAGE_ID repository secret"; exit 1; }
-          test -n "$FACEBOOK_PAGE_TOKEN" || { echo "ERROR: Missing FACEBOOK_PAGE_TOKEN repository secret"; exit 1; }
+          test -n "$FACEBOOK_PAGE_ID" || { echo "ERROR: Missing FACEBOOK_PAGE_ID"; exit 1; }
+          test -n "$FACEBOOK_PAGE_TOKEN" || { echo "ERROR: Missing FACEBOOK_PAGE_TOKEN"; exit 1; }
 
       - name: Validate Python project
         run: python -m compileall -q app
 
-      - name: Generate and publish next blog
+      - name: Generate and publish
         env:
-          TOPIC_ID: ${{ github.event.inputs.topic_id || '' }}
+          TOPIC_INDEX: ${{ github.event.inputs.topic_index || '' }}
         shell: bash
         run: |
           set -euo pipefail
-          if [ -n "$TOPIC_ID" ]; then
-            python -m app.run_agent --topic "$TOPIC_ID"
+          if [ -n "$TOPIC_INDEX" ]; then
+            python -m app.run_agent --topic-index "$TOPIC_INDEX"
           else
             python -m app.run_agent
           fi
 
-      - name: Commit history and generated blog JSON
+      - name: Commit state and generated JSON
         shell: bash
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git add data/blog_history.json output/*.json
-
           if git diff --cached --quiet; then
             echo "No state changes to commit."
             exit 0
           fi
-
-          git commit -m "Publish technical blog and update history [skip ci]"
+          git commit -m "Generate static UX technical blog [skip ci]"
           git push origin HEAD:main

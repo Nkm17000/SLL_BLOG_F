@@ -1,60 +1,55 @@
-# Smart Learning Lab — Technical Blog Facebook Publisher
+# Smart Learning Lab — Static UX Technical Blog Publisher
 
-A blog-only Facebook Page publisher. It uses Groq to create a compact beginner-friendly technical blog, selects one of 20 visual themes, renders a 1080×1350 social-media image, and publishes it to a Facebook Page.
+This version removes Groq completely.
 
-## Automatic GitHub workflow
+## What it does
 
-A push to `main` starts `.github/workflows/blog-post.yml` and publishes the next unfinished topic.
+- Uses `data/static_blogs.json` as the content source.
+- No AI text-generation API is required.
+- Uses 5 supplied Smart Learning Lab UX systems.
+- UX selection is deterministic:
 
-The workflow also supports **Run workflow** from GitHub Actions with an optional topic ID.
+`UX 1 → UX 2 → UX 3 → UX 4 → UX 5 → UX 1 → ...`
 
-The bot commits only `data/blog_history.json` and generated `output/*.json`. Those paths are ignored by the push trigger so the history commit cannot start another publication.
+- Every generated image gets a unique generation number.
+- If you run it 10 times in one day, the UX sequence is:
 
-## Required GitHub Secrets
+`1, 2, 3, 4, 5, 1, 2, 3, 4, 5`
 
-Add these under **Settings → Secrets and variables → Actions**:
+- The next run continues from the saved state, even after GitHub Actions restarts.
+- Static blog content is selected cyclically from `data/static_blogs.json`.
+- The supplied UX sub-images are stored under `assets/ux_designs/` and used as artwork references/decorations.
+- Output is a 1080×1350 JPEG suitable for Facebook/Instagram-style blog graphics.
 
-- `GROQ_API_KEY`
-- `FACEBOOK_PAGE_ID`
-- `FACEBOOK_PAGE_TOKEN`
+## Project structure
 
-Never commit a real API key or token.
+```text
+app/
+  blog_generator.py
+  config.py
+  facebook_service.py
+  image_generator.py
+  run_agent.py
+  state.py
 
-## Topics and history
+data/
+  static_blogs.json
+  topics.json
+  blog_history.json
 
-`data/topics.json` contains 10 starter topics covering:
+assets/
+  fonts/
+  ux_designs/
+    clean_modern_green/
+    dark_ai_futuristic/
+    warm_friendly_orange/
+    nature_fresh_green/
+    purple_creative_ai/
 
-- AI for Everyone
-- AI for Students
-- AI for Professionals
-- Technology
-- AI prompts
-- Python
-- AI and resumes
-- AI research
-- Cybersecurity
-- Learning with AI
+output/
+```
 
-`data/blog_history.json` records the topic, status, timestamp, selected theme, generated title, image path, and Facebook post ID after a successful post.
-
-## Visual design
-
-The renderer is intentionally fixed to **1080×1350** and uses the requested reference style:
-
-- Smart Learning Lab header
-- Strong colored hero section
-- Short introduction
-- Exactly 8 numbered cards in a 2-column grid
-- Four rows of pastel cards
-- `TRY THIS TODAY` box
-- Footer branding
-- 20 complete visual themes
-
-A new theme is selected randomly for every topic and the immediately previous completed theme is avoided when possible.
-
-The renderer uses Pillow rather than Playwright, so GitHub Actions does not need Chrome or Linux browser libraries.
-
-## Local dry run
+## Run locally
 
 ```bash
 python -m venv .venv
@@ -64,14 +59,53 @@ cp .env.example .env
 python -m app.run_agent --dry-run
 ```
 
-## Manual topic
+The first run uses UX 1, the second UX 2, and so on.
+
+To test a particular static content item:
 
 ```bash
-python -m app.run_agent --topic ai-study-assistant --dry-run
+python -m app.run_agent --topic-index 3 --dry-run
 ```
 
-Remove `--dry-run` to publish.
+The UX sequence is still controlled by `data/blog_history.json`.
 
-## Important
+## Facebook publishing
 
-This project intentionally contains no quiz generation, quiz banks, or Instagram publishing logic.
+Set:
+
+```text
+FACEBOOK_PAGE_ID=
+FACEBOOK_PAGE_TOKEN=
+FACEBOOK_GRAPH_API_VERSION=v23.0
+```
+
+Then remove `--dry-run`.
+
+## GitHub Actions
+
+The workflow supports:
+
+- Manual `workflow_dispatch`
+- Automatic scheduled runs
+- 10 scheduled executions per 24-hour UTC cycle
+- Persistent UX rotation through `data/blog_history.json`
+
+Do not add a Groq secret. This project does not use Groq.
+
+## Important rotation behavior
+
+The UX index is reserved before image generation and stored immediately. Therefore a generated image always consumes the next UX slot.
+
+Example:
+
+```text
+Generation 1  -> UX 1
+Generation 2  -> UX 2
+Generation 3  -> UX 3
+Generation 4  -> UX 4
+Generation 5  -> UX 5
+Generation 6  -> UX 1
+...
+```
+
+If a Facebook upload fails after image generation, the next run still moves forward. This prevents the same UX from being repeatedly selected after a failed publication.

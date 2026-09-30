@@ -1,8 +1,39 @@
 {
   "version": 5,
   "topic_cycle": 0,
-  "topic_used": [],
+  "topic_used": [
+    "ai-customer-support"
+  ],
   "combo_cycle": 0,
-  "combo_used": [],
-  "history": []
+  "combo_used": [
+    "5-2"
+  ],
+  "history": [
+    {
+      "topic_id": "ai-customer-support",
+      "topic": "How AI Chatbots Transform Customer Support",
+      "category": "Artificial Intelligence",
+      "status": "generated",
+      "timestamp_utc": "2026-09-30T17:43:44.285330+00:00",
+      "topic_cycle": 0,
+      "template_id": 5,
+      "template_name": "pill_cards",
+      "theme_id": 2,
+      "theme_name": "Midnight AI",
+      "combination": "5-2",
+      "image": "output/20260930T174304Z_ai-customer-support_t05_th2.png"
+    },
+    {
+      "topic_id": "ai-customer-support",
+      "topic": "How AI Chatbots Transform Customer Support",
+      "category": "Artificial Intelligence",
+      "status": "published",
+      "timestamp_utc": "2026-09-30T17:43:49.583818+00:00",
+      "template_id": 5,
+      "theme_id": 2,
+      "combination": "5-2",
+      "image": "output/20260930T174304Z_ai-customer-support_t05_th2.png",
+      "facebook_post_id": "1317018278163213_122121821199419769"
+    }
+  ]
 }

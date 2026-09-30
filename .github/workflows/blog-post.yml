@@ -1,83 +1,176 @@
-name: Smart Learning Lab - Static UX Blog Publisher
+name: Smart Learning Lab - Technical Blog Publisher
 
 on:
+  # Run automatically whenever workflow code is pushed to main.
+  # This is useful for testing the workflow immediately.
+  push:
+    branches:
+      - main
+
+  # Allow manual execution from GitHub Actions.
   workflow_dispatch:
-    inputs:
-      topic_index:
-        description: "Optional static blog index. Leave blank for automatic rotation."
-        required: false
-        type: string
-  # 10 runs per 24 hours, approximately every 2 hours.
-  # GitHub cron uses UTC. These correspond roughly to 00:00, 02:00, ... 18:00 IST
-  # plus the three UTC evening runs that continue the same 10-run cycle.
+
+  # 10 executions every day at these IST times.
   schedule:
-    - cron: "30 0,2,4,6,8,10,12 * * *"
-    - cron: "30 18,20,22 * * *"
+    - cron: "30 6,8,10,12,14,16,18,20,22,0 * * *"
+      timezone: "Asia/Kolkata"
 
 permissions:
   contents: write
 
 concurrency:
-  group: smart-learning-lab-static-ux-blog
+  group: smart-learning-lab-blog-publisher
   cancel-in-progress: false
 
 jobs:
-  publish-blog:
+  generate-blog:
     runs-on: ubuntu-latest
-    env:
-      FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
-      FACEBOOK_PAGE_TOKEN: ${{ secrets.FACEBOOK_PAGE_TOKEN }}
-      FACEBOOK_GRAPH_API_VERSION: "v23.0"
-      PYTHONUNBUFFERED: "1"
+
+    timeout-minutes: 15
 
     steps:
+      # ---------------------------------------------------------
+      # 1. Checkout repository
+      # ---------------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Setup Python 3.12
+      # ---------------------------------------------------------
+      # 2. Setup Python
+      # ---------------------------------------------------------
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
-          cache: pip
-          cache-dependency-path: requirements.txt
+          python-version: "3.11"
+          cache: "pip"
 
+      # ---------------------------------------------------------
+      # 3. Install dependencies
+      # ---------------------------------------------------------
       - name: Install dependencies
-        run: python -m pip install -q -r requirements.txt
-
-      - name: Validate secrets
-        shell: bash
         run: |
-          set -euo pipefail
-          test -n "$FACEBOOK_PAGE_ID" || { echo "ERROR: Missing FACEBOOK_PAGE_ID"; exit 1; }
-          test -n "$FACEBOOK_PAGE_TOKEN" || { echo "ERROR: Missing FACEBOOK_PAGE_TOKEN"; exit 1; }
+          python -m pip install --upgrade pip
 
-      - name: Validate Python project
-        run: python -m compileall -q app
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
 
-      - name: Generate and publish
+      # ---------------------------------------------------------
+      # 4. Verify static blog data
+      # ---------------------------------------------------------
+      - name: Verify static blog JSON
+        run: |
+          test -f data/static_blogs.json
+          echo "Static blog JSON found."
+
+          python - <<'PY'
+          import json
+
+          path = "data/static_blogs.json"
+
+          with open(path, "r", encoding="utf-8") as f:
+              data = json.load(f)
+
+          blogs = data.get("blogs", [])
+
+          if not blogs:
+              raise SystemExit("ERROR: No blogs found in static_blogs.json")
+
+          print(f"Static blogs available: {len(blogs)}")
+
+          for blog in blogs:
+              if not blog.get("title"):
+                  raise SystemExit("ERROR: Blog without title found.")
+
+          print("Static blog JSON validation successful.")
+          PY
+
+      # ---------------------------------------------------------
+      # 5. Verify UX assets
+      # ---------------------------------------------------------
+      - name: Verify UX designs
+        run: |
+          echo "Checking UX assets..."
+
+          test -d assets/ux_designs
+
+          for dir in \
+            clean_modern_green \
+            dark_ai_futuristic \
+            warm_friendly_orange \
+            nature_fresh_green \
+            purple_creative_ai
+          do
+            if [ ! -d "assets/ux_designs/$dir" ]; then
+              echo "ERROR: Missing UX directory: $dir"
+              exit 1
+            fi
+
+            echo "Found UX: $dir"
+          done
+
+          echo "All 5 UX designs are available."
+
+      # ---------------------------------------------------------
+      # 6. Generate ONE blog image
+      #
+      # The Python generator is responsible for:
+      #   Blog 1 -> UX 1
+      #   Blog 2 -> UX 2
+      #   Blog 3 -> UX 3
+      #   Blog 4 -> UX 4
+      #   Blog 5 -> UX 5
+      #   Blog 6 -> UX 1
+      #   ...
+      #
+      # Each scheduled execution therefore produces one image.
+      # 10 scheduled executions = 10 images/day.
+      # ---------------------------------------------------------
+      - name: Generate blog image
         env:
-          TOPIC_INDEX: ${{ github.event.inputs.topic_index || '' }}
-        shell: bash
+          PYTHONUNBUFFERED: "1"
         run: |
-          set -euo pipefail
-          if [ -n "$TOPIC_INDEX" ]; then
-            python -m app.run_agent --topic-index "$TOPIC_INDEX"
+          python generate_blog.py
+
+      # ---------------------------------------------------------
+      # 7. Show generated files
+      # ---------------------------------------------------------
+      - name: Show generated output
+        run: |
+          echo "Generated files:"
+          find output -maxdepth 2 -type f -print 2>/dev/null || true
+
+      # ---------------------------------------------------------
+      # 8. Commit UX rotation state + generated metadata
+      #
+      # This is important because blog_history.json stores which
+      # UX should be used next.
+      # ---------------------------------------------------------
+      - name: Commit rotation state
+        run: |
+          git config user.name "smart-learning-lab-bot"
+          git config user.email "smart-learning-lab-bot@users.noreply.github.com"
+
+          git add data/blog_history.json || true
+
+          if git diff --cached --quiet; then
+            echo "No rotation-state changes to commit."
           else
-            python -m app.run_agent
+            git commit -m "Update blog UX rotation state [skip ci]"
+            git push
           fi
 
-      - name: Commit state and generated JSON
-        shell: bash
-        run: |
-          set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/blog_history.json output/*.json
-          if git diff --cached --quiet; then
-            echo "No state changes to commit."
-            exit 0
-          fi
-          git commit -m "Generate static UX technical blog [skip ci]"
-          git push origin HEAD:main
+      # ---------------------------------------------------------
+      # 9. Upload generated image as GitHub artifact
+      # ---------------------------------------------------------
+      - name: Upload generated image
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: technical-blog-${{ github.run_number }}
+          path: |
+            output/**
+          if-no-files-found: warn
+          retention-days: 1

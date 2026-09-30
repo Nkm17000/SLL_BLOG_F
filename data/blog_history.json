@@ -1,5 +1,29 @@
 {
   "version": 4,
-  "next_generation": 0,
-  "history": []
+  "next_generation": 1,
+  "history": [
+    {
+      "generation": 0,
+      "ux_index": 0,
+      "topic_id": "ai-daily-life",
+      "topic": "How AI Makes Everyday Tasks Easier",
+      "category": "AI for Everyone",
+      "status": "generated",
+      "timestamp_utc": "2026-09-30T14:03:54.813717+00:00",
+      "image": "output/00001_ai-daily-life_ux1.jpg",
+      "title": "How AI Makes Everyday Tasks Easier"
+    },
+    {
+      "generation": 0,
+      "ux_index": 0,
+      "topic_id": "ai-daily-life",
+      "topic": "How AI Makes Everyday Tasks Easier",
+      "category": "AI for Everyone",
+      "status": "completed",
+      "timestamp_utc": "2026-09-30T14:03:59.921546+00:00",
+      "post_id": "1317018278163213_122121774057419769",
+      "image": "output/00001_ai-daily-life_ux1.jpg",
+      "title": "How AI Makes Everyday Tasks Easier"
+    }
+  ]
 }

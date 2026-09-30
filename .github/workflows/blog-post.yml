@@ -32,7 +32,7 @@ env:
 
 jobs:
   publish-blog:
-    name: Generate + Publish Technical Blog
+    name: Generate 5 UX Blogs + Publish
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -152,7 +152,7 @@ jobs:
           echo "Current rotation state:"
           cat data/blog_history.json
 
-      - name: 10 - Generate + Facebook publish WITH FULL LOGGING
+      - name: 10 - Generate 5 UX blogs + Facebook publish WITH FULL LOGGING
         id: publisher
         continue-on-error: true
         env:
@@ -177,9 +177,9 @@ jobs:
           set -x
 
           if [ -n "$TOPIC_INDEX" ]; then
-            python -u -m app.run_agent --topic-index "$TOPIC_INDEX"
+            python -u -m app.run_agent --topic-index "$TOPIC_INDEX" --count 5
           else
-            python -u -m app.run_agent
+            python -u -m app.run_agent --count 5
           fi
 
           STATUS=$?
@@ -191,7 +191,7 @@ jobs:
           if [ "$STATUS" -ne 0 ]; then
             echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
             echo "PUBLISHER FAILED"
-            echo "The exact Python traceback/API error should be above."
+            echo "The exact Python traceback/API error should be above. The batch continues through all 5 items so failures are isolated."
             echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
           else
             echo "PUBLISHER SUCCESS"
@@ -267,7 +267,7 @@ jobs:
           if [ "${{ steps.publisher.outcome }}" != "success" ]; then
             echo "============================================================"
             echo "WORKFLOW FAILED: publisher step did not succeed."
-            echo "Open step '10 - Generate + Facebook publish WITH FULL LOGGING'."
+            echo "Open step '10 - Generate 5 UX blogs + Facebook publish WITH FULL LOGGING'."
             echo "Also download the debug artifact from this run."
             echo "============================================================"
             exit 1

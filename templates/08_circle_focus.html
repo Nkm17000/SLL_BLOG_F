@@ -5,62 +5,95 @@
 <meta name="viewport" content="width=800,height=1000">
 <title>{{title}} — Smart Learning Lab</title>
 <style>
-*{box-sizing:border-box} html,body{margin:0;padding:0;background:#ddd;font-family:Inter,Arial,sans-serif}
-.canvas{width:800px;height:1000px;margin:auto;background:#E0F2FE;color:#111827;overflow:hidden;position:relative}
-.header{height:82px;padding:22px 30px;display:flex;justify-content:space-between;align-items:center;background:#172554;color:white}
-.brand{font-weight:800;letter-spacing:.5px} .brand small{display:block;font-size:10px;opacity:.75;letter-spacing:1.4px}
-.category{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:#0284C7;font-weight:800}
-.hero{padding:25px 30px 18px;display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:center}
-.hero h1{font-size:36px;line-height:1.02;margin:8px 0 10px} .hero p{font-size:14px;line-height:1.45;margin:0}
-.hero img{width:100%;height:185px;object-fit:cover;border-radius:22px;display:block}
-.points{padding:0 30px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.point{background:white;border-radius:18px;padding:15px;display:flex;gap:12px;min-height:128px;box-shadow:0 5px 18px #00000010}
-.point:nth-child(5){grid-column:1/-1;min-height:120px}
-.num{width:32px;height:32px;border-radius:50%;background:#0284C7;color:white;display:grid;place-items:center;font-weight:800;flex:none}
-.point h2{font-size:17px;margin:0 0 5px} .point p{font-size:11px;line-height:1.4;margin:0 0 6px}
-.point ul{margin:0;padding-left:15px;font-size:10px;line-height:1.4}
-.footer{position:absolute;bottom:0;left:0;right:0;padding:14px 30px;background:#172554;color:white;font-size:10px;display:flex;justify-content:space-between}
-/* Template-specific styling */
-.hero img{border-radius:50%;height:190px}.point{border-radius:30px}.num{border-radius:50%}
-</style>
-<style id="static-light-design">
-html,body{background:#ffffff!important;color:#25334A!important}
-.canvas{background:#EAF2FF!important;color:#25334A!important}
-.header{background:#ffffff!important;color:#25334A!important;border-bottom:2px solid #EAF2FF!important}
-.brand{color:#25334A!important} .brand small{color:#25334A!important;opacity:.62!important}
-.header>div:last-child{color:#3B82F6!important;font-weight:800!important}
-.category{color:#3B82F6!important}
-.hero{background:linear-gradient(135deg,#ffffff 0%,#EAF2FF 100%)!important;color:#25334A!important}
-.hero h1,.hero p{color:#25334A!important}
-.hero img{background:#ffffff!important;box-shadow:0 10px 30px rgba(32,55,80,.12)!important}
-.point{background:#FFFFFF!important;color:#25334A!important;border:1px solid #EAF2FF!important;box-shadow:0 7px 20px rgba(32,55,80,.08)!important}
-.point h2,.point p,.point li{color:#25334A!important}
-.num{background:#3B82F6!important;color:#ffffff!important}
-.footer{background:#ffffff!important;color:#25334A!important;border-top:2px solid #EAF2FF!important}
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;font-family:Arial,Helvetica,sans-serif;color:#183247}
+.canvas{width:800px;height:1000px;margin:auto;overflow:hidden;position:relative}
+.header{height:68px;padding:17px 28px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #e4edf2;position:relative;z-index:5}
+.brand{font-weight:900;font-size:17px;letter-spacing:.5px;color:#19384b}
+.brand small{display:block;font-size:9px;letter-spacing:1.5px;margin-top:3px;color:#597080;font-weight:700}
+.header-category{font-size:12px;font-weight:900;letter-spacing:.7px;color:#168f86}
+.hero-content .category{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;font-weight:900;color:#14978e}
+.title{position:relative}
+.description{max-width:430px}
+.point-copy{min-width:0}
+.point h2{font-size:17px;line-height:1.15;margin:0 0 5px;font-weight:900;color:#173447}
+.point p{font-size:11px;line-height:1.38;margin:0 0 6px;color:#415b6a;font-weight:600}
+.point ul{margin:0;padding-left:16px;font-size:10px;line-height:1.4;color:#385364;font-weight:600}
+.footer{position:absolute;bottom:0;left:0;right:0;height:42px;padding:13px 28px;background:#fff;border-top:1px solid #e4edf2;color:#4e6573;font-size:10px;display:flex;justify-content:space-between;z-index:10}
+
+
+.canvas{background:#f8f7ff}
+.hero{height:285px;position:relative;overflow:hidden;background:#f4f1ff}
+.hero:before{content:"";position:absolute;width:560px;height:560px;right:-125px;top:-145px;border-radius:50%;background:url("{{hero_image_url}}") center/cover no-repeat;box-shadow:0 0 0 24px rgba(255,255,255,.65),0 18px 40px rgba(82,67,130,.12)}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#ffffff 0%,#ffffff 42%,rgba(255,255,255,0) 75%);pointer-events:none}
+.hero-content{position:relative;z-index:2;width:58%;padding:38px 28px}
+.title{font-size:36px;line-height:1.04;color:#30265a;margin:8px 0 10px;font-weight:900}
+.title:after{content:"";display:block;width:60px;height:60px;border-radius:50%;border:8px solid #c4b5fd;margin-top:10px;position:absolute;left:270px;top:130px;opacity:.6}
+.description{font-size:14px;line-height:1.45;color:#625a7d;font-weight:600}
+.points{padding:18px 28px 74px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.point{background:#fff;border:1px solid #e9e4ff;border-radius:24px;padding:15px;display:flex;gap:12px;box-shadow:0 7px 20px rgba(70,55,120,.07);min-height:122px}
+.p4{grid-column:1/-1}
+.num{background:#8b5cf6;color:#fff;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:900;flex:none}
+
 </style>
 </head>
 <body>
 <main class="canvas">
 <header class="header">
   <div class="brand">SMART LEARNING LAB<small>LEARN • PRACTICE • GROW</small></div>
-  <div>{{category}}</div>
+  <div class="header-category">{{category}}</div>
 </header>
 <section class="hero">
-  <div>
+  <div class="hero-content">
     <div class="category">{{category}}</div>
-    <h1>{{title}}</h1>
-    <p>{{description}}</p>
+    <h1 class="title">{{title}}</h1>
+    <p class="description">{{description}}</p>
   </div>
-  <img src="{{hero_image_url}}" alt="{{hero_image_alt}}">
 </section>
-<div class="points">
-<section class="point"><div class="num">1</div><div><h2>{{points[0].title}}</h2><p>{{points[0].description}}</p><ul><li>{{points[0].items[0]}}</li><li>{{points[0].items[1]}}</li></ul></div></section>
-<section class="point"><div class="num">2</div><div><h2>{{points[1].title}}</h2><p>{{points[1].description}}</p><ul><li>{{points[1].items[0]}}</li><li>{{points[1].items[1]}}</li></ul></div></section>
-<section class="point"><div class="num">3</div><div><h2>{{points[2].title}}</h2><p>{{points[2].description}}</p><ul><li>{{points[2].items[0]}}</li><li>{{points[2].items[1]}}</li></ul></div></section>
-<section class="point"><div class="num">4</div><div><h2>{{points[3].title}}</h2><p>{{points[3].description}}</p><ul><li>{{points[3].items[0]}}</li><li>{{points[3].items[1]}}</li></ul></div></section>
-<section class="point"><div class="num">5</div><div><h2>{{points[4].title}}</h2><p>{{points[4].description}}</p><ul><li>{{points[4].items[0]}}</li><li>{{points[4].items[1]}}</li></ul></div></section>
-</div>
-<footer class="footer"><span>{{footer_text}}</span><span>{{website}}</span></footer>
+<section class="points">
+<article class="point p0">
+  <div class="num">01</div>
+  <div class="point-copy">
+    <h2>{{points[0].title}}</h2>
+    <p>{{points[0].description}}</p>
+    <ul><li>{{points[0].items[0]}}</li><li>{{points[0].items[1]}}</li></ul>
+  </div>
+</article>
+<article class="point p1">
+  <div class="num">02</div>
+  <div class="point-copy">
+    <h2>{{points[1].title}}</h2>
+    <p>{{points[1].description}}</p>
+    <ul><li>{{points[1].items[0]}}</li><li>{{points[1].items[1]}}</li></ul>
+  </div>
+</article>
+<article class="point p2">
+  <div class="num">03</div>
+  <div class="point-copy">
+    <h2>{{points[2].title}}</h2>
+    <p>{{points[2].description}}</p>
+    <ul><li>{{points[2].items[0]}}</li><li>{{points[2].items[1]}}</li></ul>
+  </div>
+</article>
+<article class="point p3">
+  <div class="num">04</div>
+  <div class="point-copy">
+    <h2>{{points[3].title}}</h2>
+    <p>{{points[3].description}}</p>
+    <ul><li>{{points[3].items[0]}}</li><li>{{points[3].items[1]}}</li></ul>
+  </div>
+</article>
+<article class="point p4">
+  <div class="num">05</div>
+  <div class="point-copy">
+    <h2>{{points[4].title}}</h2>
+    <p>{{points[4].description}}</p>
+    <ul><li>{{points[4].items[0]}}</li><li>{{points[4].items[1]}}</li></ul>
+  </div>
+</article>
+</section>
+<footer class="footer"><span>Smart Learning Lab • Learn • Practice • Grow</span><span>Technical AI Blog</span></footer>
 </main>
 </body>
 </html>

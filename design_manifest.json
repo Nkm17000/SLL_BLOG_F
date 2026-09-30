@@ -1,0 +1,73 @@
+{
+  "version": 7,
+  "theme_concept": null,
+  "canvas": {
+    "css": [
+      800,
+      1000
+    ],
+    "output": [
+      1600,
+      2000
+    ]
+  },
+  "templates": [
+    {
+      "id": 1,
+      "name": "01_asymmetric_magazine",
+      "hero": "assets/images/template-01-hero.png"
+    },
+    {
+      "id": 2,
+      "name": "02_zigzag_story",
+      "hero": "assets/images/template-02-hero.png"
+    },
+    {
+      "id": 3,
+      "name": "03_vertical_timeline",
+      "hero": "assets/images/template-03-hero.png"
+    },
+    {
+      "id": 4,
+      "name": "04_bento_grid",
+      "hero": "assets/images/template-04-hero.png"
+    },
+    {
+      "id": 5,
+      "name": "05_pill_cards",
+      "hero": "assets/images/template-05-hero.png"
+    },
+    {
+      "id": 6,
+      "name": "06_newspaper_columns",
+      "hero": "assets/images/template-06-hero.png"
+    },
+    {
+      "id": 7,
+      "name": "07_color_band",
+      "hero": "assets/images/template-07-hero.png"
+    },
+    {
+      "id": 8,
+      "name": "08_circle_focus",
+      "hero": "assets/images/template-08-hero.png"
+    },
+    {
+      "id": 9,
+      "name": "09_diagonal_blocks",
+      "hero": "assets/images/template-09-hero.png"
+    },
+    {
+      "id": 10,
+      "name": "10_premium_minimal",
+      "hero": "assets/images/template-10-hero.png"
+    }
+  ],
+  "rules": {
+    "random_unused_template_until_all_10_used": true,
+    "one_blog_one_image_per_run": true,
+    "hero_integrated_into_background": true,
+    "light_design_only": true,
+    "exactly_five_points": true
+  }
+}

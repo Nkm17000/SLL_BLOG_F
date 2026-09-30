@@ -102,3 +102,26 @@ python -m app.run_agent --dry-run
 ```
 
 The dry run still advances the local rotation/history because it represents a real generation test. Reset `data/blog_history.json` if you want to start the test cycle from zero.
+
+## GitHub Actions troubleshooting
+
+The workflow file MUST exist at the repository root:
+
+```text
+.github/workflows/blog-post.yml
+```
+
+Do not keep it under an extra `newproj/` folder. This ZIP is packaged with `.github/` at the root.
+
+The workflow supports:
+- Manual run from **Actions → Smart Learning Lab - Dynamic Technical Blog → Run workflow**
+- Git push to `main` or `master`
+- Six scheduled runs per day
+
+GitHub scheduled workflows run only from the repository's default branch and may be delayed during high GitHub load. Make sure Actions are enabled for the repository.
+
+Required repository secrets:
+- `FACEBOOK_PAGE_ID`
+- `FACEBOOK_PAGE_TOKEN`
+
+For a first test, use **Run workflow** manually. The run should appear immediately under the Actions tab and should execute the same code path as the scheduler.

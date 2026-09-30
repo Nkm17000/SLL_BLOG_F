@@ -2,6 +2,15 @@ name: Smart Learning Lab - Dynamic Technical Blog
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Generate and validate one blog without publishing to Facebook"
+        required: false
+        default: "false"
+        type: boolean
+  push:
+    branches:
+      - "**"
   schedule:
     # Six runs every day at 00:00, 04:00, 08:00, 12:00, 16:00 and 20:00 UTC.
     # This is 05:30, 09:30, 13:30, 17:30, 21:30 and 01:30 IST respectively.
@@ -67,17 +76,45 @@ jobs:
           PY
 
       - name: Generate and publish exactly one blog
-        run: python -u -m app.run_agent
+        env:
+          DRY_RUN_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
+        run: |
+          if [ "$DRY_RUN_INPUT" = "true" ]; then
+            python -u -m app.run_agent --dry-run
+          else
+            python -u -m app.run_agent
+          fi
 
       - name: Commit rotation and history
-        if: always()
+        if: success()
         run: |
+          set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          BRANCH="${GITHUB_REF_NAME}"
+          git fetch origin "$BRANCH"
+          git checkout "$BRANCH"
           git add data/blog_history.json
-          git diff --cached --quiet || git commit -m "chore: update blog rotation history [skip ci]"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "${GITHUB_REF_NAME}"
+          if git diff --cached --quiet; then
+            echo "No history changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: update blog rotation history [skip ci]"
+          git rebase "origin/$BRANCH" || {
+            echo "History changed upstream; aborting rebase and retrying with fresh state."
+            git rebase --abort || true
+            git reset --hard "origin/$BRANCH"
+            exit 1
+          }
+          git push origin "HEAD:$BRANCH"
+
+      - name: Print workflow trigger
+        if: always()
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Ref: ${{ github.ref }}"
+          echo "Branch: ${{ github.ref_name }}"
+          echo "Run: ${{ github.run_number }}"
 
       - name: Upload generated image and summary
         if: always()

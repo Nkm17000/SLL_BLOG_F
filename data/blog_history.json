@@ -1,10 +1,41 @@
 {
   "version": 8,
   "topic_cycle": 0,
-  "topic_used": [],
+  "topic_used": [
+    "wift-rchitecture-0847"
+  ],
   "template_cycle": 0,
-  "template_used": [],
+  "template_used": [
+    1
+  ],
   "theme_cycle": 0,
-  "theme_used": [],
-  "history": []
+  "theme_used": [
+    "sky-breeze"
+  ],
+  "history": [
+    {
+      "topic_id": "wift-rchitecture-0847",
+      "topic": "How to design Swift: Architecture",
+      "category": "Programming Languages",
+      "status": "generated",
+      "timestamp_utc": "2026-09-30T18:58:09.867866+00:00",
+      "topic_cycle": 0,
+      "template_id": 1,
+      "template_name": "asymmetric_magazine",
+      "theme_id": "sky-breeze",
+      "image": "output/20260930T185740Z_wift-rchitecture-0847_t01.png"
+    },
+    {
+      "topic_id": "wift-rchitecture-0847",
+      "topic": "How to design Swift: Architecture",
+      "category": "Programming Languages",
+      "status": "published",
+      "timestamp_utc": "2026-09-30T18:58:15.744977+00:00",
+      "template_id": 1,
+      "template_name": "asymmetric_magazine",
+      "theme_id": "sky-breeze",
+      "image": "output/20260930T185740Z_wift-rchitecture-0847_t01.png",
+      "facebook_post_id": "1317018278163213_122121834225419769"
+    }
+  ]
 }

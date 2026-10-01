@@ -4,15 +4,20 @@
   "topic_used": [],
   "template_cycle": 0,
   "template_used": [
-    2
+    2,
+    1
   ],
   "theme_cycle": 0,
   "theme_used": [
-    "amber-glow"
+    "amber-glow",
+    "sky-breeze"
   ],
   "agent_topic_used": {
     "howto": [
       "howto-1736"
+    ],
+    "projects": [
+      "projects-1210"
     ]
   },
   "history": [
@@ -34,6 +39,25 @@
       "difficulty": "intermediate",
       "series": "Build It Step by Step",
       "content_fingerprint": "89c5c74b45179e89d7f1"
+    },
+    {
+      "topic_id": "projects-1210",
+      "topic": "Project Idea: How to migrate to AWS Architecture: Migration",
+      "category": "Projects | Cloud Infrastructure",
+      "status": "published",
+      "timestamp_utc": "2026-10-01T11:45:14.960567+00:00",
+      "agent_id": "projects",
+      "agent_name": "Project Ideas Agent",
+      "template_id": 1,
+      "template_name": "asymmetric_magazine",
+      "theme_id": "sky-breeze",
+      "image": "output/20261001T114454Z_projects_projects-1210_t01.png",
+      "facebook_post_id": "1317018278163213_122121991389419769",
+      "source_url": "",
+      "hook": "Build this: How to migrate to AWS Architecture: Migration",
+      "difficulty": "intermediate",
+      "series": "Build This Project",
+      "content_fingerprint": "303894ab9965321b343c"
     }
   ]
 }

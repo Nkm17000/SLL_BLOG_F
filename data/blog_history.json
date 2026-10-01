@@ -3,9 +3,47 @@
   "topic_cycle": 0,
   "topic_used": [],
   "template_cycle": 0,
-  "template_used": [],
+  "template_used": [
+    4
+  ],
   "theme_cycle": 0,
-  "theme_used": [],
-  "agent_topic_used": {},
-  "history": []
+  "theme_used": [
+    "violet-night"
+  ],
+  "agent_topic_used": {
+    "howto": [
+      "howto-1143"
+    ]
+  },
+  "history": [
+    {
+      "topic_id": "howto-1143",
+      "topic": "How-To: How to design a production architecture using CQRS: Production Architecture",
+      "category": "Howto | Software Architecture",
+      "status": "generated",
+      "timestamp_utc": "2026-10-01T04:52:20.933027+00:00",
+      "agent_id": "howto",
+      "agent_name": "How-To Agent",
+      "template_id": 4,
+      "template_name": "bento_grid",
+      "theme_id": "violet-night",
+      "image": "output/20261001T045205Z_howto_howto-1143_t04.png",
+      "source_url": ""
+    },
+    {
+      "topic_id": "howto-1143",
+      "topic": "How-To: How to design a production architecture using CQRS: Production Architecture",
+      "category": "Howto | Software Architecture",
+      "status": "published",
+      "timestamp_utc": "2026-10-01T04:52:27.345746+00:00",
+      "agent_id": "howto",
+      "agent_name": "How-To Agent",
+      "template_id": 4,
+      "template_name": "bento_grid",
+      "theme_id": "violet-night",
+      "image": "output/20261001T045205Z_howto_howto-1143_t04.png",
+      "facebook_post_id": "1317018278163213_122121921597419769",
+      "source_url": ""
+    }
+  ]
 }

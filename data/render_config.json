@@ -11,7 +11,18 @@
     }
   },
   "default_orientation": "horizontal",
-  "theme_count": 12,
+  "theme_count": 30,
   "template_count": 10,
-  "topic_count": 2000
+  "topic_count": 2000,
+  "render_scale": 2,
+  "physical_output_pixels": {
+    "horizontal": [
+      2400,
+      2000
+    ],
+    "vertical": [
+      2000,
+      2400
+    ]
+  }
 }

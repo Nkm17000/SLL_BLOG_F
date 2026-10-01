@@ -75,3 +75,11 @@ python -m app.run_agent --agent ai --dry-run
 ## Important
 
 The project publishes images only. It does not use audio, MP4 generation, WordArt, or copyrighted music.
+
+### Image clarity update
+
+Rendered images keep the same 12:10 / 10:12 layout ratios but are now exported at 2x device pixel density for sharper Facebook/social-media rendering:
+- Horizontal: 2400 x 2000
+- Vertical: 2000 x 2400
+
+Typography was also increased for the title, description and five content cards so text remains readable after platform resizing/compression.

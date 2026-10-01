@@ -33,9 +33,32 @@ def build_html(blog,template_id,theme_id=None,orientation='horizontal'):
       s=s.replace(f'{{{{points[{i}].title}}}}',_esc(p['title'])).replace(f'{{{{points[{i}].description}}}}',_esc(p['description']))
       s=s.replace(f'{{{{points[{i}].items[0]}}}}',_esc(p['items'][0])).replace(f'{{{{points[{i}].items[1]}}}}',_esc(p['items'][1]))
     if orientation=='vertical':
-      extra='<style>.canvas{width:1000px!important;height:1200px!important}.hero{height:350px!important}.hero-content{width:58%!important;padding:42px 34px!important}.title{font-size:46px!important}.description{font-size:16px!important}.points{padding:22px 34px 86px!important}.point{min-height:128px!important}.footer{height:48px!important}</style>'
+      extra='''<style>
+.canvas{width:1000px!important;height:1200px!important}
+.hero{height:350px!important}
+.hero-content{width:60%!important;padding:42px 34px!important}
+.title{font-size:48px!important;line-height:1.04!important;max-width:570px!important}
+.description{font-size:17px!important;line-height:1.45!important;max-width:540px!important}
+.points{padding:22px 34px 86px!important}
+.point{min-height:128px!important}
+.point h2{font-size:19px!important;line-height:1.18!important}
+.point p{font-size:13px!important;line-height:1.4!important}
+.point ul{font-size:12px!important;line-height:1.35!important}
+.footer{height:48px!important}
+</style>'''
     else:
-      extra='<style>.canvas{width:1200px!important;height:1000px!important}.hero{height:300px!important}.hero-content{width:54%!important}.points{padding-left:36px!important;padding-right:36px!important}.point{min-height:112px!important}</style>'
+      extra='''<style>
+.canvas{width:1200px!important;height:1000px!important}
+.hero{height:300px!important}
+.hero-content{width:56%!important;padding:34px 28px!important}
+.title{font-size:48px!important;line-height:1.04!important;max-width:620px!important;letter-spacing:-.8px!important}
+.description{font-size:16px!important;line-height:1.45!important;max-width:590px!important}
+.points{padding-left:36px!important;padding-right:36px!important;gap:14px!important}
+.point{min-height:120px!important;padding:16px!important}
+.point h2{font-size:19px!important;line-height:1.18!important}
+.point p{font-size:13px!important;line-height:1.4!important}
+.point ul{font-size:12px!important;line-height:1.35!important}
+</style>'''
     return s.replace('</body>',extra+'</body>')
 
 def render(blog,template_id,output_path,theme_id=None,orientation='horizontal'):
@@ -47,7 +70,11 @@ def render(blog,template_id,output_path,theme_id=None,orientation='horizontal'):
       if chrome: kwargs['executable_path']=chrome
       browser=p.chromium.launch(**kwargs)
       size={'horizontal':(1200,1000),'vertical':(1000,1200)}[orientation]
-      page=browser.new_page(viewport={'width':size[0],'height':size[1]},device_scale_factor=1)
-      page.set_content(text,wait_until='load')
+      page=browser.new_page(viewport={'width':size[0],'height':size[1]},device_scale_factor=2)
+      page.set_content(text,wait_until='networkidle')
+      page.add_style_tag(content='''html,body{
+  -webkit-font-smoothing:antialiased!important;
+  text-rendering:geometricPrecision!important;
+} img{image-rendering:auto!important;}''')
       page.screenshot(path=str(out),full_page=False)
       browser.close()

@@ -86,6 +86,15 @@ def choose_topic_for_agent(blogs:list[dict], state:dict, profile:AgentProfile)->
     if used >= ids:
         state['agent_topic_used'][profile.id]=[]; used=set()
     candidates=[b for b in bank if b['id'] not in used]
+    # Avoid near-duplicate titles/content across agents when history is available.
+    try:
+        from app.quality_engine import similar_to_history
+        history=state.get("history", [])
+        fresh=[b for b in candidates if not similar_to_history(b, history)]
+        if fresh:
+            candidates=fresh
+    except Exception:
+        pass
     return random.choice(candidates)
 
 def mark_agent_topic_used(state:dict,profile:AgentProfile,topic_id:str)->None:

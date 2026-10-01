@@ -1,83 +1,11 @@
 {
-  "version": 9,
+  "version": 10,
   "topic_cycle": 0,
   "topic_used": [],
   "template_cycle": 0,
-  "template_used": [
-    8,
-    10,
-    7
-  ],
+  "template_used": [],
   "theme_cycle": 0,
-  "theme_used": [
-    "purple-bloom",
-    "blueberry",
-    "turquoise-mint"
-  ],
-  "agent_topic_used": {
-    "howto": [
-      "howto-1270",
-      "howto-1925",
-      "howto-0854"
-    ]
-  },
-  "history": [
-    {
-      "topic_id": "howto-1270",
-      "topic": "How-To: How to migrate to Cloud Functions: Migration",
-      "category": "Howto | Cloud Infrastructure",
-      "status": "generated",
-      "timestamp_utc": "2026-10-01T04:54:44.379633+00:00",
-      "agent_id": "howto",
-      "agent_name": "How-To Agent",
-      "template_id": 8,
-      "template_name": "circle_focus",
-      "theme_id": "purple-bloom",
-      "image": "output/20261001T045443Z_howto_howto-1270_t08.png",
-      "source_url": ""
-    },
-    {
-      "topic_id": "howto-1925",
-      "topic": "How-To: Common mistakes when using Systemd: Common Mistakes",
-      "category": "Howto | Systems Engineering",
-      "status": "generated",
-      "timestamp_utc": "2026-10-01T04:55:13.300038+00:00",
-      "agent_id": "howto",
-      "agent_name": "How-To Agent",
-      "template_id": 10,
-      "template_name": "premium_minimal",
-      "theme_id": "blueberry",
-      "image": "output/20261001T045511Z_howto_howto-1925_t10.png",
-      "source_url": ""
-    },
-    {
-      "topic_id": "howto-0854",
-      "topic": "How-To: How to optimize Workflow Automation: Performance",
-      "category": "Howto | Automation & Productivity",
-      "status": "generated",
-      "timestamp_utc": "2026-10-01T04:58:39.486447+00:00",
-      "agent_id": "howto",
-      "agent_name": "How-To Agent",
-      "template_id": 7,
-      "template_name": "color_band",
-      "theme_id": "turquoise-mint",
-      "image": "output/20261001T045821Z_howto_howto-0854_t07.png",
-      "source_url": ""
-    },
-    {
-      "topic_id": "howto-0854",
-      "topic": "How-To: How to optimize Workflow Automation: Performance",
-      "category": "Howto | Automation & Productivity",
-      "status": "published",
-      "timestamp_utc": "2026-10-01T04:58:44.238097+00:00",
-      "agent_id": "howto",
-      "agent_name": "How-To Agent",
-      "template_id": 7,
-      "template_name": "color_band",
-      "theme_id": "turquoise-mint",
-      "image": "output/20261001T045821Z_howto_howto-0854_t07.png",
-      "facebook_post_id": "1317018278163213_122121922725419769",
-      "source_url": ""
-    }
-  ]
+  "theme_used": [],
+  "agent_topic_used": {},
+  "history": []
 }

@@ -103,12 +103,18 @@ jobs:
           assert len(agents['schedule']) == 20
           banks=sorted((root/'data/agents').glob('*_topics.json'))
           assert len(banks) == 20, f'Expected 20 agent banks, found {len(banks)}'
+          base=json.loads((root/'data/blogs.json').read_text(encoding='utf-8'))
+          assert len(base['blogs']) == 2000, 'Existing blog library must remain at 2,000 topics'
+          assert all(len(b['points']) == 5 for b in base['blogs'])
+          required={'hook','original_title','difficulty','series','language','format','content_type','real_world_example','cta','content_fingerprint','quality_schema'}
+          for b in base['blogs'][:20]: assert required.issubset(b), b['id']
           for p in banks:
               d=json.loads(p.read_text(encoding='utf-8'))
               assert d['count'] == 2000, (p,d['count'])
               assert len(d['blogs']) == 2000, p
               assert all(len(b['points']) == 5 for b in d['blogs']), p
-          print('Validated 20 agents, 20 x 2,000 topics = 40,000 topic records, 5 points each')
+              for b in d['blogs'][:20]: assert required.issubset(b), (p,b['id'])
+          print('Validated existing 2,000 blogs + 20 agents x 2,000 = 42,000 available topic records; every topic has 5 points')
           PY
 
       - name: Generate and publish
@@ -140,5 +146,7 @@ jobs:
           path: |
             output/latest_summary.json
             output/*.png
+            output/dashboard.html
+            output/carousels/**
             data/blog_history.json
           if-no-files-found: warn

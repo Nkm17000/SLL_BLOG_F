@@ -1,65 +1,75 @@
-# Smart Learning Lab — Multi-Agent Technical Content Publisher
+# Smart Learning Lab — Final Multi-Agent Content Engine
 
-A single GitHub Actions project that runs multiple specialized content agents and publishes one image post per scheduled slot to a Facebook Page.
+A single GitHub Actions project for a versatile technical-learning Facebook Page. It contains 20 specialized content agents, 40,000 agent topic records, the existing 2,000-topic blog library, 10 visual templates, 30 light themes, high-resolution 10:10 images, content-quality checks, duplicate protection, a publishing calendar, retry handling, dashboard output, and carousel companion assets.
 
-## Agents
+## Content system
 
-1. **Student Learning Agent** — beginner-friendly explanations
-2. **AI Agent** — AI and AI engineering
-3. **Coding Agent** — programming and developer topics
-4. **How-To Agent** — implementation-oriented tutorials
-5. **Tech News Agent** — current technology items from RSS feeds
-6. **Cybersecurity Agent** — defensive security awareness and engineering
-7. **Project Ideas Agent** — project concepts and architecture
-8. **Tech Career Agent** — technical skills and career learning
-9. **Technical Blog Agent** — full 2,000-topic technical library
+**20 agents × 2,000 topics = 40,000 agent-topic records**, plus the existing `data/blogs.json` 2,000-topic library. Every topic keeps exactly 5 points and 2 supporting items per point.
 
-## Daily IST schedule
+Agents: Student Learning, Tech Facts, AI, AI Tools, Coding, Debugging, How-To, Concept Explainer, Cloud, Database, App Development, Cybersecurity, Tech Experiments, Project Ideas, Developer Productivity, Tech Career, Tech News, Tech Infographic, Content Repurposing, Technical Blog.
 
-| IST | Agent |
-|---|---|
-| 06:00 | Student Learning |
-| 08:00 | AI |
-| 10:00 | Coding |
-| 12:00 | How-To |
-| 14:00 | Tech News |
-| 16:00 | Cybersecurity |
-| 18:00 | Project Ideas |
-| 20:00 | Tech Career |
-| 22:00 | Technical Blog |
+## Daily India schedule
 
-GitHub Actions uses UTC cron values equivalent to these India times.
+The workflow posts one image per hour from **04:00 through 23:00 Asia/Kolkata**. The UTC cron in `.github/workflows/blog-post.yml` handles the conversion.
 
-## Design
+## Engagement and quality improvements
 
-- 10 visual templates
-- 30 light themes
-- Theme rotation avoids repeats until the complete theme cycle is used
-- Template rotation avoids repeats until all 10 templates are used
-- Hero images are integrated into the design
+Each topic JSON includes:
+- `hook` — concise scroll-stopping headline
+- `original_title` — source topic title
+- `difficulty` — beginner/intermediate/advanced level
+- `series` — recurring content-series identity
+- `real_world_example` — practical context for the topic
+- `cta` — rotating, useful call to action
+- `language` — `en-IN` metadata
+- `format` — `square_single_image`
+- `content_type` — agent category
+- `content_fingerprint` — duplicate detection key
+- `quality_schema` — structural validation metadata
+
+At runtime the quality engine also checks hook length, five points, two items per point, real-world context, CTA, and near-duplicate history.
+
+## Visual system
+
+- 10 distinct templates
+- 30 light themes: red, green, blue, yellow, pink, gray, purple, orange, cyan, teal and more
+- Hero artwork integrated into the composition
+- Theme rotation without repeats until the theme cycle is complete
+- Template rotation without repeats until all 10 are used
+- **10:10 square output**
+- **4000×4000 PNG export** using a 2000×2000 CSS canvas at 2× device scale
+- Larger typography and high-contrast spacing for social-media readability
 - No WordArt
 - No music/audio
-- No video generation
-- Image-only Facebook publishing
-- Horizontal 12:10 output: **1200×1000**
-- Vertical 10:12 output: **1000×1200**
-- Exactly 5 content points per topic
-- 2,000 source topics
+- No MP4 generation
 
-## News behavior
+The renderer uses the generated hook as the visual headline and keeps the original topic title in the supporting description.
 
-The Tech News Agent reads a technology RSS feed at runtime. The generated news post includes source context. If the RSS service is temporarily unavailable, the workflow falls back to a technical topic instead of publishing fabricated news.
+## Content variety
 
-## Manual runs
+The orchestrator keeps the page from feeling repetitive through agent-specific series, difficulty labels, hooks, CTAs, templates, themes and topic history. The design engine can also create **7 square carousel companion slides** as local workflow artifacts: hook, five points, and takeaway. Facebook publishing remains one image post per scheduled run by default, so the page is not flooded with multiple posts.
 
-GitHub Actions → workflow → Run workflow → choose an agent or `auto`.
+## News safety
 
-`auto` uses the current India time to select the scheduled agent. Manual agent selection is useful for testing.
+The Tech News Agent fetches current technology items from RSS at runtime. It includes source context and falls back to an evergreen technical topic if the RSS service is unavailable; it does not fabricate a news item.
 
-## Secrets
+## Reliability
 
-Add these repository secrets:
+- Facebook API requests retry transient failures up to five times with backoff.
+- A failed publish is recorded in `data/blog_history.json` and does not silently disappear.
+- Topic usage is recorded per agent.
+- Templates and themes rotate independently and avoid repeats within their cycles.
+- Near-duplicate content is filtered against recent history when possible.
+- `output/dashboard.html` summarizes publishing, failures, agents, themes and templates.
 
+## GitHub Actions
+
+Triggers:
+- `push` to any branch except history-only updates
+- `workflow_dispatch` with agent selection and dry-run option
+- hourly schedule from 04:00–23:00 IST
+
+Required repository secrets:
 - `FACEBOOK_PAGE_ID`
 - `FACEBOOK_PAGE_TOKEN`
 
@@ -69,17 +79,7 @@ Add these repository secrets:
 pip install -r requirements.txt
 python -m playwright install chromium
 python -m unittest discover -s tests -v
-python -m app.run_agent --agent ai --dry-run
+python -u -m app.run_agent --agent ai --dry-run
 ```
 
-## Important
-
-The project publishes images only. It does not use audio, MP4 generation, WordArt, or copyrighted music.
-
-### Image clarity update
-
-Rendered images keep the same 12:10 / 10:12 layout ratios but are now exported at 2x device pixel density for sharper Facebook/social-media rendering:
-- Horizontal: 2400 x 2000
-- Vertical: 2000 x 2400
-
-Typography was also increased for the title, description and five content cards so text remains readable after platform resizing/compression.
+A dry run creates the PNG, carousel companion slides, dashboard and summary without publishing to Facebook.

@@ -8,9 +8,9 @@ class Config:
     FACEBOOK_PAGE_ID = os.getenv("FACEBOOK_PAGE_ID")
     FACEBOOK_PAGE_TOKEN = os.getenv("FACEBOOK_PAGE_TOKEN")
     FACEBOOK_GRAPH_API_VERSION = os.getenv("FACEBOOK_GRAPH_API_VERSION", "v23.0")
-    ORIENTATION = os.getenv("ORIENTATION", "horizontal")
-    IMAGE_WIDTH = int(os.getenv("IMAGE_WIDTH", "1080"))
-    IMAGE_HEIGHT = int(os.getenv("IMAGE_HEIGHT", "1350"))
+    ORIENTATION = os.getenv("ORIENTATION", "square")
+    IMAGE_WIDTH = int(os.getenv("IMAGE_WIDTH", "2000"))
+    IMAGE_HEIGHT = int(os.getenv("IMAGE_HEIGHT", "2000"))
 
     @classmethod
     def validate(cls):

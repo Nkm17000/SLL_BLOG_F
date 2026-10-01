@@ -1,28 +1,12 @@
 {
-  "output_ratio": "12:10",
-  "orientations": {
-    "horizontal": {
-      "width": 1200,
-      "height": 1000
-    },
-    "vertical": {
-      "width": 1000,
-      "height": 1200
-    }
-  },
-  "default_orientation": "horizontal",
-  "theme_count": 30,
-  "template_count": 10,
-  "topic_count": 2000,
-  "render_scale": 2,
-  "physical_output_pixels": {
-    "horizontal": [
-      2400,
-      2000
-    ],
-    "vertical": [
-      2000,
-      2400
-    ]
-  }
+  "output_ratio": "10:10",
+  "orientation": "square",
+  "css_width": 2000,
+  "css_height": 2000,
+  "export_width": 4000,
+  "export_height": 4000,
+  "device_scale_factor": 2,
+  "text_clarity": "high",
+  "width": 2000,
+  "height": 2000
 }

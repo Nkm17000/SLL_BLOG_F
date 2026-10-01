@@ -34,36 +34,23 @@ def inject_template(template_path: Path, blog: dict, hero_path: Path, theme: dic
             s=s.replace(f"{{{{points[{i}].items[{j}]}}}}",html_lib.escape(str(val)))
     return s
 
-def make_responsive_12x10(html_text: str, orientation: str) -> str:
-    # Base design is 800x1000. Reflow into 12:10 horizontal or 10:12 vertical while
-    # preserving the template's visual hierarchy.
-    if orientation == "horizontal":
-        extra = """
-<style>
-.canvas{width:1200px!important;height:1000px!important}
-.hero{height:300px!important}
-.hero-content{width:53%!important}
-.points{padding-left:36px!important;padding-right:36px!important}
-.point{min-height:112px!important}
-</style>
-"""
-    else:
-        extra = """
-<style>
-.canvas{width:1000px!important;height:1200px!important}
-.header{height:78px!important}
-.hero{height:350px!important}
-.hero-content{width:55%!important;padding:42px 34px!important}
-.title{font-size:45px!important}
-.description{font-size:16px!important;max-width:500px!important}
-.points{padding:22px 34px 86px!important}
-.point{min-height:128px!important}
-.footer{height:48px!important}
-</style>
-"""
+def make_responsive_square(html_text: str) -> str:
+    extra = """<style>
+.canvas{width:2000px!important;height:2000px!important}
+.hero{height:520px!important}
+.hero-content{width:56%!important;padding:54px 48px!important}
+.title{font-size:64px!important;line-height:1.05!important;max-width:1050px!important}
+.description{font-size:24px!important;line-height:1.45!important;max-width:980px!important}
+.points{padding:38px 54px 110px!important;gap:20px!important}
+.point{min-height:220px!important;padding:24px!important}
+.point h2{font-size:28px!important;line-height:1.18!important}
+.point p{font-size:20px!important;line-height:1.4!important}
+.point ul{font-size:18px!important;line-height:1.4!important}
+.footer{height:70px!important}
+</style>"""
     return html_text.replace("</body>", extra+"</body>")
 
 def render(template_path, blog, hero_path, theme, orientation, out_html):
     html = inject_template(template_path, blog, hero_path, theme)
-    html = make_responsive_12x10(html, orientation)
+    html = make_responsive_square(html)
     Path(out_html).write_text(html, encoding="utf-8")

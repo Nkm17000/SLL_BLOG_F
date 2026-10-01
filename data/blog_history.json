@@ -3,9 +3,37 @@
   "topic_cycle": 0,
   "topic_used": [],
   "template_cycle": 0,
-  "template_used": [],
+  "template_used": [
+    2
+  ],
   "theme_cycle": 0,
-  "theme_used": [],
-  "agent_topic_used": {},
-  "history": []
+  "theme_used": [
+    "amber-glow"
+  ],
+  "agent_topic_used": {
+    "howto": [
+      "howto-1736"
+    ]
+  },
+  "history": [
+    {
+      "topic_id": "howto-1736",
+      "topic": "How-To: How to improve performance with NestJS: Performance",
+      "category": "Howto | Web Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-01T05:14:44.876448+00:00",
+      "agent_id": "howto",
+      "agent_name": "How-To Agent",
+      "template_id": 2,
+      "template_name": "zigzag_story",
+      "theme_id": "amber-glow",
+      "image": "output/20261001T051414Z_howto_howto-1736_t02.png",
+      "facebook_post_id": "1317018278163213_122121925449419769",
+      "source_url": "",
+      "hook": "How to improve performance with NestJS: Performance",
+      "difficulty": "intermediate",
+      "series": "Build It Step by Step",
+      "content_fingerprint": "89c5c74b45179e89d7f1"
+    }
+  ]
 }

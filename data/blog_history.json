@@ -5,17 +5,20 @@
   "template_cycle": 0,
   "template_used": [
     8,
-    10
+    10,
+    7
   ],
   "theme_cycle": 0,
   "theme_used": [
     "purple-bloom",
-    "blueberry"
+    "blueberry",
+    "turquoise-mint"
   ],
   "agent_topic_used": {
     "howto": [
       "howto-1270",
-      "howto-1925"
+      "howto-1925",
+      "howto-0854"
     ]
   },
   "history": [
@@ -45,6 +48,35 @@
       "template_name": "premium_minimal",
       "theme_id": "blueberry",
       "image": "output/20261001T045511Z_howto_howto-1925_t10.png",
+      "source_url": ""
+    },
+    {
+      "topic_id": "howto-0854",
+      "topic": "How-To: How to optimize Workflow Automation: Performance",
+      "category": "Howto | Automation & Productivity",
+      "status": "generated",
+      "timestamp_utc": "2026-10-01T04:58:39.486447+00:00",
+      "agent_id": "howto",
+      "agent_name": "How-To Agent",
+      "template_id": 7,
+      "template_name": "color_band",
+      "theme_id": "turquoise-mint",
+      "image": "output/20261001T045821Z_howto_howto-0854_t07.png",
+      "source_url": ""
+    },
+    {
+      "topic_id": "howto-0854",
+      "topic": "How-To: How to optimize Workflow Automation: Performance",
+      "category": "Howto | Automation & Productivity",
+      "status": "published",
+      "timestamp_utc": "2026-10-01T04:58:44.238097+00:00",
+      "agent_id": "howto",
+      "agent_name": "How-To Agent",
+      "template_id": 7,
+      "template_name": "color_band",
+      "theme_id": "turquoise-mint",
+      "image": "output/20261001T045821Z_howto_howto-0854_t07.png",
+      "facebook_post_id": "1317018278163213_122121922725419769",
       "source_url": ""
     }
   ]

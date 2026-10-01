@@ -1,10 +1,41 @@
 {
   "version": 8,
   "topic_cycle": 0,
-  "topic_used": [],
+  "topic_used": [
+    "rgo-uild-a-roject-332"
+  ],
   "template_cycle": 0,
-  "template_used": [],
+  "template_used": [
+    9
+  ],
   "theme_cycle": 0,
-  "theme_used": [],
-  "history": []
+  "theme_used": [
+    "aqua-glass"
+  ],
+  "history": [
+    {
+      "topic_id": "rgo-uild-a-roject-332",
+      "topic": "How to build a real-world project with Argo CD: Build a Project",
+      "category": "DevOps Engineering",
+      "status": "generated",
+      "timestamp_utc": "2026-10-01T03:37:50.518256+00:00",
+      "topic_cycle": 0,
+      "template_id": 9,
+      "template_name": "diagonal_blocks",
+      "theme_id": "aqua-glass",
+      "image": "output/20261001T033734Z_rgo-uild-a-roject-332_t09.png"
+    },
+    {
+      "topic_id": "rgo-uild-a-roject-332",
+      "topic": "How to build a real-world project with Argo CD: Build a Project",
+      "category": "DevOps Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-01T03:37:55.159439+00:00",
+      "template_id": 9,
+      "template_name": "diagonal_blocks",
+      "theme_id": "aqua-glass",
+      "image": "output/20261001T033734Z_rgo-uild-a-roject-332_t09.png",
+      "facebook_post_id": "1317018278163213_122121912981419769"
+    }
+  ]
 }

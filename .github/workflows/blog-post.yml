@@ -1,6 +1,14 @@
 name: Smart Learning Lab - 20 Agent Publisher
 
 on:
+  # Run automatically when project code/content is pushed.
+  # Ignore the rotation-history file so the workflow does not trigger itself
+  # when it commits the updated history after a successful run.
+  push:
+    branches:
+      - '**'
+    paths-ignore:
+      - 'data/blog_history.json'
   workflow_dispatch:
     inputs:
       agent:

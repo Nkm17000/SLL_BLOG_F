@@ -1,68 +1,11 @@
 {
-  "version": 8,
+  "version": 9,
   "topic_cycle": 0,
-  "topic_used": [
-    "rgo-uild-a-roject-332",
-    "erformance-0179"
-  ],
+  "topic_used": [],
   "template_cycle": 0,
-  "template_used": [
-    9,
-    8
-  ],
+  "template_used": [],
   "theme_cycle": 0,
-  "theme_used": [
-    "aqua-glass",
-    "hot-pink"
-  ],
-  "history": [
-    {
-      "topic_id": "rgo-uild-a-roject-332",
-      "topic": "How to build a real-world project with Argo CD: Build a Project",
-      "category": "DevOps Engineering",
-      "status": "generated",
-      "timestamp_utc": "2026-10-01T03:37:50.518256+00:00",
-      "topic_cycle": 0,
-      "template_id": 9,
-      "template_name": "diagonal_blocks",
-      "theme_id": "aqua-glass",
-      "image": "output/20261001T033734Z_rgo-uild-a-roject-332_t09.png"
-    },
-    {
-      "topic_id": "rgo-uild-a-roject-332",
-      "topic": "How to build a real-world project with Argo CD: Build a Project",
-      "category": "DevOps Engineering",
-      "status": "published",
-      "timestamp_utc": "2026-10-01T03:37:55.159439+00:00",
-      "template_id": 9,
-      "template_name": "diagonal_blocks",
-      "theme_id": "aqua-glass",
-      "image": "output/20261001T033734Z_rgo-uild-a-roject-332_t09.png",
-      "facebook_post_id": "1317018278163213_122121912981419769"
-    },
-    {
-      "topic_id": "erformance-0179",
-      "topic": "How to optimize ETL: Performance",
-      "category": "Data & Databases",
-      "status": "generated",
-      "timestamp_utc": "2026-10-01T04:20:33.454748+00:00",
-      "topic_cycle": 0,
-      "template_id": 8,
-      "template_name": "circle_focus",
-      "theme_id": "hot-pink",
-      "image": "output/20261001T041949Z_erformance-0179_t08.png"
-    },
-    {
-      "topic_id": "erformance-0179",
-      "topic": "How to optimize ETL: Performance",
-      "category": "Data & Databases",
-      "status": "published",
-      "timestamp_utc": "2026-10-01T04:20:39.368393+00:00",
-      "template_id": 8,
-      "template_name": "circle_focus",
-      "theme_id": "hot-pink",
-      "image": "output/20261001T041949Z_erformance-0179_t08.png",
-      "facebook_post_id": "1317018278163213_122121917493419769"
-    }
-  ]
+  "theme_used": [],
+  "agent_topic_used": {},
+  "history": []
 }

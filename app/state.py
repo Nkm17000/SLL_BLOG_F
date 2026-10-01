@@ -7,7 +7,7 @@ ROOT = Path(__file__).resolve().parent.parent
 HISTORY = ROOT / "data/blog_history.json"
 
 def _default():
-    return {"version": 8, "topic_cycle": 0, "topic_used": [], "template_cycle": 0, "template_used": [], "theme_cycle": 0, "theme_used": [], "history": []}
+    return {"version": 9, "topic_cycle": 0, "topic_used": [], "template_cycle": 0, "template_used": [], "theme_cycle": 0, "theme_used": [], "agent_topic_used": {}, "history": []}
 
 def load_history():
     if not HISTORY.exists():
@@ -15,9 +15,10 @@ def load_history():
     try:
         data=json.loads(HISTORY.read_text(encoding="utf-8"))
         if not isinstance(data,dict): raise ValueError("history is not an object")
-        base=_default(); base.update(data); base["version"]=8
+        base=_default(); base.update(data); base["version"]=9
         for key in ("topic_used","template_used","theme_used","history"):
             if not isinstance(base.get(key),list): base[key]=[]
+        if not isinstance(base.get("agent_topic_used"), dict): base["agent_topic_used"] = {}
         return base
     except Exception as exc:
         print(f"WARNING: invalid history file: {exc}; starting fresh")
@@ -25,7 +26,7 @@ def load_history():
 
 def save_history(data):
     HISTORY.parent.mkdir(parents=True,exist_ok=True)
-    payload={k:data.get(k) for k in ("version","topic_cycle","topic_used","template_cycle","template_used","theme_cycle","theme_used","history")}
+    payload={k:data.get(k) for k in ("version","topic_cycle","topic_used","template_cycle","template_used","theme_cycle","theme_used","agent_topic_used","history")}
     tmp=HISTORY.with_suffix('.tmp')
     tmp.write_text(json.dumps(payload,ensure_ascii=False,indent=2)+"\n",encoding='utf-8')
     tmp.replace(HISTORY)

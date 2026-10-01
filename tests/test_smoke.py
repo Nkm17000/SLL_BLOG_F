@@ -4,6 +4,7 @@ from pathlib import Path
 from app.run_agent import choose_template, choose_topic
 from app.html_renderer import build_html
 from app.theme_engine import THEMES, choose_theme
+from app.content_agents import AGENTS, SCHEDULE, agent_for_hour
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -58,6 +59,24 @@ class ProjectSmokeTests(unittest.TestCase):
         self.assertNotIn("{{title}}",html)
         self.assertNotIn("{{points[0].title}}",html)
         self.assertIn(blog["title"],html)
+
+    def test_multi_agent_schedule_has_twenty_slots(self):
+        self.assertEqual(len(AGENTS), 20)
+        self.assertEqual(len(SCHEDULE), 20)
+        self.assertEqual([h for h, _ in SCHEDULE], list(range(4,24)))
+        for hour, agent_id in SCHEDULE:
+            self.assertEqual(agent_for_hour(hour).id, agent_id)
+
+    def test_every_agent_has_2000_topics(self):
+        banks=sorted((ROOT/"data"/"agents").glob("*_topics.json"))
+        self.assertEqual(len(banks),20)
+        for path in banks:
+            data=json.loads(path.read_text(encoding="utf-8"))
+            self.assertEqual(data["count"],2000,path)
+            self.assertEqual(len(data["blogs"]),2000,path)
+            for blog in data["blogs"][:3]:
+                self.assertEqual(len(blog["points"]),5)
+                self.assertTrue(blog.get("agent"))
 
     def test_theme_rotation_has_no_repeat_before_cycle_end(self):
         state={"theme_used":[]}

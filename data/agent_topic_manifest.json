@@ -1,0 +1,128 @@
+{
+  "version": 1,
+  "agent_count": 20,
+  "topics_per_agent": 2000,
+  "total_topic_records": 40000,
+  "banks": [
+    {
+      "agent": "ai_tools",
+      "agent_name": "AI Tools Agent",
+      "file": "data/agents/ai_tools_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "ai",
+      "agent_name": "AI Agent",
+      "file": "data/agents/ai_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "app_development",
+      "agent_name": "App Development Agent",
+      "file": "data/agents/app_development_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "career",
+      "agent_name": "Tech Career Agent",
+      "file": "data/agents/career_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "cloud",
+      "agent_name": "Cloud Agent",
+      "file": "data/agents/cloud_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "coding",
+      "agent_name": "Coding Agent",
+      "file": "data/agents/coding_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "concepts",
+      "agent_name": "Concept Explainer Agent",
+      "file": "data/agents/concepts_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "cybersecurity",
+      "agent_name": "Cybersecurity Agent",
+      "file": "data/agents/cybersecurity_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "database",
+      "agent_name": "Database Agent",
+      "file": "data/agents/database_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "debugging",
+      "agent_name": "Debugging Agent",
+      "file": "data/agents/debugging_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "experiments",
+      "agent_name": "Tech Experiment Agent",
+      "file": "data/agents/experiments_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "howto",
+      "agent_name": "How-To Agent",
+      "file": "data/agents/howto_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "infographic",
+      "agent_name": "Tech Infographic Agent",
+      "file": "data/agents/infographic_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "news",
+      "agent_name": "Tech News Agent",
+      "file": "data/agents/news_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "productivity",
+      "agent_name": "Developer Productivity Agent",
+      "file": "data/agents/productivity_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "projects",
+      "agent_name": "Project Ideas Agent",
+      "file": "data/agents/projects_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "repurposing",
+      "agent_name": "Content Repurposing Agent",
+      "file": "data/agents/repurposing_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "student",
+      "agent_name": "Student Learning Agent",
+      "file": "data/agents/student_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "tech_facts",
+      "agent_name": "Tech Facts Agent",
+      "file": "data/agents/tech_facts_topics.json",
+      "count": 2000
+    },
+    {
+      "agent": "technical_blog",
+      "agent_name": "Technical Blog Agent",
+      "file": "data/agents/technical_blog_topics.json",
+      "count": 2000
+    }
+  ]
+}

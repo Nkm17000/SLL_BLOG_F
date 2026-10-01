@@ -1,0 +1,26 @@
+{
+  "timezone": "Asia/Kolkata",
+  "posts_per_day": 20,
+  "schedule": [
+    {"time":"04:00","agent":"student","purpose":"Beginner-friendly technology learning"},
+    {"time":"05:00","agent":"tech_facts","purpose":"Interesting technical facts"},
+    {"time":"06:00","agent":"ai","purpose":"AI and AI engineering"},
+    {"time":"07:00","agent":"ai_tools","purpose":"AI tools and workflows"},
+    {"time":"08:00","agent":"coding","purpose":"Programming and developer content"},
+    {"time":"09:00","agent":"debugging","purpose":"Errors and troubleshooting"},
+    {"time":"10:00","agent":"howto","purpose":"Practical implementation guides"},
+    {"time":"11:00","agent":"concepts","purpose":"Technical concept explainers"},
+    {"time":"12:00","agent":"cloud","purpose":"Cloud and infrastructure"},
+    {"time":"13:00","agent":"database","purpose":"Database engineering"},
+    {"time":"14:00","agent":"app_development","purpose":"Web and mobile application development"},
+    {"time":"15:00","agent":"cybersecurity","purpose":"Defensive security education"},
+    {"time":"16:00","agent":"experiments","purpose":"Small technical experiments"},
+    {"time":"17:00","agent":"projects","purpose":"Project ideas and architecture"},
+    {"time":"18:00","agent":"productivity","purpose":"Developer productivity and automation"},
+    {"time":"19:00","agent":"career","purpose":"Technology career and skills"},
+    {"time":"20:00","agent":"news","purpose":"Current technology news from RSS"},
+    {"time":"21:00","agent":"infographic","purpose":"Visual technical explainers"},
+    {"time":"22:00","agent":"repurposing","purpose":"Reusable technical content formats"},
+    {"time":"23:00","agent":"technical_blog","purpose":"Full technical blog library"}
+  ]
+}

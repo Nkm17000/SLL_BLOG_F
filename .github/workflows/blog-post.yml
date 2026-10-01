@@ -1,26 +1,50 @@
-name: Smart Learning Lab - Dynamic Technical Blog
+name: Smart Learning Lab - 20 Agent Publisher
 
 on:
   workflow_dispatch:
     inputs:
-      dry_run:
-        description: "Generate and validate one blog without publishing to Facebook"
+      agent:
+        description: "Agent (auto follows Asia/Kolkata schedule)"
         required: false
-        default: "false"
+        default: "auto"
+        type: choice
+        options:
+          - auto
+          - student
+          - tech_facts
+          - ai
+          - ai_tools
+          - coding
+          - debugging
+          - howto
+          - concepts
+          - cloud
+          - database
+          - app_development
+          - cybersecurity
+          - experiments
+          - projects
+          - productivity
+          - career
+          - news
+          - infographic
+          - repurposing
+          - technical_blog
+      dry_run:
+        description: "Generate without publishing"
+        required: false
+        default: false
         type: boolean
-  push:
-    branches:
-      - "**"
   schedule:
-    # Six runs every day at 00:00, 04:00, 08:00, 12:00, 16:00 and 20:00 UTC.
-    # This is 05:30, 09:30, 13:30, 17:30, 21:30 and 01:30 IST respectively.
-    - cron: "0 0,4,8,12,16,20 * * *"
+    # 04:00 through 23:00 IST, every hour. IST = UTC+05:30.
+    # Corresponding UTC hours: 22,23,0..17 at minute 30.
+    - cron: "30 22,23,0-17 * * *"
 
 permissions:
   contents: write
 
 concurrency:
-  group: smart-learning-lab-blog-publisher
+  group: smart-learning-lab-20-agents
   cancel-in-progress: false
 
 env:
@@ -31,7 +55,6 @@ env:
 
 jobs:
   publish:
-    name: Generate 1 blog image and publish
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -39,7 +62,7 @@ jobs:
       FACEBOOK_PAGE_TOKEN: ${{ secrets.FACEBOOK_PAGE_TOKEN }}
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -56,71 +79,56 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Install Chromium for HTML rendering
+      - name: Install Chromium
         run: python -m playwright install --with-deps chromium
 
-      - name: Validate JSON and project
+      - name: Validate project
         run: |
           python -m compileall -q app
           python -m unittest discover -s tests -v
           python - <<'PY'
           import json
           from pathlib import Path
-          p=Path('data/blogs.json')
-          data=json.loads(p.read_text(encoding='utf-8'))
-          blogs=data.get('blogs', [])
-          assert len(blogs) == 2000, f'Expected 2000 blog topics, found {len(blogs)}'
-          for b in blogs:
-              assert len(b.get('points', [])) == 5, f"{b.get('id')} must have exactly 5 points"
-          print(f'Validated {len(blogs)} blog topics')
+          root=Path('.')
+          agents=json.loads((root/'data/agent_schedule.json').read_text(encoding='utf-8'))
+          assert agents['posts_per_day'] == 20
+          assert len(agents['schedule']) == 20
+          banks=sorted((root/'data/agents').glob('*_topics.json'))
+          assert len(banks) == 20, f'Expected 20 agent banks, found {len(banks)}'
+          for p in banks:
+              d=json.loads(p.read_text(encoding='utf-8'))
+              assert d['count'] == 2000, (p,d['count'])
+              assert len(d['blogs']) == 2000, p
+              assert all(len(b['points']) == 5 for b in d['blogs']), p
+          print('Validated 20 agents, 20 x 2,000 topics = 40,000 topic records, 5 points each')
           PY
 
-      - name: Generate and publish exactly one blog
+      - name: Generate and publish
         env:
+          AGENT_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.agent || 'auto' }}
           DRY_RUN_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || false }}
         run: |
           if [ "$DRY_RUN_INPUT" = "true" ]; then
-            python -u -m app.run_agent --dry-run
+            python -u -m app.run_agent --agent "$AGENT_INPUT" --dry-run
           else
-            python -u -m app.run_agent
+            python -u -m app.run_agent --agent "$AGENT_INPUT"
           fi
 
-      - name: Commit rotation and history
+      - name: Commit history
         if: success()
         run: |
-          set -e
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          BRANCH="${GITHUB_REF_NAME}"
-          git fetch origin "$BRANCH"
-          git checkout "$BRANCH"
           git add data/blog_history.json
-          if git diff --cached --quiet; then
-            echo "No history changes to commit."
-            exit 0
-          fi
-          git commit -m "chore: update blog rotation history [skip ci]"
-          git rebase "origin/$BRANCH" || {
-            echo "History changed upstream; aborting rebase and retrying with fresh state."
-            git rebase --abort || true
-            git reset --hard "origin/$BRANCH"
-            exit 1
-          }
-          git push origin "HEAD:$BRANCH"
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "chore: update 20-agent rotation history [skip ci]"
+          git push
 
-      - name: Print workflow trigger
-        if: always()
-        run: |
-          echo "Event: ${{ github.event_name }}"
-          echo "Ref: ${{ github.ref }}"
-          echo "Branch: ${{ github.ref_name }}"
-          echo "Run: ${{ github.run_number }}"
-
-      - name: Upload generated image and summary
+      - name: Upload output
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: smart-learning-lab-blog-${{ github.run_number }}
+          name: smart-learning-lab-20-agents-${{ github.run_number }}
           path: |
             output/latest_summary.json
             output/*.png

@@ -8,7 +8,8 @@
     1,
     5,
     4,
-    10
+    10,
+    8
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -16,7 +17,8 @@
     "sky-breeze",
     "magenta-pop",
     "royal-blue",
-    "mint-fresh"
+    "mint-fresh",
+    "hot-pink"
   ],
   "agent_topic_used": {
     "howto": [
@@ -33,6 +35,9 @@
     ],
     "app_development": [
       "app_development-0130"
+    ],
+    "infographic": [
+      "infographic-0710"
     ]
   },
   "history": [
@@ -130,6 +135,25 @@
       "difficulty": "intermediate",
       "series": "Build Better Apps",
       "content_fingerprint": "cd99338eaebae8025730"
+    },
+    {
+      "topic_id": "infographic-0710",
+      "topic": "Visual Explainer: How to secure Windows Internals: Security",
+      "category": "Infographic | Operating Systems & Systems",
+      "status": "published",
+      "timestamp_utc": "2026-10-02T15:56:40.418133+00:00",
+      "agent_id": "infographic",
+      "agent_name": "Tech Infographic Agent",
+      "template_id": 8,
+      "template_name": "circle_focus",
+      "theme_id": "hot-pink",
+      "image": "output/20261002T155608Z_infographic_infographic-0710_t08.png",
+      "facebook_post_id": "1317018278163213_122122250091419769",
+      "source_url": "",
+      "hook": "How to secure Windows Internals: Security — visualized",
+      "difficulty": "beginner",
+      "series": "Visual Tech",
+      "content_fingerprint": "0dee3339e1481d1354d0"
     }
   ]
 }

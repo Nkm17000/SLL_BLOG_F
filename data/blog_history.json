@@ -6,13 +6,15 @@
   "template_used": [
     2,
     1,
-    5
+    5,
+    4
   ],
   "theme_cycle": 0,
   "theme_used": [
     "amber-glow",
     "sky-breeze",
-    "magenta-pop"
+    "magenta-pop",
+    "royal-blue"
   ],
   "agent_topic_used": {
     "howto": [
@@ -23,6 +25,9 @@
     ],
     "student": [
       "student-1430"
+    ],
+    "ai_tools": [
+      "ai_tools-0230"
     ]
   },
   "history": [
@@ -82,6 +87,25 @@
       "difficulty": "beginner",
       "series": "Tech Made Simple",
       "content_fingerprint": "ec5d7a767944110977b5"
+    },
+    {
+      "topic_id": "ai_tools-0230",
+      "topic": "AI Tool Guide: How to secure Threat Detection: Security",
+      "category": "Ai Tools | Cybersecurity",
+      "status": "published",
+      "timestamp_utc": "2026-10-02T01:52:48.550983+00:00",
+      "agent_id": "ai_tools",
+      "agent_name": "AI Tools Agent",
+      "template_id": 4,
+      "template_name": "bento_grid",
+      "theme_id": "royal-blue",
+      "image": "output/20261002T015152Z_ai-tools_ai_tools-0230_t04.png",
+      "facebook_post_id": "1317018278163213_122122111905419769",
+      "source_url": "",
+      "hook": "How to use How to secure Threat Detection: Security in practice",
+      "difficulty": "beginner",
+      "series": "AI Tools in Practice",
+      "content_fingerprint": "0aa04fe182545e2b6bcc"
     }
   ]
 }

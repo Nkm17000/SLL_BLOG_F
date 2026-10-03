@@ -10,7 +10,8 @@
     4,
     10,
     8,
-    7
+    7,
+    9
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -20,7 +21,8 @@
     "royal-blue",
     "mint-fresh",
     "hot-pink",
-    "aqua-glass"
+    "aqua-glass",
+    "cyan-wave"
   ],
   "agent_topic_used": {
     "howto": [
@@ -41,6 +43,9 @@
     ],
     "infographic": [
       "infographic-0710"
+    ],
+    "ai": [
+      "ai-0421"
     ]
   },
   "history": [
@@ -176,6 +181,25 @@
       "difficulty": "beginner",
       "series": "Tech Made Simple",
       "content_fingerprint": "e484dd9da2e0473e3048"
+    },
+    {
+      "topic_id": "ai-0421",
+      "topic": "AI Explained: A practical introduction to Digital Assets: Fundamentals",
+      "category": "Ai | Blockchain & Web3",
+      "status": "published",
+      "timestamp_utc": "2026-10-03T01:18:55.121866+00:00",
+      "agent_id": "ai",
+      "agent_name": "AI Agent",
+      "template_id": 9,
+      "template_name": "diagonal_blocks",
+      "theme_id": "cyan-wave",
+      "image": "output/20261003T011811Z_ai_ai-0421_t09.png",
+      "facebook_post_id": "1317018278163213_122122343997419769",
+      "source_url": "",
+      "hook": "How does A practical introduction to Digital Assets: Fundamentals…",
+      "difficulty": "intermediate",
+      "series": "AI Explained",
+      "content_fingerprint": "a063481868453fd45fdc"
     }
   ]
 }

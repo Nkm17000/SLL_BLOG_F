@@ -11,7 +11,8 @@
     10,
     8,
     7,
-    9
+    9,
+    6
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -22,7 +23,8 @@
     "mint-fresh",
     "hot-pink",
     "aqua-glass",
-    "cyan-wave"
+    "cyan-wave",
+    "lime-light"
   ],
   "agent_topic_used": {
     "howto": [
@@ -46,6 +48,9 @@
     ],
     "ai": [
       "ai-0421"
+    ],
+    "cloud": [
+      "cloud-0528"
     ]
   },
   "history": [
@@ -200,6 +205,25 @@
       "difficulty": "intermediate",
       "series": "AI Explained",
       "content_fingerprint": "a063481868453fd45fdc"
+    },
+    {
+      "topic_id": "cloud-0528",
+      "topic": "Cloud Guide: How to build Risk Analytics: Implementation",
+      "category": "Cloud | FinTech",
+      "status": "published",
+      "timestamp_utc": "2026-10-03T06:51:44.111098+00:00",
+      "agent_id": "cloud",
+      "agent_name": "Cloud Agent",
+      "template_id": 6,
+      "template_name": "newspaper_columns",
+      "theme_id": "lime-light",
+      "image": "output/20261003T065108Z_cloud_cloud-0528_t06.png",
+      "facebook_post_id": "1317018278163213_122122387461419769",
+      "source_url": "",
+      "hook": "How to build Risk Analytics: Implementation: architecture made clear",
+      "difficulty": "intermediate",
+      "series": "Cloud Architecture",
+      "content_fingerprint": "b8739c943e23c71f1fbb"
     }
   ]
 }

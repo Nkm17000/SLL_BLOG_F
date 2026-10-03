@@ -1,19 +1,12 @@
 {
   "version": 10,
   "topic_cycle": 0,
-  "topic_used": [],
-  "template_cycle": 0,
+  "topic_used": [
+    "technical_blog-1589"
+  ],
+  "template_cycle": 1,
   "template_used": [
-    2,
-    1,
-    5,
-    4,
-    10,
-    8,
-    7,
-    9,
-    6,
-    3
+    9
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -26,7 +19,8 @@
     "aqua-glass",
     "cyan-wave",
     "lime-light",
-    "forest-green"
+    "forest-green",
+    "peach-glow"
   ],
   "agent_topic_used": {
     "howto": [
@@ -56,6 +50,9 @@
     ],
     "productivity": [
       "productivity-1359"
+    ],
+    "technical_blog": [
+      "technical_blog-1589"
     ]
   },
   "history": [
@@ -248,6 +245,25 @@
       "difficulty": "beginner",
       "series": "Developer Productivity",
       "content_fingerprint": "ef3420d87ba856d16b97"
+    },
+    {
+      "topic_id": "technical_blog-1589",
+      "topic": "Technical Deep Dive: How to monitor Database Sharding: Monitoring",
+      "category": "Technical Blog | Database Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-03T17:30:50.893380+00:00",
+      "agent_id": "technical_blog",
+      "agent_name": "Technical Blog Agent",
+      "template_id": 9,
+      "template_name": "diagonal_blocks",
+      "theme_id": "peach-glow",
+      "image": "output/20261003T173026Z_technical-blog_technical_blog-1589_t09.png",
+      "facebook_post_id": "1317018278163213_122122506267419769",
+      "source_url": "",
+      "hook": "How to monitor Database Sharding: Monitoring — technical deep dive",
+      "difficulty": "intermediate",
+      "series": "Technical Deep Dive",
+      "content_fingerprint": "59c5fb9350420f28d696"
     }
   ]
 }

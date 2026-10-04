@@ -9,7 +9,8 @@
     9,
     2,
     8,
-    1
+    1,
+    6
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -26,7 +27,8 @@
     "peach-glow",
     "orange-flame",
     "purple-bloom",
-    "indigo-sky"
+    "indigo-sky",
+    "lemon-sun"
   ],
   "agent_topic_used": {
     "howto": [
@@ -62,6 +64,9 @@
     ],
     "technical_blog": [
       "technical_blog-1589"
+    ],
+    "news": [
+      "news-cybersecurity-market-companies-size-trends-2026-2035-precedenceresearch-com"
     ]
   },
   "history": [
@@ -330,6 +335,25 @@
       "difficulty": "intermediate",
       "series": "Build Better Apps",
       "content_fingerprint": "931fc5c3337fb2949c57"
+    },
+    {
+      "topic_id": "news-cybersecurity-market-companies-size-trends-2026-2035-precedenceresearch-com",
+      "topic": "Cybersecurity Market Companies, Size & Trends 2026-2035 - precedenceresearch.com",
+      "category": "Technology News",
+      "status": "published",
+      "timestamp_utc": "2026-10-04T14:56:27.612108+00:00",
+      "agent_id": "news",
+      "agent_name": "Tech News Agent",
+      "template_id": 6,
+      "template_name": "newspaper_columns",
+      "theme_id": "lemon-sun",
+      "image": "output/20261004T145552Z_news_news-cybersecurity-market-companies-size-trends-2026-2035-precedenceresearch-com_t06.png",
+      "facebook_post_id": "1317018278163213_122122721847419769",
+      "source_url": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9KMDJaUWs1dlIyRkEzNExlS0RuSGNONTJhM19OQmRtS2lVamdqR3EwajlaaGxYVjdGanZFT1hkUHhfS0J0bW56SHFWeC1ZdkllZXM2MDIxWDA3b0NqZ2pYWkV4NlZjekU?oc=5",
+      "hook": "What this tech update means: Cybersecurity Market Companies, Size &…",
+      "difficulty": "intermediate",
+      "series": "Tech News Explained",
+      "content_fingerprint": "d2aa2893d5769ff6fcfe"
     }
   ]
 }

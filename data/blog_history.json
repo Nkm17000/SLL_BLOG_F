@@ -11,7 +11,8 @@
     8,
     1,
     6,
-    3
+    3,
+    10
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -30,7 +31,8 @@
     "purple-bloom",
     "indigo-sky",
     "lemon-sun",
-    "emerald-leaf"
+    "emerald-leaf",
+    "lavender-pop"
   ],
   "agent_topic_used": {
     "howto": [
@@ -57,7 +59,8 @@
       "infographic-0710"
     ],
     "ai": [
-      "ai-0421"
+      "ai-0421",
+      "ai-1092"
     ],
     "cloud": [
       "cloud-0528"
@@ -376,6 +379,25 @@
       "difficulty": "beginner",
       "series": "Tech Made Simple",
       "content_fingerprint": "c83094d350061762b55a"
+    },
+    {
+      "topic_id": "ai-1092",
+      "topic": "AI Explained: How to build a real-world project with LLM Application Architecture: Build a Project",
+      "category": "Ai | AI Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-05T01:08:04.057002+00:00",
+      "agent_id": "ai",
+      "agent_name": "AI Agent",
+      "template_id": 10,
+      "template_name": "premium_minimal",
+      "theme_id": "lavender-pop",
+      "image": "output/20261005T010739Z_ai_ai-1092_t10.png",
+      "facebook_post_id": "1317018278163213_122122817679419769",
+      "source_url": "",
+      "hook": "How does How to build a real-world project with LLM Application…",
+      "difficulty": "intermediate",
+      "series": "AI Explained",
+      "content_fingerprint": "b83ac3f9c12e63778856"
     }
   ]
 }

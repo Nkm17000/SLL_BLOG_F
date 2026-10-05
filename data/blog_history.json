@@ -13,7 +13,8 @@
     6,
     3,
     10,
-    7
+    7,
+    4
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -34,7 +35,8 @@
     "lemon-sun",
     "emerald-leaf",
     "lavender-pop",
-    "teal-garden"
+    "teal-garden",
+    "blueberry"
   ],
   "agent_topic_used": {
     "howto": [
@@ -58,7 +60,8 @@
       "app_development-0750"
     ],
     "infographic": [
-      "infographic-0710"
+      "infographic-0710",
+      "infographic-1197"
     ],
     "ai": [
       "ai-0421",
@@ -420,6 +423,25 @@
       "difficulty": "intermediate",
       "series": "Cloud Architecture",
       "content_fingerprint": "4cdf3865cb013e3ff8e6"
+    },
+    {
+      "topic_id": "infographic-1197",
+      "topic": "Visual Explainer: How to secure applications built with Feature Flag Systems: Security",
+      "category": "Infographic | Software Architecture",
+      "status": "published",
+      "timestamp_utc": "2026-10-05T16:19:00.679460+00:00",
+      "agent_id": "infographic",
+      "agent_name": "Tech Infographic Agent",
+      "template_id": 4,
+      "template_name": "bento_grid",
+      "theme_id": "blueberry",
+      "image": "output/20261005T161829Z_infographic_infographic-1197_t04.png",
+      "facebook_post_id": "1317018278163213_122122974153419769",
+      "source_url": "",
+      "hook": "How to secure applications built with Feature Flag Systems: Security…",
+      "difficulty": "beginner",
+      "series": "Visual Tech",
+      "content_fingerprint": "c32c6323f48f466fe9a5"
     }
   ]
 }

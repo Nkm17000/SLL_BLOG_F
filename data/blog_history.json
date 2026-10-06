@@ -6,7 +6,8 @@
   ],
   "template_cycle": 2,
   "template_used": [
-    6
+    6,
+    8
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -30,7 +31,8 @@
     "teal-garden",
     "blueberry",
     "rose-petal",
-    "sunny-yellow"
+    "sunny-yellow",
+    "violet-night"
   ],
   "agent_topic_used": {
     "howto": [
@@ -77,6 +79,9 @@
     ],
     "coding": [
       "coding-1935"
+    ],
+    "experiments": [
+      "experiments-1072"
     ]
   },
   "history": [
@@ -478,6 +483,25 @@
       "difficulty": "intermediate",
       "series": "Code Better",
       "content_fingerprint": "d969e91a757190fd41b4"
+    },
+    {
+      "topic_id": "experiments-1072",
+      "topic": "Tech Experiment: How to build a real-world project with AI Observability: Build a Project",
+      "category": "Experiments | AI Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-06T10:38:58.137504+00:00",
+      "agent_id": "experiments",
+      "agent_name": "Tech Experiment Agent",
+      "template_id": 8,
+      "template_name": "circle_focus",
+      "theme_id": "violet-night",
+      "image": "output/20261006T103833Z_experiments_experiments-1072_t08.png",
+      "facebook_post_id": "1317018278163213_122123158587419769",
+      "source_url": "",
+      "hook": "Try this tech experiment: How to build a real-world project with AI…",
+      "difficulty": "intermediate",
+      "series": "Tech Lab",
+      "content_fingerprint": "1c0caa2825e155358833"
     }
   ]
 }

@@ -7,7 +7,8 @@
   "template_cycle": 2,
   "template_used": [
     6,
-    8
+    8,
+    1
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -32,7 +33,8 @@
     "blueberry",
     "rose-petal",
     "sunny-yellow",
-    "violet-night"
+    "violet-night",
+    "seafoam"
   ],
   "agent_topic_used": {
     "howto": [
@@ -82,6 +84,9 @@
     ],
     "experiments": [
       "experiments-1072"
+    ],
+    "repurposing": [
+      "repurposing-1993"
     ]
   },
   "history": [
@@ -502,6 +507,25 @@
       "difficulty": "intermediate",
       "series": "Tech Lab",
       "content_fingerprint": "1c0caa2825e155358833"
+    },
+    {
+      "topic_id": "repurposing-1993",
+      "topic": "Content Repurpose: How to design a production architecture using Message Passing: Production Architecture",
+      "category": "Repurposing | Systems Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-06T17:22:02.596747+00:00",
+      "agent_id": "repurposing",
+      "agent_name": "Content Repurposing Agent",
+      "template_id": 1,
+      "template_name": "asymmetric_magazine",
+      "theme_id": "seafoam",
+      "image": "output/20261006T172108Z_repurposing_repurposing-1993_t01.png",
+      "facebook_post_id": "1317018278163213_122123235399419769",
+      "source_url": "",
+      "hook": "How to design a production architecture using Message Passing:…",
+      "difficulty": "beginner",
+      "series": "Tech in Multiple Angles",
+      "content_fingerprint": "39c01d6d2f210cbf82d7"
     }
   ]
 }

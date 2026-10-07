@@ -9,7 +9,8 @@
     6,
     8,
     1,
-    9
+    9,
+    7
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -36,7 +37,8 @@
     "sunny-yellow",
     "violet-night",
     "seafoam",
-    "coral-wave"
+    "coral-wave",
+    "turquoise-mint"
   ],
   "agent_topic_used": {
     "howto": [
@@ -55,7 +57,8 @@
     ],
     "ai_tools": [
       "ai_tools-0230",
-      "ai_tools-0118"
+      "ai_tools-0118",
+      "ai_tools-1787"
     ],
     "app_development": [
       "app_development-0130",
@@ -548,6 +551,25 @@
       "difficulty": "beginner",
       "series": "Tech Made Simple",
       "content_fingerprint": "f9b847ff31dbd0ad287a"
+    },
+    {
+      "topic_id": "ai_tools-1787",
+      "topic": "AI Tool Guide: How to secure applications built with Browser Storage: Security",
+      "category": "Ai Tools | Web Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-07T01:44:15.304750+00:00",
+      "agent_id": "ai_tools",
+      "agent_name": "AI Tools Agent",
+      "template_id": 7,
+      "template_name": "color_band",
+      "theme_id": "turquoise-mint",
+      "image": "output/20261007T014351Z_ai-tools_ai_tools-1787_t07.png",
+      "facebook_post_id": "1317018278163213_122123331711419769",
+      "source_url": "",
+      "hook": "How to use How to secure applications built with Browser Storage:…",
+      "difficulty": "beginner",
+      "series": "AI Tools in Practice",
+      "content_fingerprint": "45bff308aac3236375c1"
     }
   ]
 }

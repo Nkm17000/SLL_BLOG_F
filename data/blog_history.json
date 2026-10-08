@@ -12,7 +12,8 @@
     9,
     7,
     10,
-    4
+    4,
+    3
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -42,7 +43,8 @@
     "coral-wave",
     "turquoise-mint",
     "slate-blue",
-    "coral-red"
+    "coral-red",
+    "apricot"
   ],
   "agent_topic_used": {
     "howto": [
@@ -98,7 +100,8 @@
       "experiments-1072"
     ],
     "repurposing": [
-      "repurposing-1993"
+      "repurposing-1993",
+      "repurposing-1511"
     ]
   },
   "history": [
@@ -614,6 +617,25 @@
       "difficulty": "intermediate",
       "series": "Build Better Apps",
       "content_fingerprint": "0451d4faecc06b4f1164"
+    },
+    {
+      "topic_id": "repurposing-1511",
+      "topic": "Content Repurpose: How to get started with MySQL: Getting Started",
+      "category": "Repurposing | Database Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-08T16:47:47.176655+00:00",
+      "agent_id": "repurposing",
+      "agent_name": "Content Repurposing Agent",
+      "template_id": 3,
+      "template_name": "vertical_timeline",
+      "theme_id": "apricot",
+      "image": "output/20261008T164734Z_repurposing_repurposing-1511_t03.png",
+      "facebook_post_id": "1317018278163213_122123730363419769",
+      "source_url": "",
+      "hook": "How to get started with MySQL: Getting Started: 5 useful angles",
+      "difficulty": "beginner",
+      "series": "Tech in Multiple Angles",
+      "content_fingerprint": "d293e8837fc7225ee19d"
     }
   ]
 }

@@ -10,7 +10,8 @@
     8,
     1,
     9,
-    7
+    7,
+    10
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -38,7 +39,8 @@
     "violet-night",
     "seafoam",
     "coral-wave",
-    "turquoise-mint"
+    "turquoise-mint",
+    "slate-blue"
   ],
   "agent_topic_used": {
     "howto": [
@@ -86,7 +88,8 @@
       "news-cybersecurity-market-companies-size-trends-2026-2035-precedenceresearch-com"
     ],
     "coding": [
-      "coding-1935"
+      "coding-1935",
+      "coding-0980"
     ],
     "experiments": [
       "experiments-1072"
@@ -570,6 +573,25 @@
       "difficulty": "beginner",
       "series": "AI Tools in Practice",
       "content_fingerprint": "45bff308aac3236375c1"
+    },
+    {
+      "topic_id": "coding-0980",
+      "topic": "Developer Guide: How to secure Edge AI Platforms: Security",
+      "category": "Coding | Emerging Technology",
+      "status": "published",
+      "timestamp_utc": "2026-10-08T03:21:59.295537+00:00",
+      "agent_id": "coding",
+      "agent_name": "Coding Agent",
+      "template_id": 10,
+      "template_name": "premium_minimal",
+      "theme_id": "slate-blue",
+      "image": "output/20261008T032131Z_coding_coding-0980_t10.png",
+      "facebook_post_id": "1317018278163213_122123602215419769",
+      "source_url": "",
+      "hook": "Build better with How to secure Edge AI Platforms: Security",
+      "difficulty": "intermediate",
+      "series": "Code Better",
+      "content_fingerprint": "47b8581593383fbd71e7"
     }
   ]
 }

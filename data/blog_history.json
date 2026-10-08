@@ -11,7 +11,8 @@
     1,
     9,
     7,
-    10
+    10,
+    4
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -40,7 +41,8 @@
     "seafoam",
     "coral-wave",
     "turquoise-mint",
-    "slate-blue"
+    "slate-blue",
+    "coral-red"
   ],
   "agent_topic_used": {
     "howto": [
@@ -64,7 +66,8 @@
     ],
     "app_development": [
       "app_development-0130",
-      "app_development-0750"
+      "app_development-0750",
+      "app_development-1964"
     ],
     "infographic": [
       "infographic-0710",
@@ -592,6 +595,25 @@
       "difficulty": "intermediate",
       "series": "Code Better",
       "content_fingerprint": "47b8581593383fbd71e7"
+    },
+    {
+      "topic_id": "app_development-1964",
+      "topic": "App Development: Practical best practices for CPU Profiling: Best Practices",
+      "category": "App Development | Systems Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-08T09:19:23.646038+00:00",
+      "agent_id": "app_development",
+      "agent_name": "App Development Agent",
+      "template_id": 4,
+      "template_name": "bento_grid",
+      "theme_id": "coral-red",
+      "image": "output/20261008T091901Z_app-development_app_development-1964_t04.png",
+      "facebook_post_id": "1317018278163213_122123650743419769",
+      "source_url": "",
+      "hook": "Build smarter apps with Practical best practices for CPU Profiling:…",
+      "difficulty": "intermediate",
+      "series": "Build Better Apps",
+      "content_fingerprint": "0451d4faecc06b4f1164"
     }
   ]
 }

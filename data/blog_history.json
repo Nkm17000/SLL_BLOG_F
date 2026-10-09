@@ -4,51 +4,13 @@
   "topic_used": [
     "technical_blog-1589"
   ],
-  "template_cycle": 2,
+  "template_cycle": 3,
   "template_used": [
-    6,
-    8,
-    1,
-    9,
-    7,
-    10,
-    4,
-    3,
-    5,
-    2
+    10
   ],
-  "theme_cycle": 0,
+  "theme_cycle": 1,
   "theme_used": [
-    "amber-glow",
-    "sky-breeze",
-    "magenta-pop",
-    "royal-blue",
-    "mint-fresh",
-    "hot-pink",
-    "aqua-glass",
-    "cyan-wave",
-    "lime-light",
-    "forest-green",
-    "peach-glow",
-    "orange-flame",
-    "purple-bloom",
-    "indigo-sky",
-    "lemon-sun",
-    "emerald-leaf",
-    "lavender-pop",
-    "teal-garden",
-    "blueberry",
-    "rose-petal",
-    "sunny-yellow",
-    "violet-night",
-    "seafoam",
-    "coral-wave",
-    "turquoise-mint",
-    "slate-blue",
-    "coral-red",
-    "apricot",
-    "ruby-red",
-    "soft-gray"
+    "coral-red"
   ],
   "agent_topic_used": {
     "howto": [
@@ -75,7 +37,8 @@
     "app_development": [
       "app_development-0130",
       "app_development-0750",
-      "app_development-1964"
+      "app_development-1964",
+      "app_development-1494"
     ],
     "infographic": [
       "infographic-0710",
@@ -680,6 +643,25 @@
       "difficulty": "beginner",
       "series": "AI Tools in Practice",
       "content_fingerprint": "f8d4f2b2023c399438ed"
+    },
+    {
+      "topic_id": "app_development-1494",
+      "topic": "App Development: Practical best practices for Data Governance: Best Practices",
+      "category": "App Development | Data Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-09T09:26:49.118472+00:00",
+      "agent_id": "app_development",
+      "agent_name": "App Development Agent",
+      "template_id": 10,
+      "template_name": "premium_minimal",
+      "theme_id": "coral-red",
+      "image": "output/20261009T092624Z_app-development_app_development-1494_t10.png",
+      "facebook_post_id": "1317018278163213_122123899251419769",
+      "source_url": "",
+      "hook": "Build smarter apps with Practical best practices for Data…",
+      "difficulty": "intermediate",
+      "series": "Build Better Apps",
+      "content_fingerprint": "849923b709b605026d95"
     }
   ]
 }

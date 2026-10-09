@@ -14,7 +14,8 @@
     10,
     4,
     3,
-    5
+    5,
+    2
   ],
   "theme_cycle": 0,
   "theme_used": [
@@ -46,7 +47,8 @@
     "slate-blue",
     "coral-red",
     "apricot",
-    "ruby-red"
+    "ruby-red",
+    "soft-gray"
   ],
   "agent_topic_used": {
     "howto": [
@@ -67,7 +69,8 @@
     "ai_tools": [
       "ai_tools-0230",
       "ai_tools-0118",
-      "ai_tools-1787"
+      "ai_tools-1787",
+      "ai_tools-0794"
     ],
     "app_development": [
       "app_development-0130",
@@ -658,6 +661,25 @@
       "difficulty": "beginner",
       "series": "Tech Made Simple",
       "content_fingerprint": "4ef5c5c8ca04e5e27e89"
+    },
+    {
+      "topic_id": "ai_tools-0794",
+      "topic": "AI Tool Guide: How to optimize Power Management: Performance",
+      "category": "Ai Tools | Hardware & Computing",
+      "status": "published",
+      "timestamp_utc": "2026-10-09T02:24:42.235775+00:00",
+      "agent_id": "ai_tools",
+      "agent_name": "AI Tools Agent",
+      "template_id": 2,
+      "template_name": "zigzag_story",
+      "theme_id": "soft-gray",
+      "image": "output/20261009T022420Z_ai-tools_ai_tools-0794_t02.png",
+      "facebook_post_id": "1317018278163213_122123814579419769",
+      "source_url": "",
+      "hook": "How to use How to optimize Power Management: Performance in practice",
+      "difficulty": "beginner",
+      "series": "AI Tools in Practice",
+      "content_fingerprint": "f8d4f2b2023c399438ed"
     }
   ]
 }

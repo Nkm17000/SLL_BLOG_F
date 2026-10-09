@@ -7,12 +7,14 @@
   "template_cycle": 3,
   "template_used": [
     10,
-    8
+    8,
+    3
   ],
   "theme_cycle": 1,
   "theme_used": [
     "coral-red",
-    "blueberry"
+    "blueberry",
+    "mint-fresh"
   ],
   "agent_topic_used": {
     "howto": [
@@ -28,7 +30,8 @@
       "student-1406",
       "student-0153",
       "student-1448",
-      "student-0297"
+      "student-0297",
+      "student-1190"
     ],
     "ai_tools": [
       "ai_tools-0230",
@@ -684,6 +687,25 @@
       "difficulty": "beginner",
       "series": "Visual Tech",
       "content_fingerprint": "6c09242551479acaad33"
+    },
+    {
+      "topic_id": "student-1190",
+      "topic": "Learn simply: How to migrate to Distributed Caching: Migration",
+      "category": "Student | Software Architecture",
+      "status": "published",
+      "timestamp_utc": "2026-10-09T21:08:37.378147+00:00",
+      "agent_id": "student",
+      "agent_name": "Student Learning Agent",
+      "template_id": 3,
+      "template_name": "vertical_timeline",
+      "theme_id": "mint-fresh",
+      "image": "output/20261009T210815Z_student_student-1190_t03.png",
+      "facebook_post_id": "1317018278163213_122124024465419769",
+      "source_url": "",
+      "hook": "How to migrate to Distributed Caching: Migration — explained simply",
+      "difficulty": "beginner",
+      "series": "Tech Made Simple",
+      "content_fingerprint": "3d4c8e42ae8d5dc02f8f"
     }
   ]
 }

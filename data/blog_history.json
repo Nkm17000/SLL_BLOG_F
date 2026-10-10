@@ -9,14 +9,16 @@
     10,
     8,
     3,
-    6
+    6,
+    4
   ],
   "theme_cycle": 1,
   "theme_used": [
     "coral-red",
     "blueberry",
     "mint-fresh",
-    "lime-light"
+    "lime-light",
+    "purple-bloom"
   ],
   "agent_topic_used": {
     "howto": [
@@ -46,7 +48,8 @@
       "app_development-0130",
       "app_development-0750",
       "app_development-1964",
-      "app_development-1494"
+      "app_development-1494",
+      "app_development-1129"
     ],
     "infographic": [
       "infographic-0710",
@@ -728,6 +731,25 @@
       "difficulty": "beginner",
       "series": "AI Tools in Practice",
       "content_fingerprint": "cfad5256960f73270075"
+    },
+    {
+      "topic_id": "app_development-1129",
+      "topic": "App Development: How to monitor Clean Architecture: Monitoring",
+      "category": "App Development | Software Architecture",
+      "status": "published",
+      "timestamp_utc": "2026-10-10T08:48:34.081534+00:00",
+      "agent_id": "app_development",
+      "agent_name": "App Development Agent",
+      "template_id": 4,
+      "template_name": "bento_grid",
+      "theme_id": "purple-bloom",
+      "image": "output/20261010T084807Z_app-development_app_development-1129_t04.png",
+      "facebook_post_id": "1317018278163213_122124113295419769",
+      "source_url": "",
+      "hook": "Build smarter apps with How to monitor Clean Architecture: Monitoring",
+      "difficulty": "intermediate",
+      "series": "Build Better Apps",
+      "content_fingerprint": "20fd194b53d1d7b9691c"
     }
   ]
 }

@@ -10,7 +10,8 @@
     8,
     3,
     6,
-    4
+    4,
+    7
   ],
   "theme_cycle": 1,
   "theme_used": [
@@ -18,7 +19,8 @@
     "blueberry",
     "mint-fresh",
     "lime-light",
-    "purple-bloom"
+    "purple-bloom",
+    "sky-breeze"
   ],
   "agent_topic_used": {
     "howto": [
@@ -54,7 +56,8 @@
     "infographic": [
       "infographic-0710",
       "infographic-1197",
-      "infographic-0136"
+      "infographic-0136",
+      "infographic-0219"
     ],
     "ai": [
       "ai-0421",
@@ -750,6 +753,25 @@
       "difficulty": "intermediate",
       "series": "Build Better Apps",
       "content_fingerprint": "20fd194b53d1d7b9691c"
+    },
+    {
+      "topic_id": "infographic-0219",
+      "topic": "Visual Explainer: How to optimize Cloud Security: Performance",
+      "category": "Infographic | Cybersecurity",
+      "status": "published",
+      "timestamp_utc": "2026-10-10T15:31:27.931795+00:00",
+      "agent_id": "infographic",
+      "agent_name": "Tech Infographic Agent",
+      "template_id": 7,
+      "template_name": "color_band",
+      "theme_id": "sky-breeze",
+      "image": "output/20261010T153105Z_infographic_infographic-0219_t07.png",
+      "facebook_post_id": "1317018278163213_122124184407419769",
+      "source_url": "",
+      "hook": "How to optimize Cloud Security: Performance — visualized",
+      "difficulty": "beginner",
+      "series": "Visual Tech",
+      "content_fingerprint": "46635bb07e66c5be4a57"
     }
   ]
 }

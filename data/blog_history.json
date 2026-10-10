@@ -8,13 +8,15 @@
   "template_used": [
     10,
     8,
-    3
+    3,
+    6
   ],
   "theme_cycle": 1,
   "theme_used": [
     "coral-red",
     "blueberry",
-    "mint-fresh"
+    "mint-fresh",
+    "lime-light"
   ],
   "agent_topic_used": {
     "howto": [
@@ -37,7 +39,8 @@
       "ai_tools-0230",
       "ai_tools-0118",
       "ai_tools-1787",
-      "ai_tools-0794"
+      "ai_tools-0794",
+      "ai_tools-1728"
     ],
     "app_development": [
       "app_development-0130",
@@ -706,6 +709,25 @@
       "difficulty": "beginner",
       "series": "Tech Made Simple",
       "content_fingerprint": "3d4c8e42ae8d5dc02f8f"
+    },
+    {
+      "topic_id": "ai_tools-1728",
+      "topic": "AI Tool Guide: How to test systems built with Express.js: Testing",
+      "category": "Ai Tools | Web Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-10T01:52:36.986603+00:00",
+      "agent_id": "ai_tools",
+      "agent_name": "AI Tools Agent",
+      "template_id": 6,
+      "template_name": "newspaper_columns",
+      "theme_id": "lime-light",
+      "image": "output/20261010T015210Z_ai-tools_ai_tools-1728_t06.png",
+      "facebook_post_id": "1317018278163213_122124058563419769",
+      "source_url": "",
+      "hook": "How to use How to test systems built with Express.js: Testing in…",
+      "difficulty": "beginner",
+      "series": "AI Tools in Practice",
+      "content_fingerprint": "cfad5256960f73270075"
     }
   ]
 }

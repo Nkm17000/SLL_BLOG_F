@@ -51,3 +51,9 @@ class ArticleContentTests(unittest.TestCase):
         self.assertNotIn('files',request.call_args.kwargs)
 
 if __name__=='__main__': unittest.main()
+
+class PublisherUrlResolutionTests(unittest.TestCase):
+    def test_resolves_canonical_publisher_url(self):
+        from app.article_content import _publisher_url
+        page='<html><head><link rel="canonical" href="https://publisher.example.com/story/123"></head></html>'
+        self.assertEqual(_publisher_url(page,'https://news.google.com/rss/articles/abc'), 'https://publisher.example.com/story/123')

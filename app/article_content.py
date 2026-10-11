@@ -32,10 +32,47 @@ def extract_article(html: str) -> str:
     if candidates: return max(candidates,key=len)
     return clean(" ".join(p.get_text(" ",strip=True) for p in soup.find_all(["p","h2","h3"]) if len(p.get_text(" ",strip=True))>40))
 
+def _publisher_url(page_html: str, current_url: str) -> str:
+    """Resolve publisher canonical URL from a news redirect page when exposed."""
+    soup=BeautifulSoup(page_html,"html.parser")
+    for selector, attr in (("link[rel='canonical']","href"),("meta[property='og:url']","content")):
+        node=soup.select_one(selector)
+        candidate=(node.get(attr,"").strip() if node else "")
+        if candidate and urlparse(candidate).scheme in ("http","https"):
+            return candidate
+    for node in soup.find_all("script",attrs={"type":"application/ld+json"}):
+        try: data=json.loads(node.string or node.get_text())
+        except Exception: continue
+        queue=data if isinstance(data,list) else [data]
+        while queue:
+            obj=queue.pop(0)
+            if not isinstance(obj,dict): continue
+            graph=obj.get("@graph")
+            if isinstance(graph,list): queue.extend(graph)
+            candidate=obj.get("url") or obj.get("mainEntityOfPage")
+            if isinstance(candidate,dict): candidate=candidate.get("@id") or candidate.get("url")
+            if isinstance(candidate,str) and urlparse(candidate).scheme in ("http","https"):
+                host=(urlparse(candidate).hostname or "").lower()
+                if host and not (host == "news.google.com" or host.endswith(".google.com")):
+                    return candidate
+    return current_url
+
 def fetch_article(url: str) -> tuple[str,str]:
     try:
-        r=requests.get(url,headers=HEADERS,timeout=25,allow_redirects=True); r.raise_for_status()
-        return extract_article(r.text)[:30000],r.url
+        r=requests.get(url,headers=HEADERS,timeout=12,allow_redirects=True); r.raise_for_status()
+        text=extract_article(r.text)
+        resolved=_publisher_url(r.text,r.url)
+        # If Google News served only a redirect/landing page, try the canonical publisher URL.
+        if resolved != r.url and (len(text) < 800 or (urlparse(r.url).hostname or "").endswith("google.com")):
+            try:
+                publisher=requests.get(resolved,headers=HEADERS,timeout=12,allow_redirects=True)
+                publisher.raise_for_status()
+                publisher_text=extract_article(publisher.text)
+                if len(publisher_text)>len(text):
+                    return publisher_text[:30000],publisher.url
+            except Exception:
+                pass
+        return text[:30000],resolved or r.url
     except Exception:
         return "",url
 

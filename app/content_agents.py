@@ -53,7 +53,13 @@ SCHEDULE = [
 ]
 
 NEWS_FEEDS=['https://news.google.com/rss/search?q={query}&hl=en-IN&gl=IN&ceid=IN:en']
-NEWS_QUERIES=['latest technology software engineering AI cybersecurity cloud developer tools','software engineering developer tools open source','AI infrastructure cloud security technology']
+NEWS_QUERIES=[
+    'technology news AI infrastructure software engineering developer tools',
+    'cloud computing cybersecurity open source software release',
+    'semiconductor hardware server architecture technology announcement',
+    'developer platform database programming language release',
+    'robotics networking data center security technology research',
+]
 
 _BANK_CACHE: dict[str,list[dict]] = {}
 
@@ -106,49 +112,84 @@ def _clean_text(value:str)->str:
     return re.sub(r'\s+',' ',value).strip()
 
 def fetch_news_topic(history: dict | None = None) -> tuple[dict, str]:
-    """Choose a recent, never-covered topic and fetch substantive publisher content."""
+    """Find a recent unused topic, resolve the publisher URL, and summarize real article text."""
     from app.article_content import fetch_article, summarize_article
     from app.topic_history import is_repeated_topic, normalize_topic
     from datetime import datetime, timedelta, timezone
     from email.utils import parsedate_to_datetime
+    from urllib.parse import urlparse
     history = history or {"history": []}
     candidates = []
+    diagnostics = {"feeds_ok": 0, "items_seen": 0, "stale_or_bad_date": 0,
+                  "history_duplicates": 0, "article_too_short": 0,
+                  "unresolved_google_url": 0, "groq_rejected": 0}
+    cutoff = datetime.now(timezone.utc) - timedelta(days=30)
+
     for query in NEWS_QUERIES:
         url = NEWS_FEEDS[0].format(query=quote(query))
         try:
-            response = requests.get(url, timeout=20, headers={"User-Agent": "SmartLearningLab247/1.0"})
+            response = requests.get(url, timeout=20, headers={"User-Agent": "Mozilla/5.0 SmartLearningLab247/1.0"})
             response.raise_for_status()
             items = ET.fromstring(response.content).findall('.//item')
+            diagnostics["feeds_ok"] += 1
         except (requests.RequestException, ET.ParseError):
             continue
-        for item in items[:20]:
+        for item in items[:60]:
+            diagnostics["items_seen"] += 1
             title = _clean_text(item.findtext('title', ''))
             rss = _clean_text(item.findtext('description', ''))
             link = _clean_text(item.findtext('link', ''))
             published = _clean_text(item.findtext('pubDate', ''))
-            if not title or not link: continue
+            if not title or not link:
+                continue
             try:
                 published_dt = parsedate_to_datetime(published)
                 if published_dt.tzinfo is None: published_dt = published_dt.replace(tzinfo=timezone.utc)
-                if published_dt < datetime.now(timezone.utc) - timedelta(days=14): continue
-            except (ValueError, TypeError): continue
-            if is_repeated_topic(title, history): continue
+                if published_dt < cutoff:
+                    diagnostics["stale_or_bad_date"] += 1
+                    continue
+            except (ValueError, TypeError, OverflowError):
+                diagnostics["stale_or_bad_date"] += 1
+                continue
+            if is_repeated_topic(title, history):
+                diagnostics["history_duplicates"] += 1
+                continue
             candidates.append((published_dt, title, rss, link, published))
+
     candidates.sort(key=lambda x: x[0], reverse=True)
     seen = set()
-    for _, title, rss, link, published in candidates[:45]:
+    # Try substantially more distinct results; several publishers block extraction, so one
+    # inaccessible site must not prevent the job from finding another recent topic.
+    for _, title, rss, link, published in candidates[:60]:
         fingerprint = normalize_topic(title)
-        if fingerprint in seen: continue
+        if not fingerprint or fingerprint in seen:
+            continue
         seen.add(fingerprint)
         article, final_url = fetch_article(link)
-        if len(article.strip()) < 1200: continue
-        from urllib.parse import urlparse
-        if urlparse(final_url or link).hostname in ("news.google.com", "www.google.com"): continue
+        if len(article.strip()) < 800:
+            diagnostics["article_too_short"] += 1
+            continue
         source_url = final_url or link
-        # Ask Groq to name the underlying technology, not the news headline.
-        generated = summarize_article(title, article, rss, source_url)
+        host = (urlparse(source_url).hostname or '').lower()
+        if host == 'news.google.com' or host.endswith('.google.com'):
+            diagnostics["unresolved_google_url"] += 1
+            continue
+        # Run Groq only on article text, never an RSS headline alone. If one article/model
+        # response is unsuitable, continue to the next candidate and report diagnostics.
+        try:
+            generated = summarize_article(title, article, rss, source_url)
+        except RuntimeError as exc:
+            # API/auth/rate-limit failures will affect every candidate; fail immediately
+            # instead of making repeated billable requests for the same underlying error.
+            if "Groq summarization failed" in str(exc):
+                raise
+            diagnostics["groq_rejected"] += 1
+            logger = __import__('logging').getLogger(__name__)
+            logger.warning("Skipping article '%s': %s", title[:120], str(exc)[:240])
+            continue
         technical_topic = generated["technical_topic"]
         if is_repeated_topic(technical_topic, history, title=title, source_url=source_url):
+            diagnostics["history_duplicates"] += 1
             continue
         blog = {
             "id": "news-" + normalize_topic(technical_topic).replace(" ", "-")[:80],
@@ -160,7 +201,12 @@ def fetch_news_topic(history: dict | None = None) -> tuple[dict, str]:
             "content_mode": "full_article_groq", "summary_model": generated.get("model"),
         }
         return blog, source_url
-    raise RuntimeError("No fresh, full-length technical article found. Nothing was published; existing topics remain protected.")
+    raise RuntimeError(
+        "No usable fresh technical article was found after checking "
+        f"{diagnostics['items_seen']} RSS items. Diagnostics: {diagnostics}. "
+        "No post was published and history was not changed. Check RSS access, publisher article access, "
+        "GROQ_API_KEY/model availability, and whether the recent candidates are already in blog_history.json."
+    )
 
 def transform_for_agent(blog:dict,profile:AgentProfile)->dict:
     result=copy.deepcopy(blog)

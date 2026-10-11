@@ -22,3 +22,7 @@ Push to `main` or run daily at 09:00 IST to publish; workflow_dispatch dry_run=t
 `data/blog_history.json` stores technical_topic, original article title, source URL, status and Facebook post ID. Previously published and attempted topics are excluded. Keep this file in the repository and commit it after each run. If a Facebook request times out, check the Page before manually retrying. Dry-run does not consume a topic.
 
 The agent uses only a full extracted article and a direct publisher URL. When extraction fails, it skips the candidate rather than writing from a headline. Groq must be configured with `GROQ_API_KEY`.
+
+
+## Troubleshooting: no fresh article found
+The discovery step checks more recent RSS candidates across several technology queries, skips history duplicates, resolves publisher canonical URLs where exposed, and accepts article text from 800 characters upward before Groq quality checks. If it still cannot find a suitable article, the error reports counts for RSS items, old/malformed dates, history duplicates, short articles, unresolved Google URLs, and Groq validation rejections. It does not publish generic filler when no reliable article is available. If the message says `Groq summarization failed`, check the `GROQ_API_KEY`, model name, and Groq rate limits; the job stops immediately rather than retrying the same API failure for every candidate.

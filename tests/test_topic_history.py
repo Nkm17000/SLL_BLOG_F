@@ -11,3 +11,6 @@ def test_new_topic_allowed():
 
 def test_title_normalization():
     assert normalize_topic("New: AI Agents in Windows!") == "ai agents windows"
+
+def test_normalize_topic_ignores_headline_filler_words():
+    assert normalize_topic('New: Nuvoton launches AI server management') == normalize_topic('Nuvoton AI server management')

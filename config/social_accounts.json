@@ -1,12 +1,36 @@
 {
   "facebook": [
-    {"name": "Smart Learning Lab 247", "id_env": "FACEBOOK_PAGE_ID", "token_env": "FACEBOOK_PAGE_TOKEN", "enabled": true},
-    {"name": "Facebook Page 2", "id_env": "FACEBOOK_PAGE_ID_2", "token_env": "FACEBOOK_PAGE_TOKEN_2", "enabled": false},
-    {"name": "Facebook Page 3", "id_env": "FACEBOOK_PAGE_ID_3", "token_env": "FACEBOOK_PAGE_TOKEN_3", "enabled": false}
+    {
+      "name": "Smart Learning Lab 247",
+      "id_env": "FACEBOOK_PAGE_ID",
+      "token_env": "FACEBOOK_PAGE_TOKEN",
+      "enabled": true
+    },
+    {
+      "name": "Facebook Page 2",
+      "id_env": "FACEBOOK_PAGE_ID_2",
+      "token_env": "FACEBOOK_PAGE_TOKEN_2",
+      "enabled": false
+    }
   ],
   "instagram": [
-    {"name": "Instagram Account 1", "id_env": "INSTAGRAM_USER_ID", "token_env": "INSTAGRAM_ACCESS_TOKEN", "enabled": false},
-    {"name": "Instagram Account 2", "id_env": "INSTAGRAM_USER_ID_2", "token_env": "INSTAGRAM_ACCESS_TOKEN_2", "enabled": false},
-    {"name": "Instagram Account 3", "id_env": "INSTAGRAM_USER_ID_3", "token_env": "INSTAGRAM_ACCESS_TOKEN_3", "enabled": false}
+    {
+      "name": "Instagram Account 1",
+      "id_env": "INSTAGRAM_USER_ID",
+      "token_env": "INSTAGRAM_ACCESS_TOKEN",
+      "enabled": false
+    },
+    {
+      "name": "Instagram Account 2",
+      "id_env": "INSTAGRAM_USER_ID_2",
+      "token_env": "INSTAGRAM_ACCESS_TOKEN_2",
+      "enabled": false
+    },
+    {
+      "name": "Instagram Account 3",
+      "id_env": "INSTAGRAM_USER_ID_3",
+      "token_env": "INSTAGRAM_ACCESS_TOKEN_3",
+      "enabled": false
+    }
   ]
 }

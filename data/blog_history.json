@@ -13,7 +13,8 @@
     4,
     7,
     5,
-    1
+    1,
+    2
   ],
   "theme_cycle": 1,
   "theme_used": [
@@ -24,7 +25,8 @@
     "purple-bloom",
     "sky-breeze",
     "rose-petal",
-    "aqua-glass"
+    "aqua-glass",
+    "sunny-yellow"
   ],
   "agent_topic_used": {
     "howto": [
@@ -92,6 +94,9 @@
     "repurposing": [
       "repurposing-1993",
       "repurposing-1511"
+    ],
+    "database": [
+      "database-0034"
     ]
   },
   "history": [
@@ -816,6 +821,25 @@
       "difficulty": "intermediate",
       "series": "AI Explained",
       "content_fingerprint": "29536dc283eb74bbb95d"
+    },
+    {
+      "topic_id": "database-0034",
+      "topic": "Database Guide: How to optimize AI Automation: Performance",
+      "category": "Database | Artificial Intelligence",
+      "status": "published",
+      "timestamp_utc": "2026-10-11T07:36:29.961198+00:00",
+      "agent_id": "database",
+      "agent_name": "Database Agent",
+      "template_id": 2,
+      "template_name": "zigzag_story",
+      "theme_id": "sunny-yellow",
+      "image": "output/20261011T073557Z_database_database-0034_t02.png",
+      "facebook_post_id": "1317018278163213_122124314559419769",
+      "source_url": "",
+      "hook": "How to optimize AI Automation: Performance: what developers need to know",
+      "difficulty": "intermediate",
+      "series": "Database Fundamentals",
+      "content_fingerprint": "d6c49370cc564b4ab725"
     }
   ]
 }

@@ -21,6 +21,12 @@ class ImageGeneratorTests(unittest.TestCase):
                 self.assertEqual(image.size, (1080, 1350))
                 self.assertEqual(image.format, 'JPEG')
 
+    def test_palette_avoids_last_five_palettes(self):
+        blog = {'technical_topic':'Topic','description':'An explanation long enough for a test image.','points':[{'title':f'Section {i}','description':'Detailed technical context for this section.'} for i in range(5)]}
+        with tempfile.TemporaryDirectory() as tmp:
+            _, palette = create_blog_image(blog, 'https://example.com/source', 'SLL', Path(tmp)/'recent.jpg', recent_palettes=[0,1,2,3,4])
+            self.assertEqual(palette, 5)
+
     def test_palette_changes_from_previous_run(self):
         blog = {'technical_topic':'Topic','description':'An explanation long enough for a test image.','points':[{'title':f'Section {i}','description':'Detailed technical context for this section.'} for i in range(5)]}
         with tempfile.TemporaryDirectory() as tmp:

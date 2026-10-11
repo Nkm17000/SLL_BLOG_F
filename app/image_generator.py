@@ -46,10 +46,14 @@ def _draw_paragraph(draw, text, x, y, font, fill, max_width, max_lines=None, spa
         if y > H - 90: break
     return y + spacing
 
-def create_blog_image(blog: dict, source_url: str, app_name: str, output_path: str | Path, previous_palette: int | None = None) -> tuple[Path, int]:
+def create_blog_image(blog: dict, source_url: str, app_name: str, output_path: str | Path, previous_palette: int | None = None, recent_palettes: list[int] | None = None) -> tuple[Path, int]:
     """Render the actual generated explainer into a readable 4:5 Facebook image.
     Palette is selected randomly each run; caption retains the full detailed text."""
-    choices = [i for i in range(len(PALETTES)) if i != previous_palette]
+    recent = list(recent_palettes or [])[-5:]
+    if previous_palette is not None and not recent:
+        recent = [previous_palette]
+    choices = [i for i in range(len(PALETTES)) if i not in recent]
+    # With six palettes, this guarantees no palette repeats within the last five posts.
     palette_index = random.choice(choices or list(range(len(PALETTES))))
     bg, accent, highlight, fg = PALETTES[palette_index]
     image = Image.new("RGB", (W, H), bg)

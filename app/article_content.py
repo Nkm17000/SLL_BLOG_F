@@ -174,12 +174,34 @@ FULL ARTICLE TEXT ({len(article)} characters):
     data["summary_mode"] = "groq_full_article"
     return data
 
+def _bold_unicode(text: str) -> str:
+    """Convert ASCII letters/digits to Unicode bold for Facebook heading emphasis."""
+    out=[]
+    for ch in str(text):
+        code=ord(ch)
+        if 65 <= code <= 90: out.append(chr(0x1D400 + code-65))
+        elif 97 <= code <= 122: out.append(chr(0x1D41A + code-97))
+        elif 48 <= code <= 57: out.append(chr(0x1D7CE + code-48))
+        else: out.append(ch)
+    return ''.join(out)
+
 def build_text_post(title: str, content: dict, source_url: str, published: str="", app_name: str="Smart Learning Lab 247") -> str:
-    lines=[f"🔎 {content.get('technical_topic', title)}", "", f"Recent development: {title}", "", content.get("description", "").strip(), ""]
+    topic = content.get('technical_topic', title)
+    lines=[f"🔎 {_bold_unicode(topic)}", "", _bold_unicode("What this means"), content.get("description", "").strip(), ""]
     for i,p in enumerate(content.get("points",[]),1):
-        lines.extend([f"{i}. {p.get('title','Technical insight')}",p.get("description","").strip()])
-        for item in p.get("items",[])[:2]: lines.append(f"• {item}")
+        lines.extend([f"{i}. {_bold_unicode(p.get('title','Technical insight'))}",p.get('description', '').strip()])
+        for item in p.get('items',[])[:2]: lines.append(f"• {item}")
         lines.append("")
-    if published: lines.extend([f"Source publication date: {published}"])
-    lines.extend([f"Read the original report: {source_url}","",f"Follow {app_name} for practical, source-based technical explainers.","#Technology #SoftwareEngineering #AI #CloudComputing #CyberSecurity #Developers"])
+    if published: lines.extend([f"🗓️ Source publication date: {published}", ""])
+    lines.extend([
+        f"🔗 {_bold_unicode('Original source')}: {source_url}", "",
+        "📚 𝗦𝗺𝗮𝗿𝘁 𝗟𝗲𝗮𝗿𝗻𝗶𝗻𝗴 𝗟𝗮𝗯 𝟮𝟰𝟳 | Daily practice for serious aspirants",
+        "🎯 SSC | UPSC | Banking | Railway | RAS | IAS",
+        "🌐 Learn more: https://smartlearninglab-react.pages.dev/",
+        "📸 Instagram: https://www.instagram.com/smartlearninglab247",
+        "▶️ YouTube: https://www.youtube.com/@smartlearninglab247",
+        "📘 Facebook: https://www.facebook.com/smartlearninglab247", "",
+        "Follow Smart Learning Lab 247 for practical, source-based technical explainers.",
+        "#Technology #SoftwareEngineering #AI #CloudComputing #CyberSecurity #Developers"
+    ])
     return "\n".join(x for x in lines if x is not None).strip()

@@ -1,12 +1,10 @@
-name: Daily Fresh Technical Topic to Facebook
+name: Smart Learning Lab 247 Technical Blog
 on:
   push:
     branches:
       - main
-    paths-ignore:
-      - "data/blog_history.json"
   schedule:
-    # 09:00 Asia/Kolkata = 03:30 UTC
+    # Exactly one scheduled run daily at 09:00 Asia/Kolkata (03:30 UTC). Pushes also trigger, but app enforces max one live post per IST day.
     - cron: "30 3 * * *"
   workflow_dispatch:
     inputs:
@@ -26,7 +24,7 @@ env:
   FACEBOOK_GRAPH_API_VERSION: v23.0
   APP_NAME: Smart Learning Lab 247
 jobs:
-  daily-blog-carousel:
+  daily-blog-image-post:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:

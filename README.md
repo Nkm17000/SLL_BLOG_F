@@ -1,28 +1,19 @@
-# Smart Learning Lab 247 — daily fresh technical blog
+# Smart Learning Lab 247 — Technical Blog Publisher
 
-The job discovers recent technology news (last 14 days), checks `data/blog_history.json` to avoid already-covered technical topics, fetches publisher article text, and uses Groq to write a substantive, accessible five-section Facebook post. The original source URL is included. No images are generated.
+Generates a source-grounded technical explainer with Groq, renders a 1080×1350 infographic, and publishes one Facebook Page photo post with the full caption and source URL.
 
-## GitHub secrets
+## Behavior
+- Every push to `main` triggers the GitHub Actions workflow.
+- A scheduled run occurs once daily at 09:00 Asia/Kolkata (03:30 UTC).
+- A live-publication guard checks `data/blog_history.json` and skips if a post was already published on the current India-local calendar day. Thus pushes and the scheduler cannot create more than one successful post per day.
+- Topic history prevents repeat topics.
+- The image palette is stored in history and the last five palettes are excluded from the next selection.
+- Caption section headings are bold Unicode text and include the source plus Smart Learning Lab 247 website, Instagram, YouTube, and Facebook URLs.
+- Manual workflow runs default to dry-run; inspect `output/latest_post.txt` and `output/images/latest_blog.jpg` before enabling a live run.
 
-`GROQ_API_KEY`, `FACEBOOK_PAGE_ID`, `FACEBOOK_PAGE_TOKEN`. Optional `GROQ_MODEL` locally; the workflow defaults to `openai/gpt-oss-120b`. Do not commit keys or passwords.
+## GitHub repository secrets
+- `GROQ_API_KEY`
+- `FACEBOOK_PAGE_ID`
+- `FACEBOOK_PAGE_TOKEN`
 
-## Run locally
-
-```bash
-pip install -r requirements.txt
-python -m app.run_agent --dry-run
-pytest -q
-```
-
-Push to `main` or run daily at 09:00 IST to publish; workflow_dispatch dry_run=true previews without publishing. A successful post is saved with technical topic, source, model, timestamp and Facebook post ID. Failed publishing is also recorded to avoid accidental repeats. GitHub Actions commits history back to the repository even when the publish step fails.
-
-**Fallback behavior:** If no accessible, recent, unused news article passes validation, the job tries an unused evergreen topic from official technical documentation (MDN, Python docs, PostgreSQL, Docker, GitHub Actions, OWASP, Kubernetes). It fetches the documentation page and still requires enough source text before Groq generates the explanation. The evergreen topic is checked against `data/blog_history.json` to avoid repeats. If all news and documentation sources fail or are already used, the job fails safely rather than publishing invented or headline-only content. Groq generation requires a real API key; tests mock external services.
-
-## History and duplicate protection
-`data/blog_history.json` stores technical_topic, original article title, source URL, status and Facebook post ID. Previously published and attempted topics are excluded. Keep this file in the repository and commit it after each run. If a Facebook request times out, check the Page before manually retrying. Dry-run does not consume a topic.
-
-The agent uses only a full extracted article and a direct publisher URL. When extraction fails, it skips the candidate rather than writing from a headline. Groq must be configured with `GROQ_API_KEY`.
-
-
-## Troubleshooting: no fresh article found
-The discovery step checks more recent RSS candidates across several technology queries, skips history duplicates, resolves publisher canonical URLs where exposed, and accepts article text from 800 characters upward before Groq quality checks. If it still cannot find a suitable article, the error reports counts for RSS items, old/malformed dates, history duplicates, short articles, unresolved Google URLs, and Groq validation rejections. It does not publish generic filler when no reliable article is available. If the message says `Groq summarization failed`, check the `GROQ_API_KEY`, model name, and Groq rate limits; the job stops immediately rather than retrying the same API failure for every candidate.
+Keep `data/blog_history.json` when updating the code. It stores previously used topics, publishing status, and recent image palette history.

@@ -1,9 +1,9 @@
-# Workflow setup — text-only technical articles
+# GitHub Actions setup
 
-1. Put this project at the root of the GitHub repository so `.github/workflows/blog-post.yml` is detected.
-2. Add repository secrets `FACEBOOK_PAGE_ID`, `FACEBOOK_PAGE_TOKEN`, and `GROQ_API_KEY`. Groq is required; the default model is `openai/gpt-oss-120b`. Never commit the key into code.
-3. Push to `main` to run; the daily schedule is 09:00 IST. The workflow generates a single text-only Facebook Page post, not image slides.
-4. Inspect `output/latest_post.txt` in the workflow artifact. If the publisher article cannot be extracted or Groq fails validation, the run fails safely and does not publish an RSS-only summary.
-5. Use manual workflow dispatch with dry-run enabled to generate text without publishing.
+1. Place these files at the repository root so `.github/workflows/blog-post.yml` is at that exact path.
+2. Add repository secrets `GROQ_API_KEY`, `FACEBOOK_PAGE_ID`, and `FACEBOOK_PAGE_TOKEN`.
+3. Push to `main` to start the workflow. A daily scheduled run is set for 09:00 India Standard Time (03:30 UTC).
+4. A successful live post is recorded in `data/blog_history.json`. Any further push or scheduled run on the same IST date exits with `skipped_daily_limit`, preventing more than one successful post that day.
+5. Manual `workflow_dispatch` defaults to dry-run. Review `output/latest_post.txt` and `output/images/latest_blog.jpg` before requesting a live run.
 
-6. Run local checks with `python -m unittest discover -s tests -v` (8 tests).
+The workflow commits updated topic/palette history back to `main`. Its history commit message contains `[skip ci]` to prevent a self-trigger loop.

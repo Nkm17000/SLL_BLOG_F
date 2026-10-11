@@ -50,8 +50,12 @@ class FacebookService:
             media.append({"media_fbid":photo_id})
             logger.info("Uploaded carousel image %s/%s",len(media),len(paths))
         feed_url=f"https://graph.facebook.com/{Config.FACEBOOK_GRAPH_API_VERSION}/{Config.FACEBOOK_PAGE_ID}/feed"
+        # Publish exactly ONE feed object. The photos are uploaded unpublished above;
+        # attached_media binds them to this single Page feed post in the requested order.
+        # Do not call /feed once per image, or the Page will show seven separate posts.
         params={"message":caption,"access_token":Config.FACEBOOK_PAGE_TOKEN}
-        params.update({f"attached_media[{i}]":json.dumps(item,separators=(",",":")) for i,item in enumerate(media)})
+        for i, item in enumerate(media):
+            params[f"attached_media[{i}]"] = json.dumps(item, separators=(",", ":"))
         result=cls._request("POST",feed_url,data=params)
         logger.info("Facebook multi-photo post published: %s",result.get("id"))
         return {"post_id":result.get("id"),"photo_ids":[x["media_fbid"] for x in media],"slide_count":len(media)}

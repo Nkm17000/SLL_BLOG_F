@@ -53,7 +53,7 @@ SCHEDULE = [
 ]
 
 NEWS_FEEDS=['https://news.google.com/rss/search?q={query}&hl=en-IN&gl=IN&ceid=IN:en']
-NEWS_QUERIES=['artificial intelligence technology','software technology cloud cybersecurity','developer technology open source']
+NEWS_QUERIES=['latest technology software engineering AI cybersecurity cloud developer tools','software engineering developer tools open source','AI infrastructure cloud security technology']
 
 _BANK_CACHE: dict[str,list[dict]] = {}
 
@@ -110,12 +110,12 @@ def fetch_news_topic()->tuple[dict,str]:
     response=requests.get(url,timeout=20,headers={'User-Agent':'SmartLearningLab/1.0'}); response.raise_for_status()
     root=ET.fromstring(response.content); items=root.findall('.//item')
     if not items: raise RuntimeError('News RSS returned no items')
-    item=random.choice(items[:10]); title=_clean_text(item.findtext('title','Technology update'))
+    item=items[0]; title=_clean_text(item.findtext('title','Technology update'))
     summary=_clean_text(item.findtext('description','')); link=_clean_text(item.findtext('link','')); published=_clean_text(item.findtext('pubDate',''))
     if not title: raise RuntimeError('News item has no title')
     if len(summary)>450: summary=summary[:447].rstrip()+'...'
     blog={'id':'news-'+re.sub(r'[^a-z0-9]+','-',title.lower()).strip('-')[:80],'category':'Technology News','title':title,
-          'description':'A current technology update explained with practical context.',
+          'description':(summary or 'A current technology development worth understanding.') + ' This carousel summarizes the reported update, its technical context, practical implications, and what developers should verify next.',
           'points':[
             {'title':'What happened','description':summary or 'A new technology development was reported.','items':['Read the source before acting on the information.','Separate confirmed facts from interpretation.']},
             {'title':'Why it matters','description':'The update may affect developers, businesses, users or the wider technology ecosystem.','items':['Identify who is affected.','Look for measurable changes rather than headlines alone.']},

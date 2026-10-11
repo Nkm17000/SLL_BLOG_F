@@ -1,85 +1,34 @@
-# Smart Learning Lab — Final Multi-Agent Content Engine
+# Smart Learning Lab 247 — Daily Technical Blog Carousel
 
-A single GitHub Actions project for a versatile technical-learning Facebook Page. It contains 20 specialized content agents, 40,000 agent topic records, the existing 2,000-topic blog library, 10 visual templates, 30 light themes, high-resolution 10:10 images, content-quality checks, duplicate protection, a publishing calendar, retry handling, dashboard output, and carousel companion assets.
+A deliberately simplified GitHub Actions project that finds one recent technology topic from a Google News RSS search each day, creates a concise seven-slide educational carousel, and publishes it as one multi-photo Facebook post. It no longer runs the 20-agent schedule, large topic libraries, dashboards, template rotations, or hourly posts.
 
-## Content system
+## Daily behavior
+- Runs daily at 09:00 India time (03:30 UTC), or manually via Actions.
+- Fetches a current topic from a technology-focused RSS search and preserves the source link.
+- Produces 7 square JPG slides: headline/context, five technical insight slides, and a takeaway.
+- Uploads each slide as an unpublished Facebook photo, then publishes all photos together in one feed post.
+- Saves a compact topic/post history and workflow artifacts.
+- Manual workflow runs default to dry-run; turn it off to publish.
 
-**20 agents × 2,000 topics = 40,000 agent-topic records**, plus the existing `data/blogs.json` 2,000-topic library. Every topic keeps exactly 5 points and 2 supporting items per point.
+## Required GitHub repository secrets
+- `FACEBOOK_PAGE_ID` — Facebook Page ID, not a personal profile ID.
+- `FACEBOOK_PAGE_TOKEN` — access token with the permissions needed to publish Page content.
 
-Agents: Student Learning, Tech Facts, AI, AI Tools, Coding, Debugging, How-To, Concept Explainer, Cloud, Database, App Development, Cybersecurity, Tech Experiments, Project Ideas, Developer Productivity, Tech Career, Tech News, Tech Infographic, Content Repurposing, Technical Blog.
-
-## Daily India schedule
-
-The workflow posts one image per hour from **04:00 through 23:00 Asia/Kolkata**. The UTC cron in `.github/workflows/blog-post.yml` handles the conversion.
-
-## Engagement and quality improvements
-
-Each topic JSON includes:
-- `hook` — concise scroll-stopping headline
-- `original_title` — source topic title
-- `difficulty` — beginner/intermediate/advanced level
-- `series` — recurring content-series identity
-- `real_world_example` — practical context for the topic
-- `cta` — rotating, useful call to action
-- `language` — `en-IN` metadata
-- `format` — `square_single_image`
-- `content_type` — agent category
-- `content_fingerprint` — duplicate detection key
-- `quality_schema` — structural validation metadata
-
-At runtime the quality engine also checks hook length, five points, two items per point, real-world context, CTA, and near-duplicate history.
-
-## Visual system
-
-- 10 distinct templates
-- 30 light themes: red, green, blue, yellow, pink, gray, purple, orange, cyan, teal and more
-- Hero artwork integrated into the composition
-- Theme rotation without repeats until the theme cycle is complete
-- Template rotation without repeats until all 10 are used
-- **10:10 square output**
-- **4000×4000 PNG export** using a 2000×2000 CSS canvas at 2× device scale
-- Larger typography and high-contrast spacing for social-media readability
-- No WordArt
-- No music/audio
-- No MP4 generation
-
-The renderer uses the generated hook as the visual headline and keeps the original topic title in the supporting description.
-
-## Content variety
-
-The orchestrator keeps the page from feeling repetitive through agent-specific series, difficulty labels, hooks, CTAs, templates, themes and topic history. The design engine can also create **7 square carousel companion slides** as local workflow artifacts: hook, five points, and takeaway. Facebook publishing remains one image post per scheduled run by default, so the page is not flooded with multiple posts.
-
-## News safety
-
-The Tech News Agent fetches current technology items from RSS at runtime. It includes source context and falls back to an evergreen technical topic if the RSS service is unavailable; it does not fabricate a news item.
-
-## Reliability
-
-- Facebook API requests retry transient failures up to five times with backoff.
-- A failed publish is recorded in `data/blog_history.json` and does not silently disappear.
-- Topic usage is recorded per agent.
-- Templates and themes rotate independently and avoid repeats within their cycles.
-- Near-duplicate content is filtered against recent history when possible.
-- `output/dashboard.html` summarizes publishing, failures, agents, themes and templates.
-
-## GitHub Actions
-
-Triggers:
-- `push` to any branch except history-only updates
-- `workflow_dispatch` with agent selection and dry-run option
-- hourly schedule from 04:00–23:00 IST
-
-Required repository secrets:
-- `FACEBOOK_PAGE_ID`
-- `FACEBOOK_PAGE_TOKEN`
-
-## Local test
-
+## Run locally
 ```bash
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 python -m playwright install chromium
-python -m unittest discover -s tests -v
-python -u -m app.run_agent --agent ai --dry-run
+cp .env.example .env  # then fill in credentials
+python -m app.run_agent --dry-run
+python -m app.run_agent  # publishes if valid Facebook credentials are configured
 ```
 
-A dry run creates the PNG, carousel companion slides, dashboard and summary without publishing to Facebook.
+## Files
+- `app/run_agent.py`: one daily workflow from topic fetch to post
+- `app/content_agents.py`: current technical topic RSS fetcher
+- `app/carousel_builder.py`: slide rendering
+- `app/facebook_service.py`: multi-photo Facebook publishing
+- `app/config.py`: central app name, URLs, and publishing settings
+- `data/blog_history.json`: compact publication history
+
+The RSS headline and summary are used as source context; the carousel gives practical framing and recommends checking the original source and official documentation. Review the generated carousel artifact before turning off dry-run for the first time.

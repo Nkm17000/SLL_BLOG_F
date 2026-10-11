@@ -15,8 +15,8 @@ class Config:
     RSS_QUERY = os.getenv("RSS_QUERY", "latest technology software engineering AI cybersecurity cloud developer tools")
     GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
     GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
-    # Text-only publishing: no slide or image conversion.
-    TEXT_ONLY_POST = True
+    # One generated infographic image is published with the full Facebook caption.
+    TEXT_ONLY_POST = False
 
     @classmethod
     def validate_facebook(cls):

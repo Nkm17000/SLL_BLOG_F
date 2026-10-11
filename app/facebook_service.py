@@ -71,3 +71,21 @@ class FacebookService:
         logger.info("Facebook text post published: %s",post_id)
         return {"post_id":post_id,"post_type":"text_only"}
 
+
+    @classmethod
+    def post_photo(cls, image_path, caption: str):
+        """Publish one generated blog infographic with the full explanatory caption."""
+        path = Path(image_path)
+        if not path.is_file():
+            raise FileNotFoundError(path)
+        if not caption or len(caption.strip()) < 100:
+            raise ValueError("Refusing to publish an image without its descriptive caption")
+        url = f"https://graph.facebook.com/{Config.FACEBOOK_GRAPH_API_VERSION}/{Config.FACEBOOK_PAGE_ID}/photos"
+        with path.open("rb") as f:
+            result = cls._request("POST", url, files={"source": (path.name, f, "image/jpeg")},
+                                  data={"caption": caption, "access_token": Config.FACEBOOK_PAGE_TOKEN})
+        post_id = result.get("post_id") or result.get("id")
+        if not post_id:
+            raise RuntimeError(f"Facebook did not return a photo/post ID: {result}")
+        logger.info("Facebook blog image+caption published: %s", post_id)
+        return {"post_id": post_id, "photo_id": result.get("id"), "post_type": "image_with_caption"}

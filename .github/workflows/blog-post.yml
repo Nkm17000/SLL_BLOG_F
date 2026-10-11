@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       dry_run:
-        description: "Generate a text post without publishing to Facebook"
+        description: "Generate the blog caption and infographic without publishing to Facebook"
         required: true
         default: true
         type: boolean
@@ -46,7 +46,7 @@ jobs:
           cache: pip
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Fetch full article, summarize with Groq, and publish descriptive text post
+      - name: Fetch full article, summarize with Groq, render a unique-color infographic, and publish image plus caption
         env:
           DRY_RUN: ${{ inputs.dry_run || false }}
         run: |
@@ -73,5 +73,6 @@ jobs:
           path: |
             output/latest_post.txt
             output/latest_summary.json
+            output/images/latest_blog.jpg
             data/blog_history.json
           if-no-files-found: warn

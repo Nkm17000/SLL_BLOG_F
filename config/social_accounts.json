@@ -1,0 +1,11 @@
+{
+  "facebook": [
+    {
+      "name": "Smart Learning Lab 247",
+      "id_env": "FACEBOOK_PAGE_ID",
+      "token_env": "FACEBOOK_PAGE_TOKEN",
+      "enabled": true
+    }
+  ],
+  "instagram": []
+}

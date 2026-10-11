@@ -75,11 +75,47 @@ def main():
               "post_character_count": len(caption), "image_path": str(image_path.relative_to(ROOT)), "image_palette": palette_index, "post_type": "image_with_caption"}
     try:
         if not args.dry_run:
-            Config.validate_facebook()
-            FacebookService.validate_page_access()
-            fb = FacebookService.post_photo(image_path, caption)
-            entry.update(status="published", facebook_post_id=fb["post_id"], published_at_utc=datetime.now(timezone.utc).isoformat())
-            result.update(status="published", facebook_post_id=fb["post_id"])
+            accounts = Config.social_accounts()
+            if not accounts["facebook"] and not accounts["instagram"]:
+                raise RuntimeError("No configured social destinations. Check config/social_accounts.json and matching GitHub secrets.")
+            destination_results = []
+            # Publish the same generated image/caption to every enabled Facebook Page.
+            for account in accounts["facebook"]:
+                try:
+                    FacebookService.validate_page_access(account["id"], account["token"])
+                    posted = FacebookService.post_photo(image_path, caption, account["id"], account["token"])
+                    destination_results.append({"platform":"facebook", "name":account["name"], "status":"published", "post_id":posted["post_id"]})
+                except Exception as exc:
+                    destination_results.append({"platform":"facebook", "name":account["name"], "status":"failed", "error":str(exc)[:500]})
+                    logger.exception("Facebook publish failed for %s", account["name"])
+            # Instagram's Graph API requires a publicly reachable image URL. Reuse the Facebook CDN URL
+            # from an unpublished upload on the first configured Facebook Page.
+            if accounts["instagram"]:
+                if not accounts["facebook"]:
+                    for account in accounts["instagram"]:
+                        destination_results.append({"platform":"instagram", "name":account["name"], "status":"failed", "error":"Instagram image publishing requires at least one configured Facebook Page to provide a public image URL."})
+                else:
+                    try:
+                        fb_source = accounts["facebook"][0]
+                        public_image_url = FacebookService.upload_unpublished_for_instagram(image_path, fb_source["id"], fb_source["token"])
+                        # Instagram caption limit is 2,200 characters; keep the intro and source links intact where possible.
+                        ig_caption = caption if len(caption) <= 2200 else caption[:2150].rsplit(" ", 1)[0] + "…"
+                        for account in accounts["instagram"]:
+                            try:
+                                posted = FacebookService.post_instagram_photo(public_image_url, ig_caption, account["id"], account["token"])
+                                destination_results.append({"platform":"instagram", "name":account["name"], "status":"published", "post_id":posted["post_id"]})
+                            except Exception as exc:
+                                destination_results.append({"platform":"instagram", "name":account["name"], "status":"failed", "error":str(exc)[:500]})
+                                logger.exception("Instagram publish failed for %s", account["name"])
+                    except Exception as exc:
+                        for account in accounts["instagram"]:
+                            destination_results.append({"platform":"instagram", "name":account["name"], "status":"failed", "error":str(exc)[:500]})
+            entry["destinations"] = destination_results
+            successful = [d for d in destination_results if d["status"] == "published"]
+            entry.update(status="published" if successful else "failed", published_at_utc=datetime.now(timezone.utc).isoformat() if successful else None)
+            result.update(status=entry["status"], destinations=destination_results)
+            if not successful:
+                raise RuntimeError("Publishing failed for every configured destination; see destination errors in output/logs.")
     except Exception as exc:
         entry.update(status="failed", error=str(exc)[:500])
         result.update(status="failed", error=str(exc)[:500])

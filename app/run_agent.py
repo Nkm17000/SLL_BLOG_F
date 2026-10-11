@@ -1,5 +1,5 @@
 from __future__ import annotations
-import argparse, json, time
+import argparse, json, time, os
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 from pathlib import Path
@@ -33,6 +33,10 @@ def already_published_today(state, now=None):
             continue
     return False
 
+def should_skip_for_daily_limit(state, event_name, dry_run=False, now=None):
+    """Only scheduled live runs are limited to one successful post per IST day."""
+    return (not dry_run) and event_name == "schedule" and already_published_today(state, now=now)
+
 def main():
     parser = argparse.ArgumentParser(description="Publish a new source-grounded technical topic")
     parser.add_argument("--dry-run", action="store_true")
@@ -40,10 +44,14 @@ def main():
     started = time.time()
     OUT.mkdir(exist_ok=True)
     state = load_history()
-    if not args.dry_run and already_published_today(state):
-        message = "A post has already been published today in Asia/Kolkata; skipping this push to enforce one post per day."
+    # Pushes are always allowed to create a new post. The one-post-per-day guard
+    # applies only to the scheduled run, so a push does not get blocked by an
+    # earlier post on the same India-local day. GitHub sets GITHUB_EVENT_NAME.
+    event_name = os.getenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    if should_skip_for_daily_limit(state, event_name, dry_run=args.dry_run):
+        message = "The scheduled run already has a successful post for today in Asia/Kolkata; skipping this scheduled run. Push-triggered runs are not blocked by this daily guard."
         logger.info(message)
-        print(json.dumps({"status":"skipped_daily_limit", "message":message}, ensure_ascii=False, indent=2))
+        print(json.dumps({"status":"skipped_scheduled_daily_limit", "event":event_name, "message":message}, ensure_ascii=False, indent=2))
         return
     agent = get_agent("technical_blog")
     blog, source_url = fetch_news_topic(state)

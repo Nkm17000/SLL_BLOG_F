@@ -5,7 +5,7 @@ Generates a source-grounded technical explainer with Groq, renders a 1080×1350 
 ## Behavior
 - Every push to `main` triggers the GitHub Actions workflow.
 - A scheduled run occurs once daily at 09:00 Asia/Kolkata (03:30 UTC).
-- A live-publication guard checks `data/blog_history.json` and skips if a post was already published on the current India-local calendar day. Thus pushes and the scheduler cannot create more than one successful post per day.
+- Every push to `main` may publish a new post even if another post was published earlier the same India-local day. The once-daily guard applies only to the scheduled run: it skips that scheduled run if a successful post is already recorded for the current Asia/Kolkata day.
 - Topic history prevents repeat topics.
 - The image palette is stored in history and the last five palettes are excluded from the next selection.
 - Caption section headings are bold Unicode text and include the source plus Smart Learning Lab 247 website, Instagram, YouTube, and Facebook URLs.

@@ -16,7 +16,7 @@ pytest -q
 
 Push to `main` or run daily at 09:00 IST to publish; workflow_dispatch dry_run=true previews without publishing. A successful post is saved with technical topic, source, model, timestamp and Facebook post ID. Failed publishing is also recorded to avoid accidental repeats. GitHub Actions commits history back to the repository even when the publish step fails.
 
-**Note:** If no accessible, fresh and unused source is available, the job fails safely instead of publishing a duplicate or headline-only post. Groq generation requires a real API key; unit tests mock external services.
+**Fallback behavior:** If no accessible, recent, unused news article passes validation, the job tries an unused evergreen topic from official technical documentation (MDN, Python docs, PostgreSQL, Docker, GitHub Actions, OWASP, Kubernetes). It fetches the documentation page and still requires enough source text before Groq generates the explanation. The evergreen topic is checked against `data/blog_history.json` to avoid repeats. If all news and documentation sources fail or are already used, the job fails safely rather than publishing invented or headline-only content. Groq generation requires a real API key; tests mock external services.
 
 ## History and duplicate protection
 `data/blog_history.json` stores technical_topic, original article title, source URL, status and Facebook post ID. Previously published and attempted topics are excluded. Keep this file in the repository and commit it after each run. If a Facebook request times out, check the Page before manually retrying. Dry-run does not consume a topic.

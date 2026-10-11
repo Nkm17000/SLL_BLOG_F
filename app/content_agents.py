@@ -201,11 +201,61 @@ def fetch_news_topic(history: dict | None = None) -> tuple[dict, str]:
             "content_mode": "full_article_groq", "summary_model": generated.get("model"),
         }
         return blog, source_url
+    # Fallback: if news discovery is exhausted, use an unused evergreen technical
+    # topic from official documentation. We still fetch the actual source page and
+    # ask Groq to explain its content; we never fall back to a headline-only post.
+    evergreen_topics = [
+        ("HTTP caching: how browsers avoid repeated downloads", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching"),
+        ("Python asyncio and concurrent I/O", "https://docs.python.org/3/library/asyncio.html"),
+        ("PostgreSQL indexes and query performance", "https://www.postgresql.org/docs/current/indexes.html"),
+        ("Docker containers and image fundamentals", "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/"),
+        ("GitHub Actions workflow automation", "https://docs.github.com/en/actions/about-github-actions/understanding-github-actions"),
+        ("OWASP password storage and secure authentication", "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html"),
+        ("Kubernetes health checks and probes", "https://kubernetes.io/docs/concepts/configuration/liveness-readiness-startup-probes/"),
+        ("Web APIs and the Fetch API", "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch"),
+        ("Database transactions and ACID properties", "https://www.postgresql.org/docs/current/tutorial-transactions.html"),
+        ("Public-key cryptography and digital signatures", "https://developer.mozilla.org/en-US/docs/Web/Crypto"),
+        ("Web performance and lazy loading", "https://developer.mozilla.org/en-US/docs/Web/Performance/Lazy_loading"),
+        ("REST API error handling and HTTP status codes", "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status"),
+    ]
+    diagnostics["evergreen_fallback_attempted"] = 0
+    diagnostics["evergreen_source_too_short"] = 0
+    for fallback_title, fallback_url in evergreen_topics:
+        diagnostics["evergreen_fallback_attempted"] += 1
+        if is_repeated_topic(fallback_title, history, source_url=fallback_url):
+            diagnostics["history_duplicates"] += 1
+            continue
+        article, final_url = fetch_article(fallback_url)
+        source_url = final_url or fallback_url
+        if len(article.strip()) < 800:
+            diagnostics["evergreen_source_too_short"] += 1
+            continue
+        try:
+            generated = summarize_article(fallback_title, article, "Official technical documentation; evergreen fallback because no suitable recent news article passed validation.", source_url)
+        except RuntimeError as exc:
+            if "Groq summarization failed" in str(exc):
+                raise
+            diagnostics["groq_rejected"] += 1
+            __import__('logging').getLogger(__name__).warning("Skipping evergreen source '%s': %s", fallback_title, str(exc)[:240])
+            continue
+        technical_topic = generated["technical_topic"]
+        if is_repeated_topic(technical_topic, history, title=fallback_title, source_url=source_url):
+            diagnostics["history_duplicates"] += 1
+            continue
+        blog = {
+            "id": "evergreen-" + normalize_topic(technical_topic).replace(" ", "-")[:80],
+            "category": "Evergreen Technical Explainer", "title": technical_topic,
+            "technical_topic": technical_topic, "original_title": fallback_title,
+            "description": generated["description"], "points": generated["points"],
+            "source_url": source_url, "source_link": source_url,
+            "published": "", "article_text_length": len(article),
+            "content_mode": "evergreen_official_docs_groq", "summary_model": generated.get("model"),
+        }
+        return blog, source_url
     raise RuntimeError(
-        "No usable fresh technical article was found after checking "
-        f"{diagnostics['items_seen']} RSS items. Diagnostics: {diagnostics}. "
-        "No post was published and history was not changed. Check RSS access, publisher article access, "
-        "GROQ_API_KEY/model availability, and whether the recent candidates are already in blog_history.json."
+        "No suitable recent news article was found, and all unused evergreen documentation "
+        f"fallbacks were exhausted. Diagnostics: {diagnostics}. No post was published and history was not changed. "
+        "Check network access to publisher/official documentation pages and GROQ_API_KEY/model availability."
     )
 
 def transform_for_agent(blog:dict,profile:AgentProfile)->dict:

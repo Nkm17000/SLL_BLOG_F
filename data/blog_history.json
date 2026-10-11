@@ -12,7 +12,8 @@
     6,
     4,
     7,
-    5
+    5,
+    1
   ],
   "theme_cycle": 1,
   "theme_used": [
@@ -22,7 +23,8 @@
     "lime-light",
     "purple-bloom",
     "sky-breeze",
-    "rose-petal"
+    "rose-petal",
+    "aqua-glass"
   ],
   "agent_topic_used": {
     "howto": [
@@ -64,7 +66,8 @@
     ],
     "ai": [
       "ai-0421",
-      "ai-1092"
+      "ai-1092",
+      "ai-1774"
     ],
     "cloud": [
       "cloud-0528",
@@ -794,6 +797,25 @@
       "difficulty": "beginner",
       "series": "Tech Made Simple",
       "content_fingerprint": "df3f8154353bb383fb01"
+    },
+    {
+      "topic_id": "ai-1774",
+      "topic": "AI Explained: Practical best practices for Service Workers: Best Practices",
+      "category": "Ai | Web Engineering",
+      "status": "published",
+      "timestamp_utc": "2026-10-11T01:08:44.598907+00:00",
+      "agent_id": "ai",
+      "agent_name": "AI Agent",
+      "template_id": 1,
+      "template_name": "asymmetric_magazine",
+      "theme_id": "aqua-glass",
+      "image": "output/20261011T010755Z_ai_ai-1774_t01.png",
+      "facebook_post_id": "1317018278163213_122124268125419769",
+      "source_url": "",
+      "hook": "How does Practical best practices for Service Workers: Best…",
+      "difficulty": "intermediate",
+      "series": "AI Explained",
+      "content_fingerprint": "29536dc283eb74bbb95d"
     }
   ]
 }

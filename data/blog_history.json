@@ -1,4 +1,19 @@
 {
   "version": 1,
-  "history": []
+  "history": [
+    {
+      "topic_id": "news-why-btech-information-technology-at-lpu-stands-out-lpu",
+      "topic": "Why Btech. (Information Technology) at LPU stands out - LPU",
+      "category": "Technology News",
+      "status": "published",
+      "timestamp_utc": "2026-10-11T12:07:47.695042+00:00",
+      "agent_id": "technical_blog",
+      "agent_name": "Technical Blog Agent",
+      "source_url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQN0V2d1FSZ2lqa25pV0Jxa3ZaQ05ZSjI1aXFNUGM4UnZLcEl5aDJPelRUTzZKY3BwcGVQUDNISnhIZDNPZGM1MUZtb1pJWjRwR2RtNEFJRUVHU0xOQXNSQXpPTk5LQjBDYVgwWU5IRnpQekZwa2RGUFBLeUFlS3J2cQ?oc=5&hl=en-US&gl=US&ceid=US:en",
+      "content_mode": "rss_fallback",
+      "article_text_length": 0,
+      "facebook_post_id": "1317018278163213_122124359685419769",
+      "error": null
+    }
+  ]
 }

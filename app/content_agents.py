@@ -105,29 +105,62 @@ def _clean_text(value:str)->str:
     value=html.unescape(value)
     return re.sub(r'\s+',' ',value).strip()
 
-def fetch_news_topic()->tuple[dict,str]:
-    """Find a current technical story, retrieve the publisher article, and summarize its actual content."""
+def fetch_news_topic(history: dict | None = None) -> tuple[dict, str]:
+    """Choose a recent, never-covered topic and fetch substantive publisher content."""
     from app.article_content import fetch_article, summarize_article
-    query=random.choice(NEWS_QUERIES); url=NEWS_FEEDS[0].format(query=quote(query))
-    response=requests.get(url,timeout=20,headers={"User-Agent":"SmartLearningLab247/1.0"}); response.raise_for_status()
-    root=ET.fromstring(response.content); items=root.findall('.//item')
-    if not items: raise RuntimeError("Google News RSS returned no items")
-    selected=None
-    for item in items[:8]:
-        title=_clean_text(item.findtext('title',''))
-        rss=_clean_text(item.findtext('description',''))
-        link=_clean_text(item.findtext('link',''))
-        published=_clean_text(item.findtext('pubDate',''))
-        if not title or not link: continue
-        article, final_url=fetch_article(link)
-        selected=(title,rss,link,published,article,final_url)
-        if len(article)>500: break
-    if not selected: raise RuntimeError("No usable technical article was found in the RSS results")
-    title,rss,link,published,article,final_url=selected
-    source_url=final_url or link
-    generated=summarize_article(title,article,rss,source_url)
-    blog={"id":"news-"+re.sub(r'[^a-z0-9]+','-',title.lower()).strip('-')[:80],"category":"Technology News","title":title,"original_title":title,"description":generated["description"],"points":generated["points"],"source_url":source_url,"source_link":link,"published":published,"article_text_length":len(article),"content_mode":"full_article" if len(article)>500 else "rss_fallback"}
-    return blog,source_url
+    from app.topic_history import is_repeated_topic, normalize_topic
+    from datetime import datetime, timedelta, timezone
+    from email.utils import parsedate_to_datetime
+    history = history or {"history": []}
+    candidates = []
+    for query in NEWS_QUERIES:
+        url = NEWS_FEEDS[0].format(query=quote(query))
+        try:
+            response = requests.get(url, timeout=20, headers={"User-Agent": "SmartLearningLab247/1.0"})
+            response.raise_for_status()
+            items = ET.fromstring(response.content).findall('.//item')
+        except (requests.RequestException, ET.ParseError):
+            continue
+        for item in items[:20]:
+            title = _clean_text(item.findtext('title', ''))
+            rss = _clean_text(item.findtext('description', ''))
+            link = _clean_text(item.findtext('link', ''))
+            published = _clean_text(item.findtext('pubDate', ''))
+            if not title or not link: continue
+            try:
+                published_dt = parsedate_to_datetime(published)
+                if published_dt.tzinfo is None: published_dt = published_dt.replace(tzinfo=timezone.utc)
+                if published_dt < datetime.now(timezone.utc) - timedelta(days=14): continue
+            except (ValueError, TypeError): continue
+            if is_repeated_topic(title, history): continue
+            candidates.append((published_dt, title, rss, link, published))
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    seen = set()
+    for _, title, rss, link, published in candidates[:45]:
+        fingerprint = normalize_topic(title)
+        if fingerprint in seen: continue
+        seen.add(fingerprint)
+        article, final_url = fetch_article(link)
+        if len(article.strip()) < 1200: continue
+        from urllib.parse import urlparse
+        if urlparse(final_url or link).hostname in ("news.google.com", "www.google.com"): continue
+        source_url = final_url or link
+        # Ask Groq to name the underlying technology, not the news headline.
+        generated = summarize_article(title, article, rss, source_url)
+        technical_topic = generated["technical_topic"]
+        if is_repeated_topic(technical_topic, history, title=title, source_url=source_url):
+            continue
+        blog = {
+            "id": "news-" + normalize_topic(technical_topic).replace(" ", "-")[:80],
+            "category": "Technology News", "title": technical_topic,
+            "technical_topic": technical_topic, "original_title": title,
+            "description": generated["description"], "points": generated["points"],
+            "source_url": source_url, "source_link": link,
+            "published": published, "article_text_length": len(article),
+            "content_mode": "full_article_groq", "summary_model": generated.get("model"),
+        }
+        return blog, source_url
+    raise RuntimeError("No fresh, full-length technical article found. Nothing was published; existing topics remain protected.")
 
 def transform_for_agent(blog:dict,profile:AgentProfile)->dict:
     result=copy.deepcopy(blog)

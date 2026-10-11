@@ -55,20 +55,90 @@ def _fallback(title: str, article: str, rss: str) -> dict:
     return {"description":("This summary uses extracted publisher article text where available. Details that the source does not specify are not inferred; check the original article for exact claims, specifications and limitations."),"points":points}
 
 def summarize_article(title: str, article: str, rss: str, source_url: str) -> dict:
-    key=os.getenv("GROQ_API_KEY","").strip()
-    if key and article:
-        prompt=("Read the entire source text and write a descriptive technical explainer for a general developer audience. Use only source-supported facts; preserve named products, companies, architecture, versions, numbers, dates, what changed, how it works, impact, limitations and caveats. Never invent missing details. Avoid repeating the headline as body text. Return JSON only: {\"description\": string, \"points\": [{\"title\": string, \"description\": string, \"items\": [string]}]} with exactly 5 points. Each point's description should explain context and meaning, not just name a topic. Sections: what happened; specific technical details; how it works; practical impact and limitations; what developers should verify next. Each section should be informative and distinct; items may contain at most 2 facts.\n"+f"HEADLINE: {title}\nRSS SUMMARY: {rss}\nSOURCE URL: {source_url}\nFULL ARTICLE:\n{article[:24000]}")
-        try:
-            r=requests.post("https://api.groq.com/openai/v1/chat/completions",headers={"Authorization":f"Bearer {key}"},json={"model":os.getenv("GROQ_MODEL","llama-3.3-70b-versatile"),"temperature":0.2,"response_format":{"type":"json_object"},"messages":[{"role":"system","content":"You are a meticulous technical journalist. Cite no unsupported facts."},{"role":"user","content":prompt}]},timeout=60)
-            r.raise_for_status(); data=json.loads(r.json()["choices"][0]["message"]["content"])
-            if isinstance(data.get("description"),str) and len(data.get("points",[]))==5 and all(p.get("title") and p.get("description") for p in data["points"]):
-                for p in data["points"]: p["items"]=[str(x) for x in p.get("items",[])[:2]]
-                return data
-        except Exception: pass
-    return _fallback(title,article,rss)
+    """Create a source-grounded, detailed explainer with Groq; never silently mask model errors."""
+    key = os.getenv("GROQ_API_KEY", "").strip()
+    model = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b").strip()
+    if not key:
+        raise RuntimeError("GROQ_API_KEY is required for the full-article technical explainer")
+    article = clean(article)
+    if len(article) < 800:
+        raise RuntimeError(f"Publisher article text is too short ({len(article)} characters); refusing to summarize an RSS headline/snippet as a full article.")
+
+    prompt = f"""You are writing a substantive technical explainer for Smart Learning Lab 247. Read the complete article text below before writing.
+
+GOAL: Write for a curious beginner on a Facebook Page. Clearly define the underlying technology, how it works step by step, a concrete example/use case, tradeoffs, and what is actually new. Create a clear, descriptive, technically useful explanation. Do not merely restate the headline, list topic names, or use generic filler. Explain what the source actually reports and why details matter.
+
+CONTENT RULES:
+- Use only facts supported by the supplied article. Never invent specifications, benchmarks, release dates, capabilities, compatibility, quotes, or vendor claims.
+- Preserve product/model names, companies, versions, numbers, dates, standards, protocols, architecture, and qualifications accurately.
+- Explain cause and effect: what changed, how the technology works (only as described or safely inferable), where it fits, and practical implications.
+- Separate reported facts from analysis. Mark implications as implications, not publisher claims.
+- Mention limitations and unknowns. If the source omits a detail, say it is not specified rather than guessing.
+- Avoid repetition; every section must include concrete details from the article. Explain specialized terms briefly.
+
+RETURN JSON ONLY, no markdown fences, with this schema:
+{{"technical_topic":"specific underlying technology in 3-10 words (not the headline)","description":"2-4 sentence overview grounded in the article","points":[{{"title":"specific section title","description":"substantive paragraph of about 65-95 words","items":["optional concrete fact"]}}]}}
+Return exactly 5 distinct points in this order:
+1. What was announced/reported (who, what, when, if provided)
+2. Technical details/components (specific names, specifications, roles)
+3. How the solution fits into the wider architecture (source-supported only)
+4. Practical impact, use cases, trade-offs and limitations (separate facts from implications)
+5. What developers/operators should verify next (specific checks; do not invent features)
+Each paragraph must be descriptive, not a list of topic labels. Include 0-2 useful short items per section.
+
+HEADLINE: {title}
+RSS CONTEXT (secondary; prefer full article): {rss}
+SOURCE URL: {source_url}
+FULL ARTICLE TEXT ({len(article)} characters):
+{article[:26000]}"""
+    try:
+        response = requests.post(
+            "https://api.groq.com/openai/v1/chat/completions",
+            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+            json={
+                "model": model,
+                "temperature": 0.15,
+                "max_tokens": 4200,
+                "response_format": {"type": "json_object"},
+                "messages": [
+                    {"role": "system", "content": "You are a meticulous technical journalist. Never fabricate facts. Follow the JSON schema exactly."},
+                    {"role": "user", "content": prompt},
+                ],
+            },
+            timeout=90,
+        )
+        response.raise_for_status()
+        data = json.loads(response.json()["choices"][0]["message"]["content"])
+    except Exception as exc:
+        raise RuntimeError(f"Groq summarization failed; refusing to publish generic or unverified content: {exc}") from exc
+
+    if not isinstance(data, dict) or not isinstance(data.get("technical_topic"), str) or len(data["technical_topic"].strip()) < 8 or not isinstance(data.get("description"), str) or len(data["description"].strip()) < 100:
+        raise RuntimeError("Groq returned an overview that is too short; refusing to publish")
+    points = data.get("points")
+    if not isinstance(points, list) or len(points) != 5:
+        raise RuntimeError("Groq response must contain exactly five substantive sections")
+    seen = set()
+    for index, point in enumerate(points, 1):
+        if not isinstance(point, dict) or not isinstance(point.get("title"), str) or not isinstance(point.get("description"), str):
+            raise RuntimeError(f"Groq section {index} is missing a title or paragraph")
+        point["title"] = clean(point["title"])
+        point["description"] = clean(point["description"])
+        if len(point["description"]) < 280:
+            raise RuntimeError(f"Groq section {index} is too brief ({len(point['description'])} characters); refusing headline-only content")
+        if not point["title"] or point["title"].lower() in seen:
+            raise RuntimeError("Groq returned an empty or duplicate section title")
+        seen.add(point["title"].lower())
+        items = point.get("items", [])
+        point["items"] = [clean(str(item)) for item in items[:2] if clean(str(item))] if isinstance(items, list) else []
+    data["technical_topic"] = clean(data["technical_topic"])
+    data["technical_topic"] = clean(data["technical_topic"])
+    data["description"] = clean(data["description"])
+    data["model"] = model
+    data["summary_mode"] = "groq_full_article"
+    return data
 
 def build_text_post(title: str, content: dict, source_url: str, published: str="", app_name: str="Smart Learning Lab 247") -> str:
-    lines=[f"{title}","",content.get("description","").strip(),""]
+    lines=[f"🔎 {content.get('technical_topic', title)}", "", f"Recent development: {title}", "", content.get("description", "").strip(), ""]
     for i,p in enumerate(content.get("points",[]),1):
         lines.extend([f"{i}. {p.get('title','Technical insight')}",p.get("description","").strip()])
         for item in p.get("items",[])[:2]: lines.append(f"• {item}")

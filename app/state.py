@@ -10,10 +10,10 @@ def load_history():
     try:
         data=json.loads(HISTORY.read_text(encoding="utf-8"))
         return data if isinstance(data,dict) and isinstance(data.get("history",[]),list) else _default()
-    except Exception: return _default()
+    except Exception as exc: raise RuntimeError("Cannot read topic history; refusing to risk duplicate posts") from exc
 def save_history(data):
     HISTORY.parent.mkdir(parents=True,exist_ok=True); tmp=HISTORY.with_suffix(".tmp")
     tmp.write_text(json.dumps(data,ensure_ascii=False,indent=2)+"\n",encoding="utf-8"); tmp.replace(HISTORY)
 def record(data,blog,status,**extra):
-    item={"topic_id":blog.get("id"),"topic":blog.get("title"),"category":blog.get("category"),"status":status,"timestamp_utc":datetime.now(timezone.utc).isoformat(),**extra}
-    data.setdefault("history",[]).append(item); data["history"]=data["history"][-500:]; return item
+    item={"topic_id":blog.get("id"),"topic":blog.get("title"),"technical_topic":blog.get("technical_topic",blog.get("title")),"article_title":blog.get("original_title",blog.get("title")),"category":blog.get("category"),"status":status,"timestamp_utc":datetime.now(timezone.utc).isoformat(),**extra}
+    data.setdefault("history",[]).append(item); return item

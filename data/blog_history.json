@@ -1,28 +1,4 @@
 {
   "version": 1,
-  "history": [
-    {
-      "topic_id": "news-software-is-over-bold-ai-developer-takes-aim-at-adobe-with-open-source-clones-ar",
-      "topic": "“Software is over”: Bold AI developer takes aim at Adobe with open source clones - Ars Technica",
-      "category": "Technology News",
-      "status": "published",
-      "timestamp_utc": "2026-10-11T11:50:02.704362+00:00",
-      "agent_id": "technical_blog",
-      "agent_name": "Technical Blog Agent",
-      "source_url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNbnlQeEF0azJTVURrX1dtX3JUVjFRd0R0Z0t1S0hjQ1ZwSXh0TlhaVnFndEJHbzQtVU1PUFZVbmlzNGlCZmEyMGl6Wnc3NDFsMTdLVFQ0M0R0cHJDeWRGakJFUm93Vjh6ODVxTzR3MTJadGQyYnhXSnVwaUhsTzk1ZzFlVHJqa29rRlRmR3lOZUFWQ2p2Ymt5U3p6Ti1OQW5pclI5d3lycXBUZGYxSk53cWdiNA?oc=5",
-      "slides": [
-        "output/carousels/20261011T114950Z/slide-01.jpg",
-        "output/carousels/20261011T114950Z/slide-02.jpg",
-        "output/carousels/20261011T114950Z/slide-03.jpg",
-        "output/carousels/20261011T114950Z/slide-04.jpg",
-        "output/carousels/20261011T114950Z/slide-05.jpg",
-        "output/carousels/20261011T114950Z/slide-06.jpg",
-        "output/carousels/20261011T114950Z/slide-07.jpg"
-      ],
-      "slide_count": 7,
-      "facebook_post_id": "1317018278163213_122124355293419769",
-      "content_fingerprint": "277850d78c9b0c3ddc94",
-      "error": null
-    }
-  ]
+  "history": []
 }

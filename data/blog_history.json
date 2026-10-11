@@ -1,4 +1,28 @@
 {
   "version": 1,
-  "history": []
+  "history": [
+    {
+      "topic_id": "evergreen-http-response-caching-mechanisms",
+      "topic": "HTTP response caching mechanisms",
+      "technical_topic": "HTTP response caching mechanisms",
+      "article_title": "HTTP caching: how browsers avoid repeated downloads",
+      "category": "Evergreen Technical Explainer",
+      "status": "published",
+      "timestamp_utc": "2026-10-11T12:56:17.985469+00:00",
+      "agent_id": "technical_blog",
+      "agent_name": "Technical Blog Agent",
+      "source_url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Caching",
+      "source_published": "",
+      "content_mode": "evergreen_official_docs_groq",
+      "summary_model": "openai/gpt-oss-120b",
+      "article_text_length": 27894,
+      "image_palette": 2,
+      "facebook_post_id": "1317018278163213_122124367683419769",
+      "published_at_utc": "2026-10-11T12:56:22.724302+00:00"
+    }
+  ],
+  "last_image_palette": 2,
+  "last_image_palettes": [
+    2
+  ]
 }

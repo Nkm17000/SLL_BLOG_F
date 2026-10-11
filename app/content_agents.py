@@ -106,24 +106,28 @@ def _clean_text(value:str)->str:
     return re.sub(r'\s+',' ',value).strip()
 
 def fetch_news_topic()->tuple[dict,str]:
+    """Find a current technical story, retrieve the publisher article, and summarize its actual content."""
+    from app.article_content import fetch_article, summarize_article
     query=random.choice(NEWS_QUERIES); url=NEWS_FEEDS[0].format(query=quote(query))
-    response=requests.get(url,timeout=20,headers={'User-Agent':'SmartLearningLab/1.0'}); response.raise_for_status()
+    response=requests.get(url,timeout=20,headers={"User-Agent":"SmartLearningLab247/1.0"}); response.raise_for_status()
     root=ET.fromstring(response.content); items=root.findall('.//item')
-    if not items: raise RuntimeError('News RSS returned no items')
-    item=items[0]; title=_clean_text(item.findtext('title','Technology update'))
-    summary=_clean_text(item.findtext('description','')); link=_clean_text(item.findtext('link','')); published=_clean_text(item.findtext('pubDate',''))
-    if not title: raise RuntimeError('News item has no title')
-    if len(summary)>450: summary=summary[:447].rstrip()+'...'
-    blog={'id':'news-'+re.sub(r'[^a-z0-9]+','-',title.lower()).strip('-')[:80],'category':'Technology News','title':title,
-          'description':(summary or 'A current technology development worth understanding.') + ' This carousel summarizes the reported update, its technical context, practical implications, and what developers should verify next.',
-          'points':[
-            {'title':'What happened','description':summary or 'A new technology development was reported.','items':['Read the source before acting on the information.','Separate confirmed facts from interpretation.']},
-            {'title':'Why it matters','description':'The update may affect developers, businesses, users or the wider technology ecosystem.','items':['Identify who is affected.','Look for measurable changes rather than headlines alone.']},
-            {'title':'Technology context','description':'Understanding the underlying technology makes the announcement easier to evaluate.','items':['Check the technology or product involved.','Compare it with the existing approach.']},
-            {'title':'Practical takeaway','description':'Focus on what changed and whether it has a real-world impact.','items':['Track official documentation or announcements.','Avoid repeating unverified claims.']},
-            {'title':'Source and next watch','description':f'Published: {published or "date not supplied"}. Source: {link or "RSS item source not supplied"}.','items':['Watch for follow-up announcements.','Re-check important facts as the story develops.']},
-          ]}
-    return blog,link
+    if not items: raise RuntimeError("Google News RSS returned no items")
+    selected=None
+    for item in items[:8]:
+        title=_clean_text(item.findtext('title',''))
+        rss=_clean_text(item.findtext('description',''))
+        link=_clean_text(item.findtext('link',''))
+        published=_clean_text(item.findtext('pubDate',''))
+        if not title or not link: continue
+        article, final_url=fetch_article(link)
+        selected=(title,rss,link,published,article,final_url)
+        if len(article)>500: break
+    if not selected: raise RuntimeError("No usable technical article was found in the RSS results")
+    title,rss,link,published,article,final_url=selected
+    source_url=final_url or link
+    generated=summarize_article(title,article,rss,source_url)
+    blog={"id":"news-"+re.sub(r'[^a-z0-9]+','-',title.lower()).strip('-')[:80],"category":"Technology News","title":title,"original_title":title,"description":generated["description"],"points":generated["points"],"source_url":source_url,"source_link":link,"published":published,"article_text_length":len(article),"content_mode":"full_article" if len(article)>500 else "rss_fallback"}
+    return blog,source_url
 
 def transform_for_agent(blog:dict,profile:AgentProfile)->dict:
     result=copy.deepcopy(blog)

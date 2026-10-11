@@ -59,3 +59,15 @@ class FacebookService:
         result=cls._request("POST",feed_url,data=params)
         logger.info("Facebook multi-photo post published: %s",result.get("id"))
         return {"post_id":result.get("id"),"photo_ids":[x["media_fbid"] for x in media],"slide_count":len(media)}
+    @classmethod
+    def post_text(cls, message: str):
+        """Publish one descriptive text-only Facebook Page post; no image conversion/upload."""
+        if not message or len(message.strip()) < 100:
+            raise ValueError("Refusing to publish an empty or insufficiently descriptive post")
+        url=f"https://graph.facebook.com/{Config.FACEBOOK_GRAPH_API_VERSION}/{Config.FACEBOOK_PAGE_ID}/feed"
+        result=cls._request("POST",url,data={"message":message,"access_token":Config.FACEBOOK_PAGE_TOKEN})
+        post_id=result.get("id")
+        if not post_id: raise RuntimeError(f"Facebook did not return a post ID: {result}")
+        logger.info("Facebook text post published: %s",post_id)
+        return {"post_id":post_id,"post_type":"text_only"}
+

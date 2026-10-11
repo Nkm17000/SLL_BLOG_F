@@ -1,4 +1,4 @@
-name: Daily Technical Blog Carousel to Facebook
+name: Daily Source-Based Technical Article to Facebook
 on:
   push:
     branches:
@@ -16,7 +16,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: daily-technical-blog-facebook
+  group: daily-technical-article-facebook
   cancel-in-progress: false
 env:
   PYTHONUNBUFFERED: "1"
@@ -30,6 +30,8 @@ jobs:
     env:
       FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
       FACEBOOK_PAGE_TOKEN: ${{ secrets.FACEBOOK_PAGE_TOKEN }}
+      GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      GROQ_MODEL: llama-3.3-70b-versatile
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,9 +42,7 @@ jobs:
           cache: pip
       - name: Install dependencies
         run: pip install -r requirements.txt
-      - name: Install Chromium
-        run: python -m playwright install --with-deps chromium
-      - name: Generate and publish daily technical carousel
+      - name: Fetch full article and publish descriptive text post
         env:
           DRY_RUN: ${{ inputs.dry_run || false }}
         run: |
@@ -60,13 +60,13 @@ jobs:
           if git diff --cached --quiet; then exit 0; fi
           git commit -m "chore: update daily technical blog history [skip ci]"
           git push
-      - name: Upload generated slides and summary
+      - name: Upload generated text and summary
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: daily-technical-blog-${{ github.run_number }}
+          name: daily-technical-article-${{ github.run_number }}
           path: |
-            output/carousels/**
+            output/latest_post.txt
             output/latest_summary.json
             data/blog_history.json
           if-no-files-found: warn

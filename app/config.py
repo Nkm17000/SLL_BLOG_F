@@ -13,7 +13,10 @@ class Config:
     YOUTUBE_URL = os.getenv("YOUTUBE_URL", "https://www.youtube.com/@smartlearninglab247")
     WEBSITE_URL = os.getenv("WEBSITE_URL", "https://smartlearninglab-react.pages.dev/")
     RSS_QUERY = os.getenv("RSS_QUERY", "latest technology software engineering AI cybersecurity cloud developer tools")
-    CAROUSEL_SLIDES = int(os.getenv("CAROUSEL_SLIDES", "7"))
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY", "").strip()
+    GROQ_MODEL = os.getenv("GROQ_MODEL", "llama-3.3-70b-versatile")
+    # Text-only publishing: no slide or image conversion.
+    TEXT_ONLY_POST = True
 
     @classmethod
     def validate_facebook(cls):

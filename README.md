@@ -1,34 +1,26 @@
-# Smart Learning Lab 247 — Daily Technical Blog Carousel
+# Smart Learning Lab 247 — Source-Based Technical Article Publisher
 
-A deliberately simplified GitHub Actions project that finds one recent technology topic from a Google News RSS search each day, creates a concise seven-slide educational carousel, and publishes it as one multi-photo Facebook post. It no longer runs the 20-agent schedule, large topic libraries, dashboards, template rotations, or hourly posts.
+This workflow finds a current technology story, follows the Google News RSS link to the publisher, extracts the available full article text, and creates **one descriptive text-only Facebook Page post**. It does not convert text into images and does not upload carousel images.
 
-## Daily behavior
-- Runs daily at 09:00 India time (03:30 UTC), or manually via Actions.
-- Fetches a current topic from a technology-focused RSS search and preserves the source link.
-- Produces 7 square JPG slides: headline/context, five technical insight slides, and a takeaway.
-- Uploads each slide as an unpublished Facebook photo, then publishes all photos together in one feed post.
-- Saves a compact topic/post history and workflow artifacts.
-- Manual workflow runs default to dry-run; turn it off to publish.
+## What changed
+- Retrieves the publisher article instead of relying only on the RSS headline/snippet.
+- Extracts article text from JSON-LD, article/main containers, and paragraph fallbacks.
+- With `GROQ_API_KEY`, generates five distinct, descriptive sections grounded in the fetched article and preserves technical details, named products, numbers, context and limitations.
+- Without the optional key, uses source sentences as an extractive fallback and explicitly warns when the full article was not accessible; it does not invent missing details.
+- Publishes one text-only Facebook post with context, five sections, source link, and Smart Learning Lab 247 branding.
+- Refuses to publish if the resulting post is too short or lacks five descriptive sections.
+- Saves the generated text at `output/latest_post.txt` and run details in `output/latest_summary.json`.
 
-## Required GitHub repository secrets
-- `FACEBOOK_PAGE_ID` — Facebook Page ID, not a personal profile ID.
-- `FACEBOOK_PAGE_TOKEN` — access token with the permissions needed to publish Page content.
+## GitHub secrets
+Required: `FACEBOOK_PAGE_ID`, `FACEBOOK_PAGE_TOKEN`.
+Recommended for better summaries: `GROQ_API_KEY` (Groq API key). `GROQ_MODEL` defaults to `llama-3.3-70b-versatile`. If the publisher blocks automated access, the system falls back to the RSS text and records `content_mode: rss_fallback`; review the output before enabling live publishing.
 
 ## Run locally
 ```bash
 python -m pip install -r requirements.txt
-python -m playwright install chromium
-cp .env.example .env  # then fill in credentials
-python -m app.run_agent --dry-run
-python -m app.run_agent  # publishes if valid Facebook credentials are configured
+cp .env.example .env  # set Facebook credentials and optional GROQ_API_KEY
+python -m app.run_agent --dry-run  # fetch article and generate text, no publishing
+python -m app.run_agent           # publishes one text post
 ```
 
-## Files
-- `app/run_agent.py`: one daily workflow from topic fetch to post
-- `app/content_agents.py`: current technical topic RSS fetcher
-- `app/carousel_builder.py`: slide rendering
-- `app/facebook_service.py`: multi-photo Facebook publishing
-- `app/config.py`: central app name, URLs, and publishing settings
-- `data/blog_history.json`: compact publication history
-
-The RSS headline and summary are used as source context; the carousel gives practical framing and recommends checking the original source and official documentation. Review the generated carousel artifact before turning off dry-run for the first time.
+The workflow runs at 09:00 India time daily, on push to `main`, or manually. The manual workflow input supports dry-run. Verify `output/latest_post.txt` before the first live publish.

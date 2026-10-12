@@ -52,11 +52,38 @@
         }
       ],
       "published_at_utc": "2026-10-11T13:24:21.218779+00:00"
+    },
+    {
+      "topic_id": "evergreen-docker-container-isolation-fundamentals",
+      "topic": "Docker container isolation fundamentals",
+      "technical_topic": "Docker container isolation fundamentals",
+      "article_title": "Docker containers and image fundamentals",
+      "category": "Evergreen Technical Explainer",
+      "status": "published",
+      "timestamp_utc": "2026-10-12T11:16:13.278165+00:00",
+      "agent_id": "technical_blog",
+      "agent_name": "Technical Blog Agent",
+      "source_url": "https://docs.docker.com/get-started/docker-concepts/the-basics/what-is-a-container/",
+      "source_published": "",
+      "content_mode": "evergreen_official_docs_groq",
+      "summary_model": "openai/gpt-oss-120b",
+      "article_text_length": 7094,
+      "image_palette": 0,
+      "destinations": [
+        {
+          "platform": "facebook",
+          "name": "Smart Learning Lab 247",
+          "status": "published",
+          "post_id": "1317018278163213_122124546327419769"
+        }
+      ],
+      "published_at_utc": "2026-10-12T11:16:19.312133+00:00"
     }
   ],
-  "last_image_palette": 2,
+  "last_image_palette": 0,
   "last_image_palettes": [
     3,
-    2
+    2,
+    0
   ]
 }

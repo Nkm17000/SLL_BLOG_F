@@ -78,12 +78,39 @@
         }
       ],
       "published_at_utc": "2026-10-12T11:16:19.312133+00:00"
+    },
+    {
+      "topic_id": "evergreen-github-actions-ci-cd-automation",
+      "topic": "GitHub Actions CI/CD automation",
+      "technical_topic": "GitHub Actions CI/CD automation",
+      "article_title": "GitHub Actions workflow automation",
+      "category": "Evergreen Technical Explainer",
+      "status": "published",
+      "timestamp_utc": "2026-10-13T10:58:27.318220+00:00",
+      "agent_id": "technical_blog",
+      "agent_name": "Technical Blog Agent",
+      "source_url": "https://docs-internal.github.com/en/actions/get-started/understand-github-actions",
+      "source_published": "",
+      "content_mode": "evergreen_official_docs_groq",
+      "summary_model": "openai/gpt-oss-120b",
+      "article_text_length": 6402,
+      "image_palette": 4,
+      "destinations": [
+        {
+          "platform": "facebook",
+          "name": "Smart Learning Lab 247",
+          "status": "published",
+          "post_id": "1317018278163213_122124748209419769"
+        }
+      ],
+      "published_at_utc": "2026-10-13T10:58:32.321311+00:00"
     }
   ],
-  "last_image_palette": 0,
+  "last_image_palette": 4,
   "last_image_palettes": [
     3,
     2,
-    0
+    0,
+    4
   ]
 }

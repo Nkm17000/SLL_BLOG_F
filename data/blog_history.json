@@ -182,14 +182,40 @@
         }
       ],
       "published_at_utc": "2026-10-16T08:27:32.442013+00:00"
+    },
+    {
+      "topic_id": "evergreen-postgresql-transaction-handling-acid-guarantees",
+      "topic": "PostgreSQL transaction handling and ACID guarantees",
+      "technical_topic": "PostgreSQL transaction handling and ACID guarantees",
+      "article_title": "Database transactions and ACID properties",
+      "category": "Evergreen Technical Explainer",
+      "status": "published",
+      "timestamp_utc": "2026-10-17T08:00:32.070693+00:00",
+      "agent_id": "technical_blog",
+      "agent_name": "Technical Blog Agent",
+      "source_url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+      "source_published": "",
+      "content_mode": "evergreen_official_docs_groq",
+      "summary_model": "openai/gpt-oss-120b",
+      "article_text_length": 5627,
+      "image_palette": 2,
+      "destinations": [
+        {
+          "platform": "facebook",
+          "name": "Smart Learning Lab 247",
+          "status": "published",
+          "post_id": "1317018278163213_122125497741419769"
+        }
+      ],
+      "published_at_utc": "2026-10-17T08:00:38.134255+00:00"
     }
   ],
-  "last_image_palette": 3,
+  "last_image_palette": 2,
   "last_image_palettes": [
-    0,
     4,
     1,
     5,
-    3
+    3,
+    2
   ]
 }

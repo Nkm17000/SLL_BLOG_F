@@ -234,14 +234,40 @@
         }
       ],
       "published_at_utc": "2026-10-19T09:15:34.594602+00:00"
+    },
+    {
+      "topic_id": "evergreen-browser-native-lazy-loading",
+      "topic": "Browser-native lazy loading",
+      "technical_topic": "Browser-native lazy loading",
+      "article_title": "Web performance and lazy loading",
+      "category": "Evergreen Technical Explainer",
+      "status": "published",
+      "timestamp_utc": "2026-10-20T08:50:13.292822+00:00",
+      "agent_id": "technical_blog",
+      "agent_name": "Technical Blog Agent",
+      "source_url": "https://developer.mozilla.org/en-US/docs/Web/Performance/Guides/Lazy_loading",
+      "source_published": "",
+      "content_mode": "evergreen_official_docs_groq",
+      "summary_model": "openai/gpt-oss-120b",
+      "article_text_length": 3894,
+      "image_palette": 4,
+      "destinations": [
+        {
+          "platform": "facebook",
+          "name": "Smart Learning Lab 247",
+          "status": "published",
+          "post_id": "1317018278163213_122126032803419769"
+        }
+      ],
+      "published_at_utc": "2026-10-20T08:50:17.855738+00:00"
     }
   ],
-  "last_image_palette": 0,
+  "last_image_palette": 4,
   "last_image_palettes": [
-    1,
     5,
     3,
     2,
-    0
+    0,
+    4
   ]
 }
